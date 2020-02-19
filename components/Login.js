@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, StyleSheet, TextInput,Button, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity } from "react-native";
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -74,13 +74,13 @@ export default class Login extends React.Component {
                     </TouchableOpacity>
                 </View>
                 <View>
-                <TouchableOpacity
+                    <TouchableOpacity
                         style={styles.btnEnter}
                         onPress={() => this.props.navigation.navigate('SignUp')}
                     >
-                        <Text  style= {styles.btnSignUp}>Inscription</Text>
+                        <Text style={styles.btnSignUp}>Inscription</Text>
                     </TouchableOpacity>
-                    
+
                 </View>
 
             </View>
@@ -92,6 +92,8 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'rgba(119,136,153, 30)',
+        flex: 1
     },
     title: {
         flexDirection: 'row',
@@ -114,16 +116,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: "rgb(255,195,11)",
         alignItems: 'center',
-
+        // width: 256,
     },
     btnEnterText: {
         color: 'rgb(255,255,255)',
-        fontWeight: '700',
+        fontWeight: '100',
+        fontSize: 20,
     },
-    btnSignUp:{
+    btnSignUp: {
         justifyContent: 'center',
+        fontSize: 20,
         flexDirection: 'row',
-        backgroundColor: "rgb(220,220,220)",
+        backgroundColor: 'rgba(119,136,153, 40)',
         color: 'rgb(255,195,11)',
         alignItems: 'center',
     }

@@ -23,7 +23,8 @@ export default class App extends React.Component {
   };
   render() {
     return (
-      <NavigationSignin />
+        <NavigationSignin />
+
     );
   }
 }
@@ -32,7 +33,7 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgb(220,220,220)',
+    backgroundColor: 'rgba(119,136,153, 40)',
     alignItems: 'center',
     justifyContent: 'center',
   },
