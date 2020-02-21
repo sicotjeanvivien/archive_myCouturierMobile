@@ -1,92 +1,51 @@
 import * as React from "react";
-import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity, AsyncStorage } from "react-native";
+import { AuthContext } from './../Context/AuthContext';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import NavigationSignin from "../Navigation/NavigationSignin";
+export const Login = ({navigation}) => {
+    const { signIn } = React.useContext(AuthContext);
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
 
-
-const Stack = createStackNavigator();
-
-export default class Login extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            url: 'https://127.0.0.1:8000/login_check',
-            username: '',
-            password: '',
-            NavigationSignin: NavigationSignin,
-        }
-    }
-
-    _signin = async () => {
-        let data = {
-            "security": {
-                "credentials": {
-                    "login": this.state.username,
-                    "password": this.state.password
-                }
-            }
-        };
-        console.log(data)
-        fetch(this.state.url, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    };
-
-
-    render() {
-        return (
-            <View style={styles.container} >
-                <View>
-                    <Text style={styles.title}>MyCouturier</Text>
-                </View>
-                <View >
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Nom d'utilisateur"
-                        onChangeText={(username) => this.setState({ username })}
-                        value={this.state.username}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Mot de passe"
-                        onChangeText={(password) => this.setState({ password })}
-                        value={this.state.password}
-                    />
-                    <TouchableOpacity
-                        style={styles.btnEnter}
-                        onPress={this._signin}
-                    >
-                        <Text style={styles.btnEnterText}>Connexion</Text>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                    <TouchableOpacity
-                        style={styles.btnEnter}
-                        onPress={() => this.props.navigation.navigate('SignUp')}
-                    >
-                        <Text style={styles.btnSignUp}>Inscription</Text>
-                    </TouchableOpacity>
-
-                </View>
+    return (
+        <View style={styles.container} >
+            <View>
+                <Text style={styles.title}>MyCouturier</Text>
+            </View>
+            <View >
+                <TextInput
+                    style={styles.input}
+                    placeholder="Nom d'utilisateur"
+                    onChangeText={setUsername}
+                    value={username}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Mot de passe"
+                    onChangeText={setPassword}
+                    value={password}
+                />
+                <TouchableOpacity
+                    style={styles.btnEnter}
+                    onPress={() => signIn({username, password})}
+                >
+                    <Text style={styles.btnEnterText}>Connexion</Text>
+                </TouchableOpacity>
+            </View>
+            <View>
+                <TouchableOpacity
+                    style={styles.btnEnter}
+                    onPress={() =>navigation.navigate('SignUp', { screen: 'SignUp' })}
+                >
+                    <Text style={styles.btnSignUp}>Inscription</Text>
+                </TouchableOpacity>
 
             </View>
-        )
-    }
+
+        </View>
+    )
 }
+
 
 const styles = StyleSheet.create({
     container: {

@@ -30,7 +30,7 @@ export default class SingUp extends Component {
     let errorData = {
       firstname: {
         error: false,
-        text:'Valeur non valide'
+        text: 'Valeur non valide'
       },
       lastname: {
         error: false,
@@ -66,8 +66,8 @@ export default class SingUp extends Component {
     this.state.email.length > 0 && toString(this.state.email) && this.state.email.includes('@')
       ? data.email = this.state.email : errorData.email.error = true;
 
-    if (this.state.password.length >7 
-      && this.state.passwordConfirm.length >7 
+    if (this.state.password.length > 7
+      && this.state.passwordConfirm.length > 7
       && toString(this.state.password)
       && toString(this.state.passwordConfirm)
       && this.state.password === this.state.passwordConfirm
@@ -88,21 +88,21 @@ export default class SingUp extends Component {
       fetch(this.state.url, {
         method: 'POST',
         headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
-    })
+      })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log(responseJson);
+          console.log(responseJson);
         })
         .catch((error) => {
-            console.error(error);
+          console.error(error);
         });
-    console.log('hello')
+      console.log('hello')
     } else {
-     console.log('false') 
+      console.log('false')
     }
   }
 
@@ -155,7 +155,14 @@ export default class SingUp extends Component {
             <Text style={styles.btnEnterText}>Inscription</Text>
           </TouchableOpacity>
         </View>
-
+        <View>
+          <TouchableOpacity
+            style={styles.btnEnter}
+            onPress={() => this.props.navigation.navigate('Login')}
+          >
+            <Text style={styles.btnSignUp}>connexion</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -191,4 +198,12 @@ const styles = StyleSheet.create({
     color: 'rgb(255,255,255)',
     fontWeight: '600',
   },
+  btnSignUp: {
+    justifyContent: 'center',
+    fontSize: 20,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(119,136,153, 40)',
+    color: 'rgb(255,195,11)',
+    alignItems: 'center',
+}
 })
