@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, Button, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import styles from '../assets/stylesCustom';
+
 
 
 export default class SingUp extends Component {
@@ -167,43 +169,3 @@ export default class SingUp extends Component {
     );
   }
 }
-
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(119,136,153, 30)',
-    flex: 1
-  },
-  input: {
-    margin: 15,
-    height: 40,
-    width: 256,
-    padding: 5,
-    fontSize: 16,
-    backgroundColor: "rgb(255,255,255)",
-    // borderWidth:1,
-    // borderColor:'rgb(0.0.0)'
-  },
-  btnEnter: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    backgroundColor: "rgb(255,195,11)",
-    alignItems: 'center',
-
-  },
-  btnEnterText: {
-    fontSize: 20,
-    color: 'rgb(255,255,255)',
-    fontWeight: '600',
-  },
-  btnSignUp: {
-    justifyContent: 'center',
-    fontSize: 20,
-    flexDirection: 'row',
-    backgroundColor: 'rgba(119,136,153, 40)',
-    color: 'rgb(255,195,11)',
-    alignItems: 'center',
-}
-})

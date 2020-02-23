@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, Button } from 'react-native';
 
-export default function SplashScreen() {
+export const SplashScreen = () => {
     return (
       <View>
         <Text>Loading...</Text>
