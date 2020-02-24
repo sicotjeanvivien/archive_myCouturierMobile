@@ -1,11 +1,16 @@
 import {StyleSheet } from "react-native";
 
 
+const color = {
+    white: "rgb(255,255,255)", 
+    colorBackGrouds: 'rgba(192,192,192, 100)',
+}
+
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(119,136,153, 30)',
+        backgroundColor: color.colorBackGrouds,
         flex: 1
     },
     title: {
@@ -16,11 +21,11 @@ const styles = StyleSheet.create({
     },
     input: {
         margin: 15,
-        height: 40,
+        // height: 40,
         width: 256,
         padding: 5,
         fontSize: 16,
-        backgroundColor: "rgb(255,255,255)",
+        backgroundColor: color.white,
         // borderWidth:1,
         // borderColor:'rgb(0.0.0)'
     },
@@ -40,13 +45,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         fontSize: 20,
         flexDirection: 'row',
-        backgroundColor: 'rgba(119,136,153, 40)',
+        backgroundColor: color.colorBackGrouds,
         color: 'rgb(255,195,11)',
         alignItems: 'center',
     },
     profilStack: {
-        borderTopWidth: 5,
-        borderColor: 'rgba(119,136,53, 100)'
+        borderTopWidth: 3,
+        borderColor: 'rgba(224,224,224, 100)'
     }
 
 })

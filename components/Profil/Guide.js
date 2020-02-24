@@ -6,7 +6,7 @@ export const Guide = () => {
     return (
         <View>
             <View>
-                <Text>Guide MyCouturier</Text>
+                <Text></Text>
             </View>
             <View>
 

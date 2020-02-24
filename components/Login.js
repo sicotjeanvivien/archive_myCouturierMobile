@@ -8,14 +8,12 @@ export const Login = ({navigation}) => {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
 
-
-    console.log(styles)
     return (
         <View style={styles.container} >
             <View>
                 <Text style={styles.title}>MyCouturier</Text>
             </View>
-            <View >
+            <View>
                 <TextInput
                     style={styles.input}
                     placeholder="Nom d'utilisateur"

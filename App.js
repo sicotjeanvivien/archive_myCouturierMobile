@@ -4,7 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+
 import { AuthContext } from './Context/AuthContext';
+import { ConstEnv } from "./ConstEnv";
 
 import {SplashScreen} from './components/SplashScreen';
 import { Login } from './components/Login';
@@ -107,12 +109,13 @@ export default () => {
             }
           }
         };
-        fetch(url.signIn, {
+        let header = {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        };
+        fetch(ConstEnv.host + ConstEnv.signIn, {
           method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
+          headers: header,
           body: JSON.stringify(data),
         })
           .then((response) => response.json())

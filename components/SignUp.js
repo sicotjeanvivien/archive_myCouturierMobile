@@ -146,7 +146,7 @@ export default class SingUp extends Component {
           />
           <TextInput
             style={styles.input}
-            placeholder="Confirmé mot de passe"
+            placeholder="Confirmer mot de passe"
             onChangeText={(passwordConfirm) => this.setState({ passwordConfirm })}
             value={this.state.passwordConfirm}
           />

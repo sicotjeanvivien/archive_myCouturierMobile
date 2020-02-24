@@ -63,9 +63,8 @@ const NavigationProfil = ({ navigation }) => {
                 >
                     <Text style={styles.title}>Nous contacter</Text>
                 </TouchableOpacity>
-                
                 <TouchableOpacity
-                    style={styles.ProfilStack}
+                    style={styles.profilStack}
                     onPress={signOut}
                 >
                     <Text style={styles.title}>Déconnexion</Text>
