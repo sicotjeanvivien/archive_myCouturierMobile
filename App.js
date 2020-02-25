@@ -1,87 +1,113 @@
 import * as React from 'react';
 import { AsyncStorage, Button, Text, TextInput, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons, Entypo, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 
 
 import { AuthContext } from './Context/AuthContext';
 import { ConstEnv } from "./ConstEnv";
 
-import {SplashScreen} from './components/SplashScreen';
+import { SplashScreen } from './components/SplashScreen';
 import { Login } from './components/Login';
 import SingUp from './components/SignUp';
 import { Search } from './components/Search/Search';
-import { Message } from './components/Messages/Message';
-import {ProfilStackScreen } from './Navigation/NavigationProfil';
+import { ProfilStackScreen } from './Navigation/NavigationProfil';
+import { PrestationStackScreen } from './components/Prestations/Prestation';
+import { Shop } from './components/Shop/Shop';
 
 const AuthStack = createStackNavigator();
-const AuthStackScreen = ()=>(
+const AuthStackScreen = () => (
   <AuthStack.Navigator headerMode="none">
-    <AuthStack.Screen 
-      name ='Login'
+    <AuthStack.Screen
+      name='Login'
       component={Login}
-      options={{title:''}}
+      options={{ title: '' }}
     />
-    <AuthStack.Screen 
-      name ='SignUp'
+    <AuthStack.Screen
+      name='SignUp'
       component={SingUp}
-      options={{title:''}}
+      options={{ title: '' }}
     />
   </AuthStack.Navigator>
 );
 
 const RootStack = createStackNavigator();
-const RootStackScreen = ({ userToken }) =>{ 
- return(
+const RootStackScreen = ({ userToken }) => {
+  return (
     <RootStack.Navigator headerMode="none">
-    { userToken ? (
-      <RootStack.Screen
-      name="Tab"
-      component={TabsScreen}
-      options={{
-        animationEnabled: false
-      }}
-      />
-    ) : (
+      {userToken ? (
         <RootStack.Screen
-        name="Auth"
-        component={AuthStackScreen}
-        options={{
-          animationEnabled: false
-        }}
+          name="Tab"
+          component={TabsScreen}
+          options={{
+            animationEnabled: false
+          }}
         />
+      ) : (
+          <RootStack.Screen
+            name="Auth"
+            component={AuthStackScreen}
+            options={{
+              animationEnabled: false
+            }}
+          />
         )}
-  </RootStack.Navigator>
-);
-} 
+    </RootStack.Navigator>
+  );
+}
 
 const Tabs = createBottomTabNavigator();
-const TabsScreen = ()=>(
-  <Tabs.Navigator>
-    <Tabs.Screen 
+const TabsScreen = () => (
+  <Tabs.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon:({focused,color,size})=>{
+        let iconName;
+        if (route.name === 'Search') {
+          return <Entypo  name='magnifying-glass' size={size} color={color} />
+        } else if(route.name === 'Prestation') {
+          return <Entypo  name='scissors' size={size} color={color} />
+        }else if(route.name === 'Shop'){
+          return <MaterialCommunityIcons name='hanger' size={size} color={color} />
+        }else if (route.name === 'ProfilStack') {
+          return <FontAwesome name='user' size={size} color={color} />
+        }
+        return <FontAwesome name='question' size={size} color={color} />;
+      },
+    })}
+    tabBarOptions={{
+      activeTintColor: 'tomato',
+      inactiveTintColor: 'gray',
+    }}
+  >
+    <Tabs.Screen
       name='Search'
       component={Search}
+      options={{
+        title:'recherche'
+      }}
     />
-    <Tabs.Screen 
-      name='Message'
-      component={Message}
+    <Tabs.Screen
+      name='Prestation'
+      component={PrestationStackScreen}
+      options={{
+        title: 'Prestation'
+      }}
     />
-    <Tabs.Screen 
+    <Tabs.Screen
+      name='Shop'
+      component={Shop}
+    />
+    <Tabs.Screen
       name='ProfilStack'
       component={ProfilStackScreen}
+      options={{
+        title :'Profil'
+      }}
     />
   </Tabs.Navigator>
 )
-
-
-
-
-const url = {
-  signIn :'https://127.0.0.1:8000/login_check',
-  signUp: '', 
-
-};
 
 export default () => {
 

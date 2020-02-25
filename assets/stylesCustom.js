@@ -52,6 +52,12 @@ const styles = StyleSheet.create({
     profilStack: {
         borderTopWidth: 3,
         borderColor: 'rgba(224,224,224, 100)'
+    },
+    show:{
+        display: 'flex',
+    },
+    hidden:{
+        display: 'none',
     }
 
 })

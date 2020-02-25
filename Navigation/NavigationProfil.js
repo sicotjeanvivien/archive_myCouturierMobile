@@ -8,11 +8,12 @@ import styles from '../assets/stylesCustom';
 
 import Test from '../components/Test';
 import { Profil } from "../components/Profil/Profil";
-import { Prestation } from "../components/Profil/Prestation";
+import { Prestation } from "../components/Prestations/Prestation";
 import { Guide } from '../components/Profil/Guide';
 import { Favoris } from '../components/Profil/Favoris';
 import { SettingsProfil } from '../components/Profil/SettingsProfil';
 import { ContactUs } from '../components/Profil/ContactUs';
+import { SettingsStackScreen } from './NavigationSettings';
 
 
 const NavigationProfil = ({ navigation }) => {
@@ -24,14 +25,9 @@ const NavigationProfil = ({ navigation }) => {
                 <TouchableOpacity
                     style={styles.profilStack}
                     onPress={() => navigation.navigate('Profil')}
+                    
                 >
                     <Text style={styles.title}>Profil</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.profilStack}
-                    onPress={() => navigation.navigate('Prestation')}
-                >
-                    <Text style={styles.title}>Mes prestations</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.profilStack}
@@ -41,7 +37,7 @@ const NavigationProfil = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.profilStack}
-                    onPress={() => navigation.navigate('SettingsProfil')}
+                    onPress={() => navigation.navigate('NavigationSettings')}
                 >
                     <Text style={styles.title}>Paramètres</Text>
                 </TouchableOpacity>
@@ -50,12 +46,6 @@ const NavigationProfil = ({ navigation }) => {
                     onPress={() => navigation.navigate('Favoris')}
                 >
                     <Text style={styles.title}>Mes favoris</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.profilStack}
-                    onPress={() => navigation.navigate('Test')}
-                >
-                    <Text style={styles.title}>Blog //Todoo</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.profilStack}
@@ -76,62 +66,56 @@ const NavigationProfil = ({ navigation }) => {
 };
 
 const ProfilStack = createStackNavigator();
-export  const ProfilStackScreen = () => {
+export const ProfilStackScreen = () => {
     return (
-            <ProfilStack.Navigator>
-                <ProfilStack.Screen 
-                    name='NavigationProfil'
-                    component={NavigationProfil}
-                    options= {{
-                        title:' '
-                    }}
-                />
-                <ProfilStack.Screen
-                    name='Profil'
-                    component={Profil}
-                    options= {{
-                        title:'Profil'
-                    }}
-                />
-                <ProfilStack.Screen
-                    name='Prestation'
-                    component={Prestation}
-                    options= {{
-                        title:'Mes prestations'
-                    }}
-                />
-                <ProfilStack.Screen
-                    name='Guide'
-                    component={Guide}
-                    options= {{
-                        title:'Guide MyCouturier'
-                    }}
-                />
-                <ProfilStack.Screen
-                    name='Favoris'
-                    component={Favoris}
-                    options= {{
-                        title:'Mes favoris'
-                    }}
-                />
-                <ProfilStack.Screen
-                    name='SettingsProfil'
-                    component={SettingsProfil}
-                    options= {{
-                        title:'Paramètres'
-                    }}
-                />
-                <ProfilStack.Screen
-                    name='ContactUs'
-                    component={ContactUs}
-                    options= {{
-                        title:'Nous contacter'
-                    }}
-                />
-                <ProfilStack.Screen
-                    name='Test'
-                    component={Test}
-                />
-            </ProfilStack.Navigator>
+        <ProfilStack.Navigator>
+            <ProfilStack.Screen
+                name='NavigationProfil'
+                component={NavigationProfil}
+                options={{
+                    title: ' ',
+                    headerShown: false,
+                }}
+            />
+            <ProfilStack.Screen
+                name='Profil'
+                component={Profil}
+                options={{
+                    title: 'Profil'
+                }}
+            />
+            <ProfilStack.Screen
+                name='Guide'
+                component={Guide}
+                options={{
+                    title: 'Guide MyCouturier'
+                }}
+            />
+            <ProfilStack.Screen
+                name='Favoris'
+                component={Favoris}
+                options={{
+                    title: 'Mes favoris'
+                }}
+            />
+            <ProfilStack.Screen
+                name='NavigationSettings'
+                component={SettingsStackScreen}
+                options={{
+                    title: 'Paramètres'
+                }}
+            />
+            <ProfilStack.Screen
+                name='ContactUs'
+                component={ContactUs}
+                options={{
+                    title: 'Nous contacter'
+                }}
+            />
+            <ProfilStack.Screen
+                name='Test'
+                component={Test}
+            />
+        </ProfilStack.Navigator>
     )
 };
