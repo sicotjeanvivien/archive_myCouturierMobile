@@ -12,14 +12,12 @@ export const Profil = () => {
 
         let header = headers.authToken;
 
-        console.log(header)
         fetch(ConstEnv.host+ConstEnv.retouching,{
             methods:'GET',
             headers: header
         })
         .then((response) => response.json())
         .then((responsejson)=>{
-            console.log(responsejson);
             setHide(true);
         })
     }

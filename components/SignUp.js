@@ -80,11 +80,7 @@ export default class SingUp extends Component {
       errorData.password.error = true;
       errorData.passwordConfirm.error = true;
     }
-
-    console.log(data, errorData);
-
     let errors = JSON.stringify(errorData);
-    console.log(errors, errors.includes("true"))
 
     if (!errors.includes("true")) {
       fetch(this.state.url, {
@@ -97,14 +93,11 @@ export default class SingUp extends Component {
       })
         .then((response) => response.json())
         .then((responseJson) => {
-          console.log(responseJson);
         })
         .catch((error) => {
           console.error(error);
         });
-      console.log('hello')
     } else {
-      console.log('false')
     }
   }
 
@@ -123,14 +116,14 @@ export default class SingUp extends Component {
           <TextInput
             style={styles.input}
             placeholder="Nom"
-            onChangeText={(firstname) => this.setState({ firstname })}
-            value={this.state.fisrtname}
+            onChangeText={(lastname) => this.setState({ lastname })}
+            value={this.state.lastname}
           />
           <TextInput
             style={styles.input}
             placeholder="Prénom"
-            onChangeText={(lastname) => this.setState({ lastname })}
-            value={this.state.lastname}
+            onChangeText={(firstname) => this.setState({ firstname })}
+            value={this.state.fisrtname}
           />
           <TextInput
             style={styles.input}
@@ -143,12 +136,14 @@ export default class SingUp extends Component {
             placeholder="Mot de passe"
             onChangeText={(password) => this.setState({ password })}
             value={this.state.password}
+            autoCompleteType='password'
           />
           <TextInput
             style={styles.input}
             placeholder="Confirmer mot de passe"
             onChangeText={(passwordConfirm) => this.setState({ passwordConfirm })}
             value={this.state.passwordConfirm}
+            autoCompleteType='password'
           />
           <TouchableOpacity
             style={styles.btnEnter}

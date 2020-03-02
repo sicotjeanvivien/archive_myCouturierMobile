@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { AsyncStorage, Button, Text, TextInput, View } from 'react-native';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, Entypo, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
+
+// import AsyncStorage from '@react-native-community/async-storage';
 
 
 import { AuthContext } from './Context/AuthContext';
@@ -34,10 +37,10 @@ const AuthStackScreen = () => (
 );
 
 const RootStack = createStackNavigator();
-const RootStackScreen = ({ userToken }) => {
+const RootStackScreen = ({ state }) => {
   return (
     <RootStack.Navigator headerMode="none">
-      {userToken ? (
+      {state.userToken ? (
         <RootStack.Screen
           name="Tab"
           component={TabsScreen}
@@ -62,15 +65,15 @@ const Tabs = createBottomTabNavigator();
 const TabsScreen = () => (
   <Tabs.Navigator
     screenOptions={({ route }) => ({
-      tabBarIcon:({focused,color,size})=>{
+      tabBarIcon: ({ focused, color, size }) => {
         let iconName;
         if (route.name === 'Search') {
-          return <Entypo  name='magnifying-glass' size={size} color={color} />
-        } else if(route.name === 'Prestation') {
-          return <Entypo  name='scissors' size={size} color={color} />
-        }else if(route.name === 'Shop'){
+          return <Entypo name='magnifying-glass' size={size} color={color} />
+        } else if (route.name === 'Prestation') {
+          return <Entypo name='scissors' size={size} color={color} />
+        } else if (route.name === 'Shop') {
           return <MaterialCommunityIcons name='hanger' size={size} color={color} />
-        }else if (route.name === 'ProfilStack') {
+        } else if (route.name === 'ProfilStack') {
           return <FontAwesome name='user' size={size} color={color} />
         }
         return <FontAwesome name='question' size={size} color={color} />;
@@ -85,7 +88,7 @@ const TabsScreen = () => (
       name='Search'
       component={Search}
       options={{
-        title:'recherche'
+        title: 'recherche'
       }}
     />
     <Tabs.Screen
@@ -103,30 +106,60 @@ const TabsScreen = () => (
       name='ProfilStack'
       component={ProfilStackScreen}
       options={{
-        title :'Profil'
+        title: 'Profil'
       }}
     />
   </Tabs.Navigator>
 )
 
 export default () => {
-
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [userToken, setUserToken] = React.useState('null');
-
-  // AsyncStorage.getItem('userToken').then() === null ?null: AsyncStorage.getItem('userToken') 
-
+  const [state, dispatch] = React.useReducer(
+    (prevState, action) => {
+      switch (action.type) {
+        case 'RESTORE_TOKEN':
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false,
+          };
+        case 'SIGN_IN':
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token,
+          };
+        case 'SIGN_OUT':
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+          };
+      }
+    },
+    {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
+    }
+  );
 
   React.useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    const bootstrapAsync = async () => {
+      let userToken;
+
+      try {
+        userToken = await AsyncStorage.getItem('userToken');
+      } catch (e) {
+        // Restoring token failed
+      }
+      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+    };
+    bootstrapAsync();
   }, []);
 
-  const authContext = React.useMemo(() => {
-    return {
-      signIn: (elem) => {
-        setIsLoading(false);
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (elem) => {
         let data = {
           "security": {
             "credentials": {
@@ -146,9 +179,15 @@ export default () => {
         })
           .then((response) => response.json())
           .then((responseJson) => {
-            if (responseJson.token) {
-              setUserToken(responseJson.token);
-              AsyncStorage.setItem('userToken', responseJson.token)
+            if (responseJson.apitoken) {
+              console.log(responseJson)
+              dispatch({ type: 'SIGN_IN', token: responseJson.apitoken });
+              AsyncStorage.setItem('userToken', responseJson.apitoken);
+              AsyncStorage.setItem('username', responseJson.username);
+              AsyncStorage.setItem('firstname', responseJson.firstname);
+              AsyncStorage.setItem('lastname', responseJson.lastname);
+              AsyncStorage.setItem('email', responseJson.email);
+              AsyncStorage.setItem('id', responseJson.id);
             } else {
               alert(responseJson.error)
             }
@@ -157,32 +196,29 @@ export default () => {
             console.error(error);
           });
       },
-      signUp: () => {
-        setIsLoading(false);
-        setUserToken("asdf");
-      },
-      signOut: () => {
-        setIsLoading(false);
-        setUserToken(null);
-        AsyncStorage.removeItem('userToken');
-        // console.log(AsyncStorage.getItem('userToken'))
-      }
-    };
-  }, []);
+      signUp: async data => {
+        //todoo
+        // recup fonction signup
 
-  if (isLoading) {
+        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      },
+      signOut: () =>{
+        AsyncStorage.clear(); 
+        dispatch({ type: 'SIGN_OUT' })
+        AsyncStorage.getAllKeys();
+      },
+    }),
+    []
+  );
+
+  if (state.isLoading) {
     return <SplashScreen />;
   }
-
-  // AsyncStorage.getItem('userToken') === null ? setUserToken(null) : setUserToken(1) ;
-
-  // console.log(userToken);
-  // console.log(AsyncStorage.getItem('userToken'))
 
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        <RootStackScreen userToken={userToken} />
+        <RootStackScreen state={state} />
       </NavigationContainer>
     </AuthContext.Provider>
   );

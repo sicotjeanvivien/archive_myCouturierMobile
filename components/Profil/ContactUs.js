@@ -34,8 +34,6 @@ export const ContactUs = () => {
 }
 
 const _sendContactUs = (elem) => {
-    console.log(elem);
-    console.log(AsyncStorage.getItem('userToken').then())
 
     let data = {
         // userApp: AsyncStorage.getItem('user'),

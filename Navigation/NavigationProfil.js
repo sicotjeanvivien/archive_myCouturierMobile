@@ -14,6 +14,7 @@ import { Favoris } from '../components/Profil/Favoris';
 import { SettingsProfil } from '../components/Profil/SettingsProfil';
 import { ContactUs } from '../components/Profil/ContactUs';
 import { SettingsStackScreen } from './NavigationSettings';
+import { Account } from '../components/Profil/Account';
 
 
 const NavigationProfil = ({ navigation }) => {
@@ -37,9 +38,9 @@ const NavigationProfil = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.profilStack}
-                    onPress={() => navigation.navigate('NavigationSettings')}
+                    onPress={() => navigation.navigate('SettingsAccount')}
                 >
-                    <Text style={styles.title}>Paramètres</Text>
+                    <Text style={styles.title}>Paramètres du compte</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.profilStack}
@@ -99,8 +100,8 @@ export const ProfilStackScreen = () => {
                 }}
             />
             <ProfilStack.Screen
-                name='NavigationSettings'
-                component={SettingsStackScreen}
+                name='SettingsAccount'
+                component={Account}
                 options={{
                     title: 'Paramètres'
                 }}

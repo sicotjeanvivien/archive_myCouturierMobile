@@ -1,21 +1,37 @@
-import {StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 
 const color = {
-    white: "rgb(255,255,255)", 
+    white: "rgb(255,255,255)",
     colorBackGrouds: 'rgba(192,192,192, 100)',
 }
 
 const styles = StyleSheet.create({
+    scrollView: {
+        flex: 1,
+        flexDirection: 'column',
+        alignContent: 'center',
+        backgroundColor: color.colorBackGrouds,
+    },
+    blocCenter: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     container: {
+        flex: 2,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: color.colorBackGrouds,
-        flex: 1
+    },
+    containerRow: {
+        // flex:1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignContent: 'space-around',
     },
     title: {
         flexDirection: 'row',
-        fontSize: 40,
+        fontSize: 30,
         color: 'rgb(255,195,11)',
 
     },
@@ -31,6 +47,7 @@ const styles = StyleSheet.create({
     },
     btnEnter: {
         justifyContent: 'center',
+        alignContent: 'center',
         flexDirection: 'row',
         backgroundColor: "rgb(255,195,11)",
         alignItems: 'center',
@@ -38,7 +55,8 @@ const styles = StyleSheet.create({
     },
     btnEnterText: {
         color: 'rgb(255,255,255)',
-        fontWeight: '100',
+        // fontWeight: '100',
+        padding: 5,
         fontSize: 20,
     },
     btnSignUp: {
@@ -53,13 +71,29 @@ const styles = StyleSheet.create({
         borderTopWidth: 3,
         borderColor: 'rgba(224,224,224, 100)'
     },
-    show:{
+    show: {
         display: 'flex',
     },
-    hidden:{
+    hidden: {
         display: 'none',
-    }
+    },
+    error_reponse: {
+        color: '#d8000c',
+        backgroundColor: '#ffd2d2',
+        marginTop: 10,
+        padding: 12,
+    },
+    success_reponse: {
+        color: '#4f8a10',
+        backgroundColor: '#dff2bf',
+        marginTop: 10,
+        padding: 12,
+    },
+
 
 })
 
 export default styles;
+
+
+
