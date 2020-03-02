@@ -16,6 +16,7 @@ export default class SingUp extends Component {
       password: '',
       passwordConfirm: '',
       email: '',
+      
 
     }
   }
@@ -98,6 +99,16 @@ export default class SingUp extends Component {
           console.error(error);
         });
     } else {
+      let message = '';
+            for (const key in errorData) {
+                if (errorData.hasOwnProperty(key)) {
+                    const elem = errorData[key];
+                    if (elem.error) {
+                        message += elem.text;
+                    }
+                }
+            }
+            setResponse(<Error message={message} />);
     }
   }
 

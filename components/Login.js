@@ -40,7 +40,9 @@ export const Login = ({navigation}) => {
                 >
                     <Text style={styles.btnSignUp}>Inscription</Text>
                 </TouchableOpacity>
-
+            </View>
+            <View>
+                {}
             </View>
 
         </View>

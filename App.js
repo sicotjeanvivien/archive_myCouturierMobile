@@ -15,7 +15,7 @@ import { ConstEnv } from "./ConstEnv";
 import { SplashScreen } from './components/SplashScreen';
 import { Login } from './components/Login';
 import SingUp from './components/SignUp';
-import { Search } from './components/Search/Search';
+import  Search  from './components/Search/Search';
 import { ProfilStackScreen } from './Navigation/NavigationProfil';
 import { PrestationStackScreen } from './components/Prestations/Prestation';
 import { Shop } from './components/Shop/Shop';
@@ -189,7 +189,8 @@ export default () => {
               AsyncStorage.setItem('email', responseJson.email);
               AsyncStorage.setItem('id', responseJson.id);
             } else {
-              alert(responseJson.error)
+              console.log(<Error message={responseJson.message} />)
+              dispatch({ type: 'SIGN_OUT' })
             }
           })
           .catch((error) => {
@@ -202,8 +203,8 @@ export default () => {
 
         dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
       },
-      signOut: () =>{
-        AsyncStorage.clear(); 
+      signOut: () => {
+        AsyncStorage.clear();
         dispatch({ type: 'SIGN_OUT' })
         AsyncStorage.getAllKeys();
       },

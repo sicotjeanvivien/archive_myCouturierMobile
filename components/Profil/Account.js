@@ -4,7 +4,7 @@ import styles from '../../assets/stylesCustom';
 import { ConstEnv } from '../../ConstEnv';
 import Test from '../Test'
 import { Error } from '../response/Error';
-import { Success } from '../response/success';
+import { Success } from '../response/Success';
 
 export const Account = ({ navigation }) => {
 
