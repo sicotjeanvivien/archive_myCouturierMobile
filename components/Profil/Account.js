@@ -14,8 +14,9 @@ export const Account = ({ navigation }) => {
             setFirstname(await AsyncStorage.getItem('firstname'));
             setUsertoken(await AsyncStorage.getItem('userToken'));
             setUername(await AsyncStorage.getItem('username'));
-            setLastname(await AsyncStorage.getItem('lastname'))
-            setId(await AsyncStorage.getItem('id'))
+            setLastname(await AsyncStorage.getItem('lastname'));
+            setId(await AsyncStorage.getItem('id'));
+            setPrivateMode(await AsyncStorage.getItem('privateMode') == 'true');
         };
         bootData();
     }, [])
@@ -181,7 +182,33 @@ export const Account = ({ navigation }) => {
     const privateModeChange = () => {
         //TODOO
         console.log('start private mode Todoo');
+        console.log(privateMode);
         privateMode ? setPrivateMode(false) : setPrivateMode(true);
+        
+        fetch(ConstEnv.host + ConstEnv.privateMode, {
+            method: 'PATH',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-AUTH-TOKEN': userToken,
+            },
+            body: JSON.stringify({privateMode:privateMode}),
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            console.log(responseJson)
+            if (!responseJson.error) {
+                setResponse(<Success message={responseJson.message} />);
+                AsyncStorage.setItem('privateMode', privateMode)
+            }else{
+                setResponse(<Error message={responseJson.message} />);
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+        
+        console.log(privateMode);
     }
 
     return (
@@ -195,7 +222,7 @@ export const Account = ({ navigation }) => {
                 </Text>
                 <Switch
                     onValueChange={() => privateModeChange()}
-                    value={privateMode}
+                    value={!privateMode}
                 />
             </View>
             <View style={styles.blocCenter}>

@@ -113,6 +113,7 @@ const TabsScreen = () => (
 )
 
 export default () => {
+  const [response, setResponse] = React.useState();
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -188,6 +189,7 @@ export default () => {
               AsyncStorage.setItem('lastname', responseJson.lastname);
               AsyncStorage.setItem('email', responseJson.email);
               AsyncStorage.setItem('id', responseJson.id);
+              AsyncStorage.setItem('privateMode', responseJson.privateMode);
             } else {
               console.log(<Error message={responseJson.message} />)
               dispatch({ type: 'SIGN_OUT' })

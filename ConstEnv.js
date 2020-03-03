@@ -6,5 +6,6 @@ export const ConstEnv = {
     updatePassword: '/api/password',
     contactUs: '/api/contactUs',
     retouching: '/api/retouching',
-
+    prestation: '/api/prestations',
+    privateMode:'/api/privateMode',
 };
