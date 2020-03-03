@@ -20,11 +20,11 @@ export const Account = ({ navigation }) => {
         };
         bootData();
     }, [])
-    const [userToken, setUsertoken] = React.useState();
-    const [username, setUername] = React.useState();
-    const [firstname, setFirstname] = React.useState();
-    const [lastname, setLastname] = React.useState();
-    const [email, setEmail] = React.useState();
+    const [userToken, setUsertoken] = React.useState('');
+    const [username, setUername] = React.useState('');
+    const [firstname, setFirstname] = React.useState('');
+    const [lastname, setLastname] = React.useState('');
+    const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [passwordConfirm, setPasswordConfirm] = React.useState('');
     const [id, setId] = React.useState();
@@ -205,6 +205,7 @@ export const Account = ({ navigation }) => {
             }
         })
         .catch((error) => {
+            setResponse(<Error message={error} />);
             console.error(error);
         });
         

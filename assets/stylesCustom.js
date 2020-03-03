@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
 
 const color = {
@@ -88,6 +88,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#dff2bf',
         marginTop: 10,
         padding: 12,
+    },
+    mapStyle: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
     },
 
 

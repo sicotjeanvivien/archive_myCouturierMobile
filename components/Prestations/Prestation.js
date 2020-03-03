@@ -11,14 +11,15 @@ export default class Prestations extends React.Component {
         super(props);
         this.state = {
             isLoading: true,
+            userToken: null,
         };
         this._loadDataPrestations();
     }
 
-    _loadDataPrestations = async () => {
+    _loadDataPrestations =  () => {
         console.log('Start load data Prestations')
         try {
-            let data = await AsyncStorage.getItem('userToken');
+            let data =  AsyncStorage.getItem('userToken');
             this.setState({ userToken: data })
             console.log(this.state.userToken)
         } catch (error) {
@@ -36,7 +37,7 @@ export default class Prestations extends React.Component {
             })
                 .then(response => response.json())
                 .then(responseJson => {
-                    console.log(responseJson);
+                    console.log(responseJson.message);
                     this.setState({
                         isLoading: false,
                         dataSource: responseJson.prestations,
@@ -46,6 +47,7 @@ export default class Prestations extends React.Component {
                 .catch(error => {
                     console.error(error);
                 });
+            console.log(this.state.dataSource);
         }
     }
 

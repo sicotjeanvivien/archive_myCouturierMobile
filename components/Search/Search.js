@@ -6,6 +6,7 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 
 import styles from "../../assets/stylesCustom";
+// import MapView from "react-native-maps";
 
 
 export default class Search extends React.Component {
@@ -46,6 +47,7 @@ export default class Search extends React.Component {
 
         return (
             <View style={styles.container}>
+                {/* <MapView style={styles.mapStyle} /> */}
                 <Text>{text} </Text>
             </View>
         );
