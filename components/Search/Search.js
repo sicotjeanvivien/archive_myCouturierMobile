@@ -43,11 +43,21 @@ export default class Search extends React.Component {
             text = this.state.errorMessage;
         } else if (this.state.location) {
             text = JSON.stringify(this.state.location);
+            console.log(text)
         }
 
         return (
             <View style={styles.container}>
-                {/* <MapView style={styles.mapStyle} /> */}
+                {/* <MapView 
+                    style={styles.mapStyle}
+                    mapType= 'standard'
+                    initialRegion={{
+                        latitude: 37.78825,
+                        longitude: -122.4324,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                      }} 
+                /> */}
                 <Text>{text} </Text>
             </View>
         );

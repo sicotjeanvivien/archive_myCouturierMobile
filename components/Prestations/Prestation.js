@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { View, Text, StyleSheet, Button, ScrollView, AsyncStorage, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, Button, ScrollView, AsyncStorage, ActivityIndicator, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import styles from "../../assets/stylesCustom";
-import { Detail } from './Detail';
+import  Detail  from './Detail';
 import { ConstEnv } from '../../ConstEnv';
+
 
 export default class Prestations extends React.Component {
 
@@ -11,23 +12,21 @@ export default class Prestations extends React.Component {
         super(props);
         this.state = {
             isLoading: true,
-            userToken: null,
         };
         this._loadDataPrestations();
     }
 
-    _loadDataPrestations =  () => {
+    _loadDataPrestations = async () => {
         console.log('Start load data Prestations')
         try {
-            let data =  AsyncStorage.getItem('userToken');
-            this.setState({ userToken: data })
-            console.log(this.state.userToken)
+            let data = await AsyncStorage.getItem('userToken');
+            this.state.userToken = data;
         } catch (error) {
 
         }
-        if (this.state.userToken) {
 
-            fetch(ConstEnv.host + ConstEnv.prestation, {
+        if (this.state.userToken) {
+            await fetch(ConstEnv.host + ConstEnv.prestation, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -37,40 +36,59 @@ export default class Prestations extends React.Component {
             })
                 .then(response => response.json())
                 .then(responseJson => {
-                    console.log(responseJson.message);
                     this.setState({
                         isLoading: false,
-                        dataSource: responseJson.prestations,
+                        prestationsInprogress: responseJson.prestationsINPROGRESS,
+                        prestationsEnd: responseJson.prestationsEND,
                     },
                         function () { });
                 })
                 .catch(error => {
                     console.error(error);
                 });
-            console.log(this.state.dataSource);
         }
     }
+
 
     render() {
         if (this.state.isLoading) {
             return (
-                <View style={{ flex: 1, padding: 20 }}>
+                <View style={styles.container}>
                     <ActivityIndicator />
                 </View>
             );
         } else {
-            const prestationProgress = this.state.dataSource.length >0 ? Object.keys(this.state.dataSource.prestations).map((key, i) => (
-                <Detail />
-            )) : <Text>Aucune prestation en cours.</Text>;
+            
+            console.log(this.state.prestationsInprogress)
+            const prestations = this.state.prestationsInprogress
+            const prestationINProgress = prestations.length > 0 ? Object.keys(prestations).map((key, i) => {
+                console.log(prestations[key])
+                return (
+                    <TouchableOpacity
+                        key={i}
+                        style={styles.btnEnter}
+                        onPress={() => this.props.navigation.navigate('PrestationDetail', { 
+                            prestation: prestations[key],
+                            userToken: this.state.userToken 
+                        })}
+                    >
+                        <Text style={styles.btnSignUp}> prestation {prestations[key].statut}</Text>
+                    </TouchableOpacity>
+                )
+            }) : <Text>Aucune prestation en cours.</Text>;
+            const prestationEND = this.state.prestationsEnd.length > 0 ? Object.keys(this.state.prestationsEnd).map((PrestationEnd, i) => (
+                <Detail key={i} />
+            )) : <Text>Aucune prestation terminées.</Text>;
 
             return (
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.blocCenter}>
                         <Text style={styles.title}>Prestations en cours:</Text>
-                        {prestationProgress}
+                        {prestationINProgress}
                     </View>
                     <View style={styles.blocCenter}>
                         <Text style={styles.title}>Prestations Terminées:</Text>
+                        {prestationEND}
                     </View>
                 </ScrollView>
             );
@@ -78,9 +96,6 @@ export default class Prestations extends React.Component {
 
     }
 }
-
-
-
 
 const PrestationStack = createStackNavigator()
 export const PrestationStackScreen = () => {
@@ -94,10 +109,11 @@ export const PrestationStackScreen = () => {
                 }}
             />
             <PrestationStack.Screen
-                name='PrestaionDetail'
+                name='PrestationDetail'
                 component={Detail}
                 options={{
-                    headerShown: false,
+                    headerShown: true,
+                    title: 'Détail prestation'
                 }}
             />
         </PrestationStack.Navigator>

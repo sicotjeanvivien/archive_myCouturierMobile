@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AsyncStorage, Button, Text, TextInput, View } from 'react-native';
+import { AsyncStorage, Button, Text, TextInput, View, ActivityIndicator } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
@@ -12,9 +12,8 @@ import { Ionicons, Entypo, MaterialCommunityIcons, FontAwesome } from '@expo/vec
 import { AuthContext } from './Context/AuthContext';
 import { ConstEnv } from "./ConstEnv";
 
-import { SplashScreen } from './components/SplashScreen';
 import { Login } from './components/Login';
-import SingUp from './components/SignUp';
+import {SingUp} from './components/SignUp';
 import  Search  from './components/Search/Search';
 import { ProfilStackScreen } from './Navigation/NavigationProfil';
 import { PrestationStackScreen } from './components/Prestations/Prestation';
@@ -147,7 +146,6 @@ export default () => {
   React.useEffect(() => {
     const bootstrapAsync = async () => {
       let userToken;
-
       try {
         userToken = await AsyncStorage.getItem('userToken');
       } catch (e) {
@@ -161,6 +159,8 @@ export default () => {
   const authContext = React.useMemo(
     () => ({
       signIn: async (elem) => {
+        // dispatch({ type: 'SIGN_IN', token: 'responseJson.apitoken' });
+        console.log( ConstEnv.host + ConstEnv.signIn)
         let data = {
           "security": {
             "credentials": {
@@ -173,6 +173,7 @@ export default () => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         };
+        console.log(data)
         fetch(ConstEnv.host + ConstEnv.signIn, {
           method: 'POST',
           headers: header,
@@ -190,6 +191,8 @@ export default () => {
               AsyncStorage.setItem('email', responseJson.email);
               AsyncStorage.setItem('id', responseJson.id);
               AsyncStorage.setItem('privateMode', responseJson.privateMode);
+              AsyncStorage.setItem('imageProfil', responseJson.imageProfil);
+              AsyncStorage.setItem('bio', responseJson.bio);
             } else {
               console.log(<Error message={responseJson.message} />)
               dispatch({ type: 'SIGN_OUT' })
@@ -198,12 +201,13 @@ export default () => {
           .catch((error) => {
             console.error(error);
           });
+         
       },
-      signUp: async data => {
+      signUpContext: async (data) => {
         //todoo
-        // recup fonction signup
+        console.log(data)
 
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+        dispatch({ type: 'SIGN_IN', token: data });
       },
       signOut: () => {
         AsyncStorage.clear();
@@ -215,7 +219,7 @@ export default () => {
   );
 
   if (state.isLoading) {
-    return <SplashScreen />;
+    return <ActivityIndicator />;
   }
 
   return (

@@ -93,6 +93,11 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
     },
+    thumbnail: {
+        width: 100,
+        height: 100,
+        resizeMode: "contain"
+    },
 
 
 })

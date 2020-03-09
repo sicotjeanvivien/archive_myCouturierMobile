@@ -25,6 +25,15 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.sicotdevelopment.mycouturier",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBHQqlNA9BcMBmNAGNJGU8sm93fS1Mgbb4"
+        }
+      },
+      "versionCode": 1
     }
   }
 }

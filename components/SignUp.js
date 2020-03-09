@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View, Button, StyleSheet, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
 import styles from '../assets/stylesCustom';
+import { AuthContext } from '../Context/AuthContext';
+import { ConstEnv } from '../ConstEnv';
+import { Error } from './response/Error';
+import { Success } from './response/Success';
 
 
 
-export default class SingUp extends Component {
+export const SingUp = ({navigation}) => {
+  const [userToken, setUsertoken] = React.useState('');
+  const [username, setUername] = React.useState('');
+  const [firstname, setFirstname] = React.useState('');
+  const [lastname, setLastname] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [passwordConfirm, setPasswordConfirm] = React.useState('');
+  const [response, setResponse] = React.useState();
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      url: 'https://127.0.0.1:8000/userapp_create',
-      firstname: '',
-      lastname: '',
-      username: '',
-      password: '',
-      passwordConfirm: '',
-      email: '',
-      
+  const { signUpContext } = React.useContext(AuthContext);
 
-    }
-  }
-  _signupSend = async () => {
+  const _signupSend =  () => {
     let data = {
       firstname: '',
       lastname: '',
@@ -57,34 +57,36 @@ export default class SingUp extends Component {
       },
     };
 
-    this.state.firstname.length > 0 && toString(this.state.firstname)
-      ? data.firstname = this.state.firstname : errorData.firstname.error = true;
+    firstname.repeat(1).length > 0 && toString(firstname)
+      ? data.firstname = firstname : errorData.firstname.error = true;
 
-    this.state.lastname.length > 0 && toString(this.state.lastname)
-      ? data.lastname = this.state.lastname : errorData.lastname.error = true;
+    lastname.repeat(1).length > 0 && toString(lastname)
+      ? data.lastname = lastname : errorData.lastname.error = true;
 
-    this.state.username.length > 0 && toString(this.state.username)
-      ? data.username = this.state.username : errorData.username.error = true;
+    username.repeat(1).length > 0 && toString(username)
+      ? data.username = username : errorData.username.error = true;
 
-    this.state.email.length > 0 && toString(this.state.email) && this.state.email.includes('@')
-      ? data.email = this.state.email : errorData.email.error = true;
+    email.repeat(1).length > 0 && toString(email) && email.includes('@')
+      ? data.email = email : errorData.email.error = true;
 
-    if (this.state.password.length > 7
-      && this.state.passwordConfirm.length > 7
-      && toString(this.state.password)
-      && toString(this.state.passwordConfirm)
-      && this.state.password === this.state.passwordConfirm
+    if (password.repeat(1).length > 7
+      && passwordConfirm.repeat(1).length > 7
+      && toString(password)
+      && toString(passwordConfirm)
+      && password === passwordConfirm
     ) {
-      data.password = this.state.password;
-      data.passwordConfirm = this.state.passwordConfirm;
+      data.password = password;
+      data.passwordConfirm = passwordConfirm;
     } else {
       errorData.password.error = true;
       errorData.passwordConfirm.error = true;
     }
     let errors = JSON.stringify(errorData);
 
+    console.log(data)
+
     if (!errors.includes("true")) {
-      fetch(this.state.url, {
+      fetch(ConstEnv.host + ConstEnv.signUp, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -94,84 +96,106 @@ export default class SingUp extends Component {
       })
         .then((response) => response.json())
         .then((responseJson) => {
+          console.log(responseJson)
+          if (responseJson.error) {
+            setResponse(<Error message={responseJson.message} />);
+          }else{
+            setResponse(<Success message={responseJson.message} />);
+            const userApp = JSON.parse(responseJson.user);
+            console.log(userApp)
+            AsyncStorage.setItem('userToken', userApp.apitoken);
+            AsyncStorage.setItem('username', userApp.username);
+            AsyncStorage.setItem('firstname', userApp.firstname);
+            AsyncStorage.setItem('lastname', userApp.lastname);
+            AsyncStorage.setItem('email', userApp.email);
+            AsyncStorage.setItem('id', userApp.id);
+            AsyncStorage.setItem('privateMode', userApp.privateMode);
+            signUpContext(userApp.apitoken)
+          }
         })
         .catch((error) => {
           console.error(error);
         });
     } else {
       let message = '';
-            for (const key in errorData) {
-                if (errorData.hasOwnProperty(key)) {
-                    const elem = errorData[key];
-                    if (elem.error) {
-                        message += elem.text;
-                    }
-                }
-            }
-            setResponse(<Error message={message} />);
+      for (const key in errorData) {
+        if (errorData.hasOwnProperty(key)) {
+          const elem = errorData[key];
+          if (elem.error) {
+            message += elem.text;
+          }
+        }
+      }
+      setResponse(<Error message={message} />);
     }
   }
 
-  render() {
-    return (
-      <View
-        style={styles.container}
-      >
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder="Nom d'utilisateur"
-            onChangeText={(username) => this.setState({ username })}
-            value={this.state.username}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Nom"
-            onChangeText={(lastname) => this.setState({ lastname })}
-            value={this.state.lastname}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Prénom"
-            onChangeText={(firstname) => this.setState({ firstname })}
-            value={this.state.fisrtname}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Adresse email"
-            onChangeText={(email) => this.setState({ email })}
-            value={this.state.email}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Mot de passe"
-            onChangeText={(password) => this.setState({ password })}
-            value={this.state.password}
-            autoCompleteType='password'
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Confirmer mot de passe"
-            onChangeText={(passwordConfirm) => this.setState({ passwordConfirm })}
-            value={this.state.passwordConfirm}
-            autoCompleteType='password'
-          />
-          <TouchableOpacity
-            style={styles.btnEnter}
-            onPress={this._signupSend}
-          >
-            <Text style={styles.btnEnterText}>Inscription</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity
-            style={styles.btnEnter}
-            onPress={() => this.props.navigation.navigate('Login')}
-          >
-            <Text style={styles.btnSignUp}>connexion</Text>
-          </TouchableOpacity>
-        </View>
+
+  return (
+    <View
+      style={styles.container}
+    >
+      <View>
+        {response}
       </View>
-    );
-  }
+      <View>
+        <TextInput
+          style={styles.input}
+          placeholder="Nom d'utilisateur"
+          onChangeText={setUername}
+          defaultValue={username}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Nom"
+          onChangeText={setLastname}
+          defaultValue={lastname}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Prénom"
+          onChangeText={setFirstname}
+          defaultValue={firstname}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Adresse email"
+          onChangeText={setEmail}
+          defaultValue={email}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Mot de passe"
+          onChangeText={setPassword}
+          value={password}
+          secureTextEntry={true}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Confirmer mot de passe"
+          onChangeText={setPasswordConfirm}
+          value={passwordConfirm}
+          secureTextEntry={true}
+        />
+        <TouchableOpacity
+          style={styles.btnEnter}
+          onPress={() => _signupSend()}
+        // onPress={()=> signUpContext({userToken})}
+        >
+          <Text style={styles.btnEnterText}>Inscription</Text>
+        </TouchableOpacity>
+      </View>
+      <View>
+        <TouchableOpacity
+          style={styles.btnEnter}
+          onPress={() => navigation.navigate('Login')}
+        >
+          <Text style={styles.btnSignUp}>connexion</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
+
+
+

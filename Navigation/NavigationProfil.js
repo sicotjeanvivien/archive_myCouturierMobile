@@ -82,7 +82,8 @@ export const ProfilStackScreen = () => {
                 name='Profil'
                 component={Profil}
                 options={{
-                    title: 'Profil'
+                    title: 'Profil',
+                    headerShown: false,
                 }}
             />
             <ProfilStack.Screen

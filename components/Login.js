@@ -11,7 +11,7 @@ export const Login = ({navigation}) => {
     return (
         <View style={styles.container} >
             <View>
-                <Text style={styles.title}>MyCouturier</Text>
+                <Text style={styles.title}>Myouturier</Text>
             </View>
             <View>
                 <TextInput
@@ -25,6 +25,7 @@ export const Login = ({navigation}) => {
                     placeholder="Mot de passe"
                     onChangeText={setPassword}
                     value={password}
+                    secureTextEntry={true}
                 />
                 <TouchableOpacity
                     style={styles.btnEnter}
