@@ -193,6 +193,7 @@ export default () => {
               AsyncStorage.setItem('privateMode', responseJson.privateMode);
               AsyncStorage.setItem('imageProfil', responseJson.imageProfil);
               AsyncStorage.setItem('bio', responseJson.bio);
+              AsyncStorage.setItem('activeCouturier', responseJson.activeCouturier);
             } else {
               console.log(<Error message={responseJson.message} />)
               dispatch({ type: 'SIGN_OUT' })

@@ -16,7 +16,7 @@ export const Account = ({ navigation }) => {
             setUername(await AsyncStorage.getItem('username'));
             setLastname(await AsyncStorage.getItem('lastname'));
             setId(await AsyncStorage.getItem('id'));
-            setPrivateMode(await AsyncStorage.getItem('privateMode') == 'true');
+            setPrivateMode(await AsyncStorage.getItem('privateMode'));
         };
         bootData();
     }, [])
@@ -144,7 +144,7 @@ export const Account = ({ navigation }) => {
         let errors = JSON.stringify(errorData);
         if (!errors.includes("true")) {
             fetch(ConstEnv.host + ConstEnv.updatePassword, {
-                method: 'PATH',
+                method: 'PATCH',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
@@ -180,13 +180,11 @@ export const Account = ({ navigation }) => {
     }
 
     const privateModeChange = () => {
-        //TODOO
         console.log('start private mode Todoo');
-        console.log(privateMode);
         privateMode ? setPrivateMode(false) : setPrivateMode(true);
         
         fetch(ConstEnv.host + ConstEnv.privateMode, {
-            method: 'PATH',
+            method: 'PATCH',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',

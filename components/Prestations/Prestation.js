@@ -76,6 +76,7 @@ export default class Prestations extends React.Component {
                     </TouchableOpacity>
                 )
             }) : <Text>Aucune prestation en cours.</Text>;
+            
             const prestationEND = this.state.prestationsEnd.length > 0 ? Object.keys(this.state.prestationsEnd).map((PrestationEnd, i) => (
                 <Detail key={i} />
             )) : <Text>Aucune prestation terminées.</Text>;

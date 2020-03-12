@@ -4,6 +4,7 @@ import { StyleSheet, Dimensions } from "react-native";
 const color = {
     white: "rgb(255,255,255)",
     colorBackGrouds: 'rgba(192,192,192, 100)',
+    yellow: 'rgb(255,195,11)',
 }
 
 const styles = StyleSheet.create({
@@ -17,6 +18,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    blocCenterEnd: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        backgroundColor: color.colorBackGrouds,
+    },
+    blocCenterStart: {
+        flex: 2,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        backgroundColor: color.colorBackGrouds,
+    },
     container: {
         flex: 2,
         justifyContent: 'center',
@@ -29,6 +42,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignContent: 'space-around',
     },
+    containerRowEnd:{
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignContent: 'flex-end',
+    },
     title: {
         flexDirection: 'row',
         fontSize: 30,
@@ -40,7 +58,6 @@ const styles = StyleSheet.create({
         // height: 40,
         width: 256,
         padding: 5,
-        fontSize: 16,
         backgroundColor: color.white,
         // borderWidth:1,
         // borderColor:'rgb(0.0.0)'
@@ -49,8 +66,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignContent: 'center',
         flexDirection: 'row',
-        backgroundColor: "rgb(255,195,11)",
+        backgroundColor: color.yellow,
         alignItems: 'center',
+        // padding: 5,
+        // width: 256,
+    },
+    btnValide: {
+        justifyContent: 'center',
+        alignContent: 'center',
+        flexDirection: 'row',
+        backgroundColor: color.yellow,
+        alignItems: 'center',
+        padding: 5,
         // width: 256,
     },
     btnEnterText: {
@@ -64,7 +91,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         flexDirection: 'row',
         backgroundColor: color.colorBackGrouds,
-        color: 'rgb(255,195,11)',
+        color: color.yellow,
         alignItems: 'center',
     },
     profilStack: {
@@ -81,15 +108,18 @@ const styles = StyleSheet.create({
         color: '#d8000c',
         backgroundColor: '#ffd2d2',
         marginTop: 10,
+        marginBottom: 10,
         padding: 12,
     },
     success_reponse: {
         color: '#4f8a10',
         backgroundColor: '#dff2bf',
+        marginBottom: 10,
         marginTop: 10,
         padding: 12,
     },
     mapStyle: {
+        flex: 4,
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
     },
@@ -98,8 +128,30 @@ const styles = StyleSheet.create({
         height: 100,
         resizeMode: "contain"
     },
-
-
+    retoucheView:{
+        margin: 15,
+        width: 256,
+        padding: 5,
+        borderWidth: 1,
+    },
+    text:{
+        color: 'black',
+        fontSize: 14
+    },
+    textInfo:{
+        color:'rgb(0,0,0)',
+        fontSize: 11,
+    },
+    inputRetouche:{
+        backgroundColor: 'rgb(255,255,255)',
+        width: 32,
+    },
+    inputBecomeCouturier:{
+        width:64,
+        margin:10,
+        fontSize: 12,
+        color: color.yellow,
+    }
 })
 
 export default styles;
