@@ -13,8 +13,8 @@ import { AuthContext } from './Context/AuthContext';
 import { ConstEnv } from "./ConstEnv";
 
 import { Login } from './components/Login';
-import {SingUp} from './components/SignUp';
-import  Search  from './components/Search/Search';
+import { SingUp } from './components/SignUp';
+import { Search } from './components/Search/Search';
 import { ProfilStackScreen } from './Navigation/NavigationProfil';
 import { PrestationStackScreen } from './components/Prestations/Prestation';
 import { Shop } from './components/Shop/Shop';
@@ -160,7 +160,7 @@ export default () => {
     () => ({
       signIn: async (elem) => {
         // dispatch({ type: 'SIGN_IN', token: 'responseJson.apitoken' });
-        console.log( ConstEnv.host + ConstEnv.signIn)
+        console.log(ConstEnv.host + ConstEnv.signIn)
         let data = {
           "security": {
             "credentials": {
@@ -202,7 +202,7 @@ export default () => {
           .catch((error) => {
             console.error(error);
           });
-         
+
       },
       signUpContext: async (data) => {
         //todoo

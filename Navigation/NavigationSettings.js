@@ -3,7 +3,7 @@ import { View, Text, Button, TouchableOpacity, StyleSheet, Settings } from "reac
 import { createStackNavigator } from "@react-navigation/stack";
 
 import { Account } from '../components/Profil/Account'
-import styles from '../assets/stylesCustom';
+import {styles} from '../assets/stylesCustom';
 
 const NavigationSettings = ({ navigation }) => {
     return (

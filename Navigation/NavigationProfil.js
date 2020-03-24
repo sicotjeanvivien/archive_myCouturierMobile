@@ -4,7 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { AuthContext } from "../Context/AuthContext";
 
-import styles from '../assets/stylesCustom';
+import {styles} from '../assets/stylesCustom';
 
 import Test from '../components/Test';
 import { Profil } from "../components/Profil/Profil";

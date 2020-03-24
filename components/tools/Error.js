@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Text } from 'react-native';
-import styles from '../../assets/stylesCustom';
+import {styles} from '../../assets/stylesCustom';
 
 
 export const Error = (props)=>{

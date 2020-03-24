@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text, StyleSheet, Button, ScrollView, AsyncStorage, ActivityIndicator, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import styles from "../../assets/stylesCustom";
+import {styles} from "../../assets/stylesCustom";
 import  Detail  from './Detail';
 import { ConstEnv } from '../../ConstEnv';
 

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { View, Text, TextInput, TouchableOpacity, AsyncStorage, ScrollView, Image, ActivityIndicator, Picker } from "react-native";
-import styles from '../../assets/stylesCustom';
+import {styles} from '../../assets/stylesCustom';
 import { ConstEnv } from '../../ConstEnv';
 import * as ImagePicker from 'expo-image-picker';
 import imageProfilDefault from '../../assets/default-profile.svg';
-import { Error } from '../response/Error';
-import { Success } from '../response/Success';
+import { Error } from '../tools/Error';
+import { Success } from '../tools/Success';
 
 
 
@@ -26,7 +26,6 @@ export const Profil = () => {
             if (bioStorage != null) {
                 setBio(bioStorage);
             };
-
 
             //LOAD retouche
             fetch(ConstEnv.host + ConstEnv.retouching, {
@@ -165,7 +164,6 @@ export const Profil = () => {
         })
     };
 
-
     //Rendu View retouche
     const dataRetoucheView = sendData != null ? Object.keys(sendData).map((key, i) => {
         return (
@@ -203,12 +201,13 @@ export const Profil = () => {
         <ScrollView style={styles.scrollView}>
             <View style={styles.containerRowEnd}>
                 <TouchableOpacity onPress={() => sendActiveCouturier()}>
-                    <Text style={styles.inputBecomeCouturier}>{activeCouturier ? 'Ne plus être couturier' :'Devenir Couturier'}</Text>
+                    <Text style={styles.inputBecomeCouturier}>{activeCouturier ? 'Ne plus être couturier' : 'Devenir Couturier'}</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.blocCenter}>
                 <TouchableOpacity onPress={openImagePickerAsync} >
                     <Image
+                        resizeMethod="resize"
                         source={imageProfil != 'null' ? imageProfil : imageProfilDefault}
                         style={styles.thumbnail}
                     />

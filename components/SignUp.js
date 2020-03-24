@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Text, View, Button, StyleSheet, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
-import styles from '../assets/stylesCustom';
+import {styles} from '../assets/stylesCustom';
 import { AuthContext } from '../Context/AuthContext';
 import { ConstEnv } from '../ConstEnv';
-import { Error } from './response/Error';
-import { Success } from './response/Success';
+import { Error } from './tools/Error';
+import { Success } from './tools/Success';
 
 
 

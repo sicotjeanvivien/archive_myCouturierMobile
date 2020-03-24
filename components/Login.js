@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity, AsyncStorage } from "react-native";
 import { AuthContext } from '../Context/AuthContext';
-import styles from '../assets/stylesCustom'
+import {styles} from '../assets/stylesCustom'
 
 export const Login = ({navigation}) => {
     const { signIn } = React.useContext(AuthContext);

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { ScrollView, View, Text, Switch, TouchableOpacity, TextInput, AsyncStorage } from "react-native";
-import styles from '../../assets/stylesCustom';
+import {styles} from '../../assets/stylesCustom';
 import { ConstEnv } from '../../ConstEnv';
 import Test from '../Test'
-import { Error } from '../response/Error';
-import { Success } from '../response/Success';
+import { Error } from '../tools/Error';
+import { Success } from '../tools/Success';
 
 export const Account = ({ navigation }) => {
 

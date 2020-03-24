@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, AsyncStorage } from "react-native";
-import styles from '../../assets/stylesCustom';
+import {styles} from '../../assets/stylesCustom';
 import { ConstEnv } from "../../ConstEnv";
 
 
