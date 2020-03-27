@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { View, Text, StyleSheet, Button, ScrollView, AsyncStorage, ActivityIndicator, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import {styles} from "../../assets/stylesCustom";
-import  Detail  from './Detail';
-import { ConstEnv } from '../../ConstEnv';
+import { styles, main } from "../../assets/stylesCustom";
+import Detail from './Detail';
+import { ConstEnv } from '../tools/ConstEnv';
 
 
 export default class Prestations extends React.Component {
@@ -17,7 +17,6 @@ export default class Prestations extends React.Component {
     }
 
     _loadDataPrestations = async () => {
-        console.log('Start load data Prestations')
         try {
             let data = await AsyncStorage.getItem('userToken');
             this.state.userToken = data;
@@ -58,40 +57,39 @@ export default class Prestations extends React.Component {
                 </View>
             );
         } else {
-            
-            console.log(this.state.prestationsInprogress)
             const prestations = this.state.prestationsInprogress
             const prestationINProgress = prestations.length > 0 ? Object.keys(prestations).map((key, i) => {
-                console.log(prestations[key])
                 return (
                     <TouchableOpacity
                         key={i}
                         style={styles.btnEnter}
-                        onPress={() => this.props.navigation.navigate('PrestationDetail', { 
+                        onPress={() => this.props.navigation.navigate('PrestationDetail', {
                             prestation: prestations[key],
-                            userToken: this.state.userToken 
+                            userToken: this.state.userToken
                         })}
                     >
                         <Text style={styles.btnSignUp}> prestation {prestations[key].statut}</Text>
                     </TouchableOpacity>
                 )
             }) : <Text>Aucune prestation en cours.</Text>;
-            
+
             const prestationEND = this.state.prestationsEnd.length > 0 ? Object.keys(this.state.prestationsEnd).map((PrestationEnd, i) => (
                 <Detail key={i} />
             )) : <Text>Aucune prestation terminées.</Text>;
 
             return (
-                <ScrollView style={styles.scrollView}>
-                    <View style={styles.blocCenter}>
-                        <Text style={styles.title}>Prestations en cours:</Text>
-                        {prestationINProgress}
-                    </View>
-                    <View style={styles.blocCenter}>
-                        <Text style={styles.title}>Prestations Terminées:</Text>
-                        {prestationEND}
-                    </View>
-                </ScrollView>
+                <View style={main.page}>
+                    <ScrollView style={styles.scrollView}>
+                        <View style={styles.blocCenter}>
+                            <Text style={styles.title}>Prestations en cours:</Text>
+                            {prestationINProgress}
+                        </View>
+                        <View style={styles.blocCenter}>
+                            <Text style={styles.title}>Prestations Terminées:</Text>
+                            {prestationEND}
+                        </View>
+                    </ScrollView>
+                </View>
             );
         }
 

@@ -13,4 +13,5 @@ export const ConstEnv = {
     imageProfilDefault: '/assets/default-profile.svg',
     imageProfil : '/api/imageProfil',
     activeCouturier: '/api/activeCouturier',
+    searchPrestation:'/api/searchPrestation'
 };

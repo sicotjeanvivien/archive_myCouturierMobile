@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ScrollView, View, Text, Switch, TouchableOpacity, TextInput, AsyncStorage } from "react-native";
 import {styles} from '../../assets/stylesCustom';
-import { ConstEnv } from '../../ConstEnv';
+import { ConstEnv } from '../tools/ConstEnv';
 import Test from '../Test'
 import { Error } from '../tools/Error';
 import { Success } from '../tools/Success';
@@ -32,7 +32,6 @@ export const Account = ({ navigation }) => {
     const [response, setResponse] = React.useState();
 
     const updateAccount = () => {
-        console.log('start upade account');
         let data = {
             id: Number(id),
             firstname: '',
@@ -83,7 +82,6 @@ export const Account = ({ navigation }) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (!responseJson.error) {
                         setResponse(<Success message={responseJson.message} />);
                         AsyncStorage.setItem('username', username);
@@ -113,8 +111,6 @@ export const Account = ({ navigation }) => {
     };
 
     const updatePassword = () => {
-        console.log('start update password')
-
         let data = {
             password: '',
             passwordConfirm: '',
@@ -154,7 +150,6 @@ export const Account = ({ navigation }) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (!responseJson.error) {
                         setResponse(<Success message={responseJson.message} />);
                     }else{
@@ -180,7 +175,6 @@ export const Account = ({ navigation }) => {
     }
 
     const privateModeChange = () => {
-        console.log('start private mode Todoo');
         privateMode ? setPrivateMode(false) : setPrivateMode(true);
         
         fetch(ConstEnv.host + ConstEnv.privateMode, {
@@ -194,7 +188,6 @@ export const Account = ({ navigation }) => {
         })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log(responseJson)
             if (!responseJson.error) {
                 setResponse(<Success message={responseJson.message} />);
                 AsyncStorage.setItem('privateMode', privateMode)
@@ -206,8 +199,6 @@ export const Account = ({ navigation }) => {
             setResponse(<Error message={error} />);
             console.error(error);
         });
-        
-        console.log(privateMode);
     }
 
     return (

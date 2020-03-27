@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text, ActivityIndicator, ScrollView } from 'react-native';
 import {styles} from '../../assets/stylesCustom';
-import { ConstEnv } from '../../ConstEnv';
+import { ConstEnv } from '../tools/ConstEnv';
 
 
 export default class Detail extends React.Component {
@@ -15,7 +15,6 @@ export default class Detail extends React.Component {
     componentDidMount() {
         let { prestation } = this.props.route.params
         let { userToken } = this.props.route.params;
-        console.log(userToken, ConstEnv.host + ConstEnv.prestationDetail + prestation.id);
 
         fetch(ConstEnv.host + ConstEnv.prestationDetail + prestation.id, {
             method: 'GET',
@@ -27,7 +26,6 @@ export default class Detail extends React.Component {
         })
             .then(response => response.json())
             .then(responseJson => {
-                console.log(responseJson)
                 this.setState({
                     isLoading: false,
 

@@ -24,7 +24,37 @@ export const padding = StyleSheet.create({
 export const margin = StyleSheet.create({
     small: { marginTop: 0 },
 
+});
+
+export const flexTall = StyleSheet.create({
+    flex12: { flex: 12 },
+    flex10: { flex: 10 },
+    flex8: { flex: 8 },
+    flex6: { flex: 6 },
+    flex4: { flex: 4 },
+    flex3: { flex: 3 },
+    flex2: { flex: 2 },
+
 })
+
+export const positions = StyleSheet.create({
+    start: { alignItems: 'flex-start' },
+    end: { alignItems: 'flex-end' },
+    center: { alignItems: 'center' }
+
+});
+
+export const styleImage = StyleSheet.create({
+    imageCouturierMap: {
+        width: 32,
+        height: 32,
+        resizeMode: "cover",
+        borderRadius: 256
+    },
+});
+
+
+
 
 export const styles = StyleSheet.create({
     page: {
@@ -150,9 +180,10 @@ export const styles = StyleSheet.create({
         // height: Dimensions.get('window').height,
     },
     thumbnail: {
-        width: 100,
-        height: 100,
-        resizeMode: "contain"
+        width: 150,
+        height: 150,
+        resizeMode: "cover",
+        borderRadius: 256
     },
     retoucheView: {
         margin: 15,
@@ -199,12 +230,7 @@ export const styles = StyleSheet.create({
     }
 })
 
-export const positions = StyleSheet.create({
-    start: { alignItems: 'flex-start' },
-    end: { alignItems: 'flex-end' },
-    center: { alignItems: 'center' }
 
-})
 
 
 

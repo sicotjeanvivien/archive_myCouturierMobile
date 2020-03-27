@@ -10,7 +10,7 @@ import { Ionicons, Entypo, MaterialCommunityIcons, FontAwesome } from '@expo/vec
 
 
 import { AuthContext } from './Context/AuthContext';
-import { ConstEnv } from "./ConstEnv";
+import { ConstEnv } from "./components/tools/ConstEnv";
 
 import { Login } from './components/Login';
 import { SingUp } from './components/SignUp';
@@ -160,7 +160,6 @@ export default () => {
     () => ({
       signIn: async (elem) => {
         // dispatch({ type: 'SIGN_IN', token: 'responseJson.apitoken' });
-        console.log(ConstEnv.host + ConstEnv.signIn)
         let data = {
           "security": {
             "credentials": {
@@ -173,7 +172,6 @@ export default () => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         };
-        console.log(data)
         fetch(ConstEnv.host + ConstEnv.signIn, {
           method: 'POST',
           headers: header,
@@ -182,7 +180,6 @@ export default () => {
           .then((response) => response.json())
           .then((responseJson) => {
             if (responseJson.apitoken) {
-              console.log(responseJson)
               dispatch({ type: 'SIGN_IN', token: responseJson.apitoken });
               AsyncStorage.setItem('userToken', responseJson.apitoken);
               AsyncStorage.setItem('username', responseJson.username);
@@ -195,7 +192,6 @@ export default () => {
               AsyncStorage.setItem('bio', responseJson.bio);
               AsyncStorage.setItem('activeCouturier', responseJson.activeCouturier);
             } else {
-              console.log(<Error message={responseJson.message} />)
               dispatch({ type: 'SIGN_OUT' })
             }
           })
@@ -206,7 +202,6 @@ export default () => {
       },
       signUpContext: async (data) => {
         //todoo
-        console.log(data)
 
         dispatch({ type: 'SIGN_IN', token: data });
       },

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, Button, StyleSheet, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
 import {styles} from '../assets/stylesCustom';
 import { AuthContext } from '../Context/AuthContext';
-import { ConstEnv } from '../ConstEnv';
+import { ConstEnv } from './tools/ConstEnv';
 import { Error } from './tools/Error';
 import { Success } from './tools/Success';
 
@@ -83,7 +83,6 @@ export const SingUp = ({navigation}) => {
     }
     let errors = JSON.stringify(errorData);
 
-    console.log(data)
 
     if (!errors.includes("true")) {
       fetch(ConstEnv.host + ConstEnv.signUp, {
@@ -96,13 +95,11 @@ export const SingUp = ({navigation}) => {
       })
         .then((response) => response.json())
         .then((responseJson) => {
-          console.log(responseJson)
           if (responseJson.error) {
             setResponse(<Error message={responseJson.message} />);
           }else{
             setResponse(<Success message={responseJson.message} />);
             const userApp = JSON.parse(responseJson.user);
-            console.log(userApp)
             AsyncStorage.setItem('userToken', userApp.apitoken);
             AsyncStorage.setItem('username', userApp.username);
             AsyncStorage.setItem('firstname', userApp.firstname);

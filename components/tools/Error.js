@@ -4,7 +4,6 @@ import {styles} from '../../assets/stylesCustom';
 
 
 export const Error = (props)=>{
-    console.log(props)
     return(
         <Text style={styles.error_reponse}>
             {props.message}

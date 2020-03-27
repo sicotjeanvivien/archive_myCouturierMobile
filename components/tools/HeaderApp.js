@@ -10,8 +10,8 @@ export const HeaderApp = ()=>{
                 <Image
                     resizeMethod="resize"
                     style={{
-                        width: 100,
-                        height: 100,
+                        width: 75,
+                        height: 75,
                         resizeMode: 'stretch'
                     }}
                     source={require('../../assets/icon.png')}

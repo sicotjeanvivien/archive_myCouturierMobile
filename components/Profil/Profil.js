@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { View, Text, TextInput, TouchableOpacity, AsyncStorage, ScrollView, Image, ActivityIndicator, Picker } from "react-native";
-import {styles} from '../../assets/stylesCustom';
-import { ConstEnv } from '../../ConstEnv';
+import { styles, main } from '../../assets/stylesCustom';
+import { ConstEnv } from '../tools/ConstEnv';
 import * as ImagePicker from 'expo-image-picker';
-import imageProfilDefault from '../../assets/default-profile.svg';
+
 import { Error } from '../tools/Error';
 import { Success } from '../tools/Success';
 
@@ -18,7 +18,6 @@ export const Profil = () => {
             let usernameStorage = await AsyncStorage.getItem('username');
             let bioStorage = await AsyncStorage.getItem('bio');
             let activeCouturierStorage = await AsyncStorage.getItem('activeCouturier');
-            console.log(activeCouturierStorage);
             data != null ? setImageProfil(data) : '';
             token != null ? setApitoken(token) : setApitoken(null);
             usernameStorage != null ? setUsername(usernameStorage) : setUsername(null);
@@ -39,7 +38,6 @@ export const Profil = () => {
                 .then((response) => response.json())
                 .then((responseJson) => {
                     if (responseJson.length > 0) {
-                        console.log(responseJson);
                         setDataRetouche(responseJson);
                         let array = [];
                         responseJson.forEach(element => {
@@ -59,24 +57,21 @@ export const Profil = () => {
     }, [])
 
     const [dataRetouche, setDataRetouche] = React.useState();
-    const [imageProfil, setImageProfil] = React.useState(null);
+    const [imageProfil, setImageProfil] = React.useState();
     const [apitoken, setApitoken] = React.useState(null);
     const [username, setUsername] = React.useState(null);
     const [bio, setBio] = React.useState('Entré votre bio');
     const [sendData, setSendData] = React.useState();
     const [errorResponse, setErroResponse] = React.useState()
     const [activeCouturier, setActiveCouturier] = React.useState();
+    const imageProfilDefault = '../../assets/default-profile.png';
 
-    console.log(activeCouturier)
     //SEND dataRetouche
     const sendDataRetouche = () => {
         let errorData = false;
         Object.keys(sendData).map((key, i) => {
             let retouche = sendData[key];
-            console.log(retouche.active, Math.round(retouche.value) == Number(retouche.value), retouche.value > 1);
-
             if (retouche.active, Math.round(retouche.value) == Number(retouche.value), retouche.value > 1) {
-                console.log(sendData[key])
                 setErroResponse(<Success message={'valeur correcte'} />);
                 errorData = false;
             } else if (retouche.active) {
@@ -90,8 +85,6 @@ export const Profil = () => {
                 bio: bio,
                 activeCouturier: activeCouturier,
             };
-            console.log(bodyContent);
-
             fetch(ConstEnv.host + ConstEnv.retouching, {
                 method: 'PUT',
                 headers: {
@@ -103,7 +96,6 @@ export const Profil = () => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (!responseJson.error) {
                         setErroResponse(<Success message={responseJson.message} />);
                         AsyncStorage.setItem('bio', bio)
@@ -116,7 +108,6 @@ export const Profil = () => {
 
     //SEND ACTIVE COUTURIER
     let sendActiveCouturier = () => {
-        console.log('start send AvtiveCouturier');
         activeCouturier ? setActiveCouturier(false) : setActiveCouturier(true);
         fetch(ConstEnv.host + ConstEnv.activeCouturier, {
             method: 'PATCH',
@@ -129,7 +120,6 @@ export const Profil = () => {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson)
                 if (!responseJson.error) {
                     setErroResponse(<Success message={responseJson.message} />);
                     AsyncStorage.setItem('activeCouturier', responseJson.activeCouturier)
@@ -154,6 +144,7 @@ export const Profil = () => {
             return;
         }
         setImageProfil(pickerResult.uri);
+        AsyncStorage.setItem('imageProfil', pickerResult.uri)
         const blob = new Blob([JSON.stringify(pickerResult.uri, null, 2)]);
         fetch(ConstEnv.host + ConstEnv.imageProfil, {
             method: 'POST',
@@ -197,45 +188,58 @@ export const Profil = () => {
         )
     }) : <ActivityIndicator />;
 
-    return (
-        <ScrollView style={styles.scrollView}>
-            <View style={styles.containerRowEnd}>
-                <TouchableOpacity onPress={() => sendActiveCouturier()}>
-                    <Text style={styles.inputBecomeCouturier}>{activeCouturier ? 'Ne plus être couturier' : 'Devenir Couturier'}</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.blocCenter}>
-                <TouchableOpacity onPress={openImagePickerAsync} >
-                    <Image
-                        resizeMethod="resize"
-                        source={imageProfil != 'null' ? imageProfil : imageProfilDefault}
-                        style={styles.thumbnail}
-                    />
-                </TouchableOpacity>
-                <Text>{username}</Text>
-            </View>
-            <View style={styles.blocCenter}>
-                <TextInput
-                    multiline={true}
-                    numberOfLines={5}
-                    style={styles.input}
-                    placeholder='Entré votre bio'
-                    onChangeText={setBio}
-                    value={bio != 'null' ? bio : 'Entré votre bio'}
-                />
+    const imageSource = imageProfil != 'null' ?
+        <Image
+            resizeMethod="resize"
+            source={{ uri: imageProfil }}
+            style={styles.thumbnail}
+        />
+        :
+        <Image
+            resizeMethod="resize"
+            source={require(imageProfilDefault)}
+            style={styles.thumbnail}
+        />;
 
-            </View>
-            <View style={styles.blocCenter}>
-                {errorResponse}
-            </View>
-            <View style={styles.blocCenter}>
-                <View style={activeCouturier ? styles.show : styles.hidden}>
-                    {dataRetoucheView}
+    return (
+        <View style={main.page}>
+
+            <ScrollView style={styles.scrollView}>
+                <View style={styles.containerRowEnd}>
+                    <TouchableOpacity onPress={() => sendActiveCouturier()}>
+                        <Text style={styles.inputBecomeCouturier}>{activeCouturier ? 'Ne plus être couturier' : 'Devenir Couturier'}</Text>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={() => sendDataRetouche()}>
-                    <Text style={styles.btnValide}>Valider</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+                <View style={styles.blocCenter}>
+                    <TouchableOpacity onPress={openImagePickerAsync} >
+                        {imageSource}
+
+                    </TouchableOpacity>
+                    <Text>{username}</Text>
+                </View>
+                <View style={styles.blocCenter}>
+                    <TextInput
+                        multiline={true}
+                        numberOfLines={5}
+                        style={styles.input}
+                        placeholder='Entré votre bio'
+                        onChangeText={setBio}
+                        value={bio != 'null' ? bio : 'Entré votre bio'}
+                    />
+
+                </View>
+                <View style={styles.blocCenter}>
+                    {errorResponse}
+                </View>
+                <View style={styles.blocCenter}>
+                    <View style={activeCouturier ? styles.show : styles.hidden}>
+                        {dataRetoucheView}
+                    </View>
+                    <TouchableOpacity onPress={() => sendDataRetouche()}>
+                        <Text style={styles.btnValide}>Valider</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </View>
     );
 }
