@@ -18,6 +18,8 @@ import { Search } from './components/Search/Search';
 import { ProfilStackScreen } from './Navigation/NavigationProfil';
 import { PrestationStackScreen } from './components/Prestations/Prestation';
 import { Shop } from './components/Shop/Shop';
+import { CGV } from './components/Homepage/CGV';
+import { PasswordForgotten } from './components/Homepage/PasswordForgotten';
 
 const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
@@ -31,6 +33,14 @@ const AuthStackScreen = () => (
       name='SignUp'
       component={SingUp}
       options={{ title: '' }}
+    />
+    <AuthStack.Screen
+      name='cgv'
+      component={CGV}
+    />
+    <AuthStack.Screen
+      name='passwordForgotten'
+      component={PasswordForgotten}
     />
   </AuthStack.Navigator>
 );
@@ -158,51 +168,11 @@ export default () => {
 
   const authContext = React.useMemo(
     () => ({
-      signIn: async (elem) => {
-        // dispatch({ type: 'SIGN_IN', token: 'responseJson.apitoken' });
-        let data = {
-          "security": {
-            "credentials": {
-              "login": elem.username,
-              "password": elem.password
-            }
-          }
-        };
-        let header = {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        };
-        fetch(ConstEnv.host + ConstEnv.signIn, {
-          method: 'POST',
-          headers: header,
-          body: JSON.stringify(data),
-        })
-          .then((response) => response.json())
-          .then((responseJson) => {
-            if (responseJson.apitoken) {
-              dispatch({ type: 'SIGN_IN', token: responseJson.apitoken });
-              AsyncStorage.setItem('userToken', responseJson.apitoken);
-              AsyncStorage.setItem('username', responseJson.username);
-              AsyncStorage.setItem('firstname', responseJson.firstname);
-              AsyncStorage.setItem('lastname', responseJson.lastname);
-              AsyncStorage.setItem('email', responseJson.email);
-              AsyncStorage.setItem('id', responseJson.id);
-              AsyncStorage.setItem('privateMode', responseJson.privateMode);
-              AsyncStorage.setItem('imageProfil', responseJson.imageProfil);
-              AsyncStorage.setItem('bio', responseJson.bio);
-              AsyncStorage.setItem('activeCouturier', responseJson.activeCouturier);
-            } else {
-              dispatch({ type: 'SIGN_OUT' })
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-
+      signInContext: async (apitoken) => {
+        dispatch({ type: 'SIGN_IN', token: apitoken });
       },
       signUpContext: async (data) => {
         //todoo
-
         dispatch({ type: 'SIGN_IN', token: data });
       },
       signOut: () => {

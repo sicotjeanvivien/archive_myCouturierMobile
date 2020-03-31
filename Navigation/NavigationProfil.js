@@ -1,61 +1,80 @@
 import * as React from 'react';
-import { View, Text, Button, TouchableOpacity, StyleSheet, Settings } from "react-native";
+import { View, Text, Button, TouchableOpacity, StyleSheet, Settings, AsyncStorage, Image } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import { AuthContext } from "../Context/AuthContext";
 
-import {styles} from '../assets/stylesCustom';
+import { styles, main, flexTall, flexDirection, linkNavigation } from '../assets/stylesCustom';
 
 import Test from '../components/Test';
 import { Profil } from "../components/Profil/Profil";
 import { Prestation } from "../components/Prestations/Prestation";
 import { Guide } from '../components/Profil/Guide';
 import { Favoris } from '../components/Profil/Favoris';
-import { SettingsProfil } from '../components/Profil/SettingsProfil';
 import { ContactUs } from '../components/Profil/ContactUs';
-import { SettingsStackScreen } from './NavigationSettings';
 import { Account } from '../components/Profil/Account';
+const imageProfilDefault = '../assets/default-profile.png';
 
 
 const NavigationProfil = ({ navigation }) => {
-    const { signOut } = React.useContext(AuthContext);
-    return (
 
-        <View style={styles.container}>
-            <View>
+    React.useEffect(() => {
+        const bootData = async () => {
+            setUsername(await AsyncStorage.getItem('username'));
+            setImageProfil(await AsyncStorage.getItem('imageProfil'))
+        };
+        bootData();
+    }, [])
+
+    const [imageProfil, setImageProfil] = React.useState();
+    const [username, setUsername] = React.useState();
+    console.log(username)
+
+    const { signOut } = React.useContext(AuthContext);
+
+    let imgProfilViewRender = <Image resizeMethod="resize" source={require(imageProfilDefault)} style={styles.thumbnail} />;
+    if (imageProfil) {
+        imgProfilViewRender = <Image resizeMethod="resize" source={{ uri: imageProfil }} style={styles.thumbnail}/>
+    }
+
+    return (
+        <View style={main.page}>
+            <View style={flexTall.flex12}>
                 <TouchableOpacity
-                    style={styles.profilStack}
+                    style={linkNavigation.profil}
                     onPress={() => navigation.navigate('Profil')}
-                    
                 >
-                    <Text style={styles.title}>Profil</Text>
+                    <View style={flexDirection.rowCenter}>
+                        {imgProfilViewRender}
+                        <Text style={styles.title}>{username}</Text>
+                    </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={styles.profilStack}
+                    style={linkNavigation.link}
                     onPress={() => navigation.navigate('Guide')}
                 >
                     <Text style={styles.title}>Guide MyCouturier</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={styles.profilStack}
+                    style={linkNavigation.link}
                     onPress={() => navigation.navigate('SettingsAccount')}
                 >
                     <Text style={styles.title}>Paramètres du compte</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={styles.profilStack}
+                    style={linkNavigation.link}
                     onPress={() => navigation.navigate('Favoris')}
                 >
                     <Text style={styles.title}>Mes favoris</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={styles.profilStack}
+                    style={linkNavigation.link}
                     onPress={() => navigation.navigate('ContactUs')}
                 >
                     <Text style={styles.title}>Nous contacter</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={styles.profilStack}
+                    style={linkNavigation.link}
                     onPress={signOut}
                 >
                     <Text style={styles.title}>Déconnexion</Text>

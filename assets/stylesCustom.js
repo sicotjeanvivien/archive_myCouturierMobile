@@ -1,11 +1,13 @@
 import { StyleSheet, Dimensions } from "react-native";
 
+const widthWindows = Dimensions.get('window').width;
+const heightWindows = Dimensions.get('window').height;
 
 const color = {
     white: "rgb(255,255,255)",
     colorBackGrouds: 'rgba(192,192,192, 100)',
     yellow: 'rgb(255,195,11)',
-}
+};
 
 export const main = StyleSheet.create({
     page: {
@@ -14,17 +16,35 @@ export const main = StyleSheet.create({
         backgroundColor: color.colorBackGrouds,
         padding: 10,
         paddingTop: 24,
+        // width: Dimensions.get('window').width
     },
+    scroll: {
+        flex: 1,
+        // justifyContent: 'flex-start',
+        // alignItems: 'center',
+        backgroundColor: color.colorBackGrouds,
+        padding: 10,
+        paddingTop: 24,
+    },
+    backgroundColor: { backgroundColor: color.colorBackGrouds }
 });
 
 export const padding = StyleSheet.create({
     small: { padding: 16 }
-})
+});
 
 export const margin = StyleSheet.create({
     small: { marginTop: 0 },
 
 });
+
+export const flexDirection = StyleSheet.create({
+    rowCenter: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    }
+})
 
 export const flexTall = StyleSheet.create({
     flex12: { flex: 12 },
@@ -34,15 +54,30 @@ export const flexTall = StyleSheet.create({
     flex4: { flex: 4 },
     flex3: { flex: 3 },
     flex2: { flex: 2 },
+    flex1: { flex: 1 },
+});
 
+export const widthTall = StyleSheet.create({
+    width08: { width: Dimensions.get('screen').width*0.8}
 })
 
 export const positions = StyleSheet.create({
     start: { alignItems: 'flex-start' },
-    end: { alignItems: 'flex-end' },
+    end: { alignItems: 'flex-end', justifyContent: 'flex-end', alignContent:'flex-end' },
     center: { alignItems: 'center' }
 
 });
+
+export const linkNavigation = StyleSheet.create({
+    profil:{
+        padding:10
+    },
+    link:{
+        borderTopWidth: 3,
+        borderColor: 'rgba(224,224,224, 100)',
+        padding:10 
+    }
+})
 
 export const styleImage = StyleSheet.create({
     imageCouturierMap: {
@@ -52,6 +87,49 @@ export const styleImage = StyleSheet.create({
         borderRadius: 256
     },
 });
+
+export const btn = StyleSheet.create({
+    primaire: {
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        backgroundColor: color.yellow,
+        width: Dimensions.get('screen').width * 0.8
+    },
+    secondaire: {
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        backgroundColor: color.colorBackGrouds,
+    }
+});
+
+export const text = StyleSheet.create({
+    btnPrimaire: {
+        color: color.white,
+        fontSize: 24,
+    },
+    btnSecondaire: {
+        color: color.yellow,
+        fontSize: 24,
+    },
+    btnTertiaire: {
+        color: color.yellow,
+        fontSize: 18,
+    },
+    h1: {
+        color: color.yellow,
+        fontSize: 52,
+        textAlign: "center",
+    },
+    white: { color: color.white },
+    yellow: { color: color.yellow },
+    sizeSmall: { fontSize: 12 },
+    sizeMedium: { fontSize: 20, color: color.yellow },
+    sizeLarge: { fontSize: 24, color: color.yellow },
+})
 
 
 
@@ -87,8 +165,8 @@ export const styles = StyleSheet.create({
         // backgroundColor: color.colorBackGrouds,
     },
     container: {
-        flex: 2,
-        justifyContent: 'center',
+        flex: 1,
+        // justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: color.colorBackGrouds,
     },
@@ -112,7 +190,7 @@ export const styles = StyleSheet.create({
     input: {
         margin: 15,
         // height: 40,
-        width: 256,
+        // width: 256,
         padding: 5,
         backgroundColor: color.white,
         // borderWidth:1,
@@ -126,6 +204,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         // padding: 5,
         // width: 256,
+        color: 'rgb(255,255,255)',
     },
     btnValide: {
         justifyContent: 'center',
@@ -137,7 +216,7 @@ export const styles = StyleSheet.create({
         // width: 256,
     },
     btnEnterText: {
-        color: 'rgb(255,255,255)',
+        // color: 'rgb(255,255,255)',
         // fontWeight: '100',
         padding: 5,
         fontSize: 20,

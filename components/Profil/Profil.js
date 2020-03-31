@@ -60,7 +60,7 @@ export const Profil = () => {
     const [imageProfil, setImageProfil] = React.useState();
     const [apitoken, setApitoken] = React.useState(null);
     const [username, setUsername] = React.useState(null);
-    const [bio, setBio] = React.useState('Entré votre bio');
+    const [bio, setBio] = React.useState();
     const [sendData, setSendData] = React.useState();
     const [errorResponse, setErroResponse] = React.useState()
     const [activeCouturier, setActiveCouturier] = React.useState();
@@ -203,7 +203,6 @@ export const Profil = () => {
 
     return (
         <View style={main.page}>
-
             <ScrollView style={styles.scrollView}>
                 <View style={styles.containerRowEnd}>
                     <TouchableOpacity onPress={() => sendActiveCouturier()}>
@@ -224,7 +223,7 @@ export const Profil = () => {
                         style={styles.input}
                         placeholder='Entré votre bio'
                         onChangeText={setBio}
-                        value={bio != 'null' ? bio : 'Entré votre bio'}
+                        defaultValue={bio}
                     />
 
                 </View>

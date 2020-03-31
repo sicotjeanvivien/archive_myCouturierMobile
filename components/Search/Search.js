@@ -184,7 +184,7 @@ export const Search = () => {
 
     };
 
-    const itemPicker = dataRetouche.length != 0 ? Object.keys(dataRetouche).map((key, i) => {
+    const itemPicker =dataRetouche && dataRetouche.length != 0 ? Object.keys(dataRetouche).map((key, i) => {
         return (
             <Picker.Item
                 key={i}

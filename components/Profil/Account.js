@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { ScrollView, View, Text, Switch, TouchableOpacity, TextInput, AsyncStorage } from "react-native";
-import {styles} from '../../assets/stylesCustom';
+import { ScrollView, View, Text, Switch, TouchableOpacity, TextInput, AsyncStorage, KeyboardAvoidingView } from "react-native";
+import {styles, main} from '../../assets/stylesCustom';
 import { ConstEnv } from '../tools/ConstEnv';
 import Test from '../Test'
 import { Error } from '../tools/Error';
@@ -13,7 +13,7 @@ export const Account = ({ navigation }) => {
             setEmail(await AsyncStorage.getItem('email'));
             setFirstname(await AsyncStorage.getItem('firstname'));
             setUsertoken(await AsyncStorage.getItem('userToken'));
-            setUername(await AsyncStorage.getItem('username'));
+            setUsername(await AsyncStorage.getItem('username'));
             setLastname(await AsyncStorage.getItem('lastname'));
             setId(await AsyncStorage.getItem('id'));
             setPrivateMode(await AsyncStorage.getItem('privateMode'));
@@ -21,7 +21,7 @@ export const Account = ({ navigation }) => {
         bootData();
     }, [])
     const [userToken, setUsertoken] = React.useState('');
-    const [username, setUername] = React.useState('');
+    const [username, setUsername] = React.useState('');
     const [firstname, setFirstname] = React.useState('');
     const [lastname, setLastname] = React.useState('');
     const [email, setEmail] = React.useState('');
@@ -202,73 +202,76 @@ export const Account = ({ navigation }) => {
     }
 
     return (
-        <ScrollView style={styles.scrollView}>
+        
+        <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+        <ScrollView>
             <View>
                 {response}
             </View>
-            <View style={styles.blocCenter}>
+            <View >
                 <Text>
                     Mode privé
                 </Text>
                 <Switch
                     onValueChange={() => privateModeChange()}
                     value={!privateMode}
-                />
+                    />
             </View>
-            <View style={styles.blocCenter}>
+            <View >
                 <TextInput
                     style={styles.input}
                     placeholder="Nom d'utilisateur"
                     onChangeText={setUername}
                     defaultValue={username}
-                />
+                    />
                 <TextInput
                     style={styles.input}
                     placeholder="Nom"
                     onChangeText={setLastname}
                     defaultValue={lastname}
-                />
+                    />
                 <TextInput
                     style={styles.input}
                     placeholder="Prénom"
                     onChangeText={setFirstname}
                     defaultValue={firstname}
-                />
+                    />
                 <TextInput
                     style={styles.input}
                     placeholder="Adresse email"
                     onChangeText={setEmail}
                     defaultValue={email}
-                />
+                    />
                 <TouchableOpacity
                     style={styles.btnEnter}
                     onPress={() => updateAccount()}
-                >
+                    >
                     <Text style={styles.btnEnterText}>Valider</Text>
                 </TouchableOpacity>
             </View>
-            <View style={styles.blocCenter}>
+            <View >
                 <TextInput
                     style={styles.input}
                     placeholder="Mot de passe"
                     onChangeText={setPassword}
                     value={password}
                     secureTextEntry={true}
-                />
+                    />
                 <TextInput
                     style={styles.input}
                     placeholder="Confirmer mot de passe"
                     onChangeText={setPasswordConfirm}
                     value={passwordConfirm}
                     secureTextEntry={true}
-                />
+                    />
                 <TouchableOpacity
                     style={styles.btnEnter}
                     onPress={() => updatePassword()}
-                >
+                    >
                     <Text style={styles.btnEnterText}>Valider</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
+    </KeyboardAvoidingView>
     )
 };
