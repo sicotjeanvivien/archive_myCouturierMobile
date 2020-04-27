@@ -4,6 +4,7 @@ import { styles, main, btn, text, widthTall, flexTall } from '../../assets/style
 import { ConstEnv } from "../tools/ConstEnv";
 import { Success } from '../tools/Success';
 import { Error } from '../tools/Error';
+import { AuthContext } from '../../Context/AuthContext';
 
 
 export const ContactUs = () => {
@@ -20,12 +21,14 @@ export const ContactUs = () => {
     const [content, setContent] = React.useState();
     const [response, setResponse]= React.useState();
 
+    const { signOut } = React.useContext(AuthContext);
+
+
     const _sendContactUs = () => {
-        console.log(sujet, content)
         if (sujet && content) {
             let data = {
-                sujet: elem.sujet,
-                content: elem.content,
+                subject: sujet,
+                content: content,
             };
     
             fetch(ConstEnv.host + ConstEnv.contactUs, {
@@ -39,17 +42,15 @@ export const ContactUs = () => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
+                    if (responseJson.error === 'invalid credentials') {
+                        signOut()
+                    }
                     if (!responseJson.error) {
                         setResponse(<Success message={responseJson.message} />)
                     } else {
                         setResponse(<Error message={responseJson.message} />)
                     }
                 })
-                .catch((error) => {
-                    console.error(error);
-                });
-    
         } else {
             setResponse(<Error message={'champs vide'} />)
         }

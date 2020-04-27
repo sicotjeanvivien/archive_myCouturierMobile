@@ -1,19 +1,25 @@
 import React from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import { Ionicons, Entypo, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
+
 
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 
-import { View, Text, Platform, ActivityIndicator, Picker, Image, AsyncStorage } from "react-native";
+import { View, Text, Platform, ActivityIndicator, Picker, Image, AsyncStorage, TouchableOpacity, TextInput } from "react-native";
 import MapView, { Marker, OverlayComponent } from "react-native-maps";
 
-import { styles, positions, main, padding, margin, styleImage, flexTall } from "../../assets/stylesCustom";
+import { styles, positions, main, padding, margin, styleImage, flexTall, flexDirection } from "../../assets/stylesCustom";
 import { HeaderApp } from "../tools/HeaderApp";
 import { ConstEnv } from "../tools/ConstEnv";
 import { Success } from "../tools/Success";
 import { Error } from "../tools/Error";
+import { CouturierDetail } from "./CouturierDetail";
+import { CreatePrestation } from "./CreatePrestation";
+import { AuthContext } from "../../Context/AuthContext";
 
-export const Search = () => {
+const Search = ({ navigation }) => {
 
     React.useEffect(() => {
         const bootData = async () => {
@@ -36,7 +42,7 @@ export const Search = () => {
                 setLatitudeUser(latitudeUser);
                 //mapShow
                 latitudeUser != null && longitudeUser != null ? setMapShow(true) : setMapShow(false);
-            }
+            };
             //load dataRetouche
             fetch(ConstEnv.host + ConstEnv.retouching, {
                 method: 'GET',
@@ -53,15 +59,16 @@ export const Search = () => {
                     } else {
                         setDataRetouche(null)
                     }
-                })
+                });
         };
+
         bootData();
+
     }, [])
 
     const [apitoken, setApitoken] = React.useState(null);
     const [location, setLocation] = React.useState();
     const [errorMessage, setErrorMessage] = React.useState();
-    const [searchBloc, setSearchBloc] = React.useState();
     const [longitudeUser, setLongitudeUser] = React.useState();
     const [latitudeUser, setLatitudeUser] = React.useState();
     const [dataRetouche, setDataRetouche] = React.useState([]);
@@ -72,14 +79,94 @@ export const Search = () => {
 
     const imageProfilDefault = '../../assets/default-profile.png';
 
+    const { signOut } = React.useContext(AuthContext);
+
 
     const findRetouche = (itemValue) => {
         const bodyContent = {
             longitude: longitudeUser,
             latitude: latitudeUser,
-            search: itemValue
+            search: itemValue,
+            radius: 0.10
         };
         setErroResponse(undefined);
+        if (itemValue === 'noSelect') {
+            console.log('start findAll')
+            findAllRetouche()
+        } else {
+            fetch(ConstEnv.host + ConstEnv.searchPrestation, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-AUTH-TOKEN': apitoken,
+                },
+                body: JSON.stringify(bodyContent)
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    console.log(responseJson)
+                    if (responseJson.error === 'invalid credentials') {
+                        signOut()
+                    }
+                    if (!responseJson.error) {
+                        let couturierResultData = responseJson.couturier && responseJson.couturier.map((key, i) => {
+                            let longitudeCouturier = key.longitude;
+                            let latitudeCouturier = key.latitude;
+                            return (
+                                <MapView.Marker
+                                    key={i}
+                                    pinColor={"yellow"}
+                                    coordinate={{
+                                        latitude: latitudeCouturier,
+                                        longitude: longitudeCouturier,
+                                    }}
+                                    HideCallout
+                                    onPress={() => navigation.navigate('CouturierDetail', {
+                                        data: key,
+                                        apitoken: apitoken
+                                    })}
+                                >
+                                    <View style={main.tileMap}>
+                                        {
+                                            key.imageProfil ?
+                                                <Image
+                                                    resizeMethod="resize"
+                                                    source={{ uri: key.imageProfil }}
+                                                    style={styleImage.imageCouturierMap}
+                                                /> :
+                                                <Image
+                                                    resizeMethod="resize"
+                                                    source={require(imageProfilDefault)}
+                                                    style={styleImage.imageCouturierMap}
+                                                />
+                                        }
+                                        <View>
+                                            <Text>{key.username}</Text>
+                                            <View style={flexDirection.rowCenter}>
+                                                <Entypo name='star' size={16} color='#ffd700' />
+                                                <Text>{key.raiting}</Text>
+                                            </View>
+                                            <Text> {key.retouche ? key.retouche.priceShowClient : ''} <FontAwesome name='euro' /> </Text>
+
+                                        </View>
+                                    </View>
+                                </MapView.Marker>
+                            )
+                        })
+                        setCouturierResult(couturierResultData);
+                    }
+                    else {
+                        setErroResponse(<Error message={responseJson.message} />);
+                        setCouturierResult(null);
+                    }
+                })
+        }
+    }
+
+    const findAllRetouche = () => {
+        //findAllRetouche TODO better
+        console.log('findALLretouche', longitudeUser, latitudeUser)
         fetch(ConstEnv.host + ConstEnv.searchPrestation, {
             method: 'POST',
             headers: {
@@ -87,25 +174,48 @@ export const Search = () => {
                 'Content-Type': 'application/json',
                 'X-AUTH-TOKEN': apitoken,
             },
-            body: JSON.stringify(bodyContent)
+            body: JSON.stringify({
+                longitude: longitudeUser,
+                latitude: latitudeUser,
+                // search: itemValue,
+                radius: 0.10
+            })
         })
             .then((response) => response.json())
             .then((responseJson) => {
+                if (responseJson.error === 'invalid credentials') {
+                    signOut()
+                }
                 if (!responseJson.error) {
-                    // setErroResponse(<Success message={responseJson.message} />);
+                    let couturierResultData = responseJson.couturier && responseJson.couturier.map((key, i) => {
+                        let longitudeCouturier = key.longitude;
+                        let latitudeCouturier = key.latitude;
+                        return (
+                            <MapView.Marker
+                                key={i}
+                                pinColor={"yellow"}
+                                coordinate={{
+                                    latitude: latitudeCouturier,
+                                    longitude: longitudeCouturier,
+                                }}
+                                HideCallout>
+                            </MapView.Marker>)
+                    })
+                    setCouturierResult(couturierResultData);
+                } else {
+                    setErroResponse(<Error message={responseJson.message} />);
                     setCouturierResult(responseJson.couturier);
                 }
-                else {
-                    setErroResponse(<Error message={responseJson.message} />);
-                    setCouturierResult(undefined);
-                }
             })
-    }
+    };
+
+    if (latitudeUser != null && longitudeUser != null && couturierResult === undefined) {
+        findAllRetouche();
+    };
 
     const mapView = () => {
         return (
             <MapView
-
                 style={styles.mapStyle}
                 mapType='terrain'
                 showsPointsOfInterest={false}
@@ -115,41 +225,7 @@ export const Search = () => {
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                 }} >
-                {
-                    couturierResult && couturierResult.map((key, i) => {
-                        let longitudeCouturier = key.longitude;
-                        let latitudeCouturier = key.latitude;
-                        console.log(couturierResult, latitudeCouturier, longitudeCouturier)
-                        return (
-                            <MapView.Marker
-                                key={i}
-                                pinColor={"yellow"}
-                                coordinate={{
-                                    latitude: latitudeCouturier,
-                                    longitude: longitudeCouturier,
-                                }}
-                                title={key.username}
-                                showCallout
-                            >
-                                <View>
-                                    {
-                                        key.imageProfil ?
-                                            <Image
-                                                resizeMethod="resize"
-                                                source={{ uri: key.imageProfil }}
-                                                style={styleImage.imageCouturierMap}
-                                            /> :
-                                            <Image
-                                                resizeMethod="resize"
-                                                source={require(imageProfilDefault)}
-                                                style={styleImage.imageCouturierMap}
-                                            />
-                                    }
-                                </View>
-                            </MapView.Marker>
-                        )
-                    })
-                }
+                {couturierResult}
                 <Marker
                     draggable
                     onDrag={(e) => {
@@ -168,7 +244,6 @@ export const Search = () => {
         )
     };
 
-
     let text = 'Waiting..';
     if (errorMessage) {
         text = errorMessage;
@@ -179,12 +254,10 @@ export const Search = () => {
 
     let mapViewRender = <ActivityIndicator style={styles.mapStyle} />;
     if (mapShow) {
-        mapViewRender = mapView()
-    } else {
-
+        mapViewRender = mapView();
     };
 
-    const itemPicker =dataRetouche && dataRetouche.length != 0 ? Object.keys(dataRetouche).map((key, i) => {
+    const itemPicker = dataRetouche && dataRetouche.length != 0 ? Object.keys(dataRetouche).map((key, i) => {
         return (
             <Picker.Item
                 key={i}
@@ -195,7 +268,6 @@ export const Search = () => {
         )
     }) : null;
 
-
     return (
         <View style={main.page}>
             <View style={flexTall.flex2}>
@@ -205,7 +277,6 @@ export const Search = () => {
                 {mapViewRender}
             </View>
             <View style={flexTall.flex2}>
-
                 <View style={padding.small, positions.center}>
                     <Picker
                         selectedValue={retoucheSelect}
@@ -215,13 +286,42 @@ export const Search = () => {
                         <Picker.Item style={styles.inputPickerItem} label='' value='noSelect' />
                         {itemPicker}
                     </Picker>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Adresse"
+                    />
                 </View>
                 {errorResponse}
-                <View style={styles.blocCenter, searchBloc ? styles.show : styles.hidden}>
-
-                </View>
             </View>
         </View>
     );
+}
 
+const SearchStack = createStackNavigator();
+export const SearchStackScreen = () => {
+    return (
+        <SearchStack.Navigator>
+            <SearchStack.Screen
+                name='MapSearch'
+                component={Search}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <SearchStack.Screen
+                name='CouturierDetail'
+                component={CouturierDetail}
+                options={{
+                    title: '',
+                }}
+            />
+            <SearchStack.Screen
+                name='CreatePresation'
+                component={CreatePrestation}
+                options={{
+                    title: '',
+                }}
+            />
+        </SearchStack.Navigator>
+    )
 }

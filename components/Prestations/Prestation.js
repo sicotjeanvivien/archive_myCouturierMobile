@@ -1,101 +1,93 @@
 import * as React from 'react';
 import { View, Text, StyleSheet, Button, ScrollView, AsyncStorage, ActivityIndicator, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { styles, main } from "../../assets/stylesCustom";
-import Detail from './Detail';
+import { styles, main, flexDirection, tab } from "../../assets/stylesCustom";
+import { Detail } from './Detail';
 import { ConstEnv } from '../tools/ConstEnv';
+import { PrestationList } from './PrestationList';
+import { AuthContext } from '../../Context/AuthContext';
 
 
-export default class Prestations extends React.Component {
+export const Prestations = ({ navigation }) => {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isLoading: true,
-        };
-        this._loadDataPrestations();
-    }
-
-    _loadDataPrestations = async () => {
-        try {
-            let data = await AsyncStorage.getItem('userToken');
-            this.state.userToken = data;
-        } catch (error) {
-
-        }
-
-        if (this.state.userToken) {
-            await fetch(ConstEnv.host + ConstEnv.prestation, {
+    React.useEffect(() => {
+        const bootdata = async () => {
+            console.log(await AsyncStorage.getAllKeys());
+            const apitokenData = await AsyncStorage.getItem('userToken');
+            setApitoken(apitokenData);
+            const onCouturierData = await AsyncStorage.getItem('activeCouturier');
+            setActiveCouturier(onCouturierData);
+            fetch(ConstEnv.host + ConstEnv.prestation, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
-                    'X-AUTH-TOKEN': this.state.userToken,
+                    'X-AUTH-TOKEN': apitokenData,
                 },
             })
                 .then(response => response.json())
                 .then(responseJson => {
-                    this.setState({
-                        isLoading: false,
-                        prestationsInprogress: responseJson.prestationsINPROGRESS,
-                        prestationsEnd: responseJson.prestationsEND,
-                    },
-                        function () { });
+                    if (responseJson.error === 'invalid credentials') {
+                        signOut()
+                    }
+                    if (!responseJson.error) {
+                        setPrestaCouturierData(responseJson.couturier);
+                        setPrestaClientData(responseJson.client);
+                        setIsLoading(true);
+                    }
                 })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
+                .catch((error) => { console.error(error) })
+        };
+        bootdata();
+    }, [])
+
+    const [apitoken, setApitoken] = React.useState();
+    const [activeCouturier, setActiveCouturier] = React.useState();
+    const [isLoading, setIsLoading] = React.useState();
+    const [prestaCouturierData, setPrestaCouturierData] = React.useState();
+    const [prestaClientData, setPrestaClientData] = React.useState();
+    const [prestationShow, setPrestationShow] = React.useState('client');
+
+    const { signOut } = React.useContext(AuthContext);
+
+    console.log('state', activeCouturier, apitoken)
+    const prestationView = (userType) => {
+        setPrestationShow(userType);
+        console.log(userType, prestationShow, isLoading, prestaClientData);
+    }
+
+    let prestationRenderView = <ActivityIndicator />;
+    if (isLoading && prestationShow === 'client') {
+        prestationRenderView = <PrestationList data={prestaClientData} navigation={navigation}/>;
+    }
+    if (isLoading && prestationShow === 'couturier') {
+        prestationRenderView = <PrestationList data={prestaCouturierData} navigation={navigation}/>;
+    }
+
+    let prestaHeaderView = <View style={flexDirection.justRow}><Text style={tab.btnClient}>Prestations</Text></View>;
+    if (activeCouturier === 'true') {
+        prestaHeaderView = <View style={flexDirection.justRow}>
+                                <TouchableOpacity onPress={() => prestationView('client')} style={tab.btnCouturier}>
+                                    <Text style={tab.btnText}>Client</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => prestationView('couturier')} style={tab.btnCouturier}>
+                                    <Text style={tab.btnText}>Couturier</Text>
+                                </TouchableOpacity>
+                            </View>
     }
 
 
-    render() {
-        if (this.state.isLoading) {
-            return (
-                <View style={styles.container}>
-                    <ActivityIndicator />
-                </View>
-            );
-        } else {
-            const prestations = this.state.prestationsInprogress
-            const prestationINProgress = prestations.length > 0 ? Object.keys(prestations).map((key, i) => {
-                return (
-                    <TouchableOpacity
-                        key={i}
-                        style={styles.btnEnter}
-                        onPress={() => this.props.navigation.navigate('PrestationDetail', {
-                            prestation: prestations[key],
-                            userToken: this.state.userToken
-                        })}
-                    >
-                        <Text style={styles.btnSignUp}> prestation {prestations[key].statut}</Text>
-                    </TouchableOpacity>
-                )
-            }) : <Text>Aucune prestation en cours.</Text>;
+    // VIEW
+    return (
+        <View style={main.page}>
+            {prestaHeaderView}
+            <ScrollView style={main.scroll}>
+                {prestationRenderView}
+            </ScrollView>
+        </View>
+    )
 
-            const prestationEND = this.state.prestationsEnd.length > 0 ? Object.keys(this.state.prestationsEnd).map((PrestationEnd, i) => (
-                <Detail key={i} />
-            )) : <Text>Aucune prestation terminées.</Text>;
-
-            return (
-                <View style={main.page}>
-                    <ScrollView style={styles.scrollView}>
-                        <View style={styles.blocCenter}>
-                            <Text style={styles.title}>Prestations en cours:</Text>
-                            {prestationINProgress}
-                        </View>
-                        <View style={styles.blocCenter}>
-                            <Text style={styles.title}>Prestations Terminées:</Text>
-                            {prestationEND}
-                        </View>
-                    </ScrollView>
-                </View>
-            );
-        }
-
-    }
 }
-
 const PrestationStack = createStackNavigator()
 export const PrestationStackScreen = () => {
     return (

@@ -13,6 +13,7 @@ import { Guide } from '../components/Profil/Guide';
 import { Favoris } from '../components/Profil/Favoris';
 import { ContactUs } from '../components/Profil/ContactUs';
 import { Account } from '../components/Profil/Account';
+import { CGV } from '../components/Homepage/CGV';
 const imageProfilDefault = '../assets/default-profile.png';
 
 
@@ -75,6 +76,12 @@ const NavigationProfil = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={linkNavigation.link}
+                    onPress={() => navigation.navigate('CGV')}
+                >
+                    <Text style={styles.title}>CGV</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={linkNavigation.link}
                     onPress={signOut}
                 >
                     <Text style={styles.title}>Déconnexion</Text>
@@ -132,6 +139,10 @@ export const ProfilStackScreen = () => {
                 options={{
                     title: 'Nous contacter'
                 }}
+            />
+            <ProfilStack.Screen
+                name='CGV'
+                component={CGV}
             />
             <ProfilStack.Screen
                 name='Test'

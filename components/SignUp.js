@@ -10,10 +10,10 @@ import { Success } from './tools/Success';
 
 export const SingUp = ({ navigation }) => {
     const [userToken, setUsertoken] = React.useState('');
-    const [username, setUername] = React.useState('');
+    const [email, setEmail] = React.useState('');
     const [firstname, setFirstname] = React.useState('');
     const [lastname, setLastname] = React.useState('');
-    const [email, setEmail] = React.useState('');
+    const [emailConfirm, setEmailConfirm] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [passwordConfirm, setPasswordConfirm] = React.useState('');
     const [response, setResponse] = React.useState();
@@ -24,7 +24,7 @@ export const SingUp = ({ navigation }) => {
         let data = {
             firstname: '',
             lastname: '',
-            username: '',
+            emailConfirm: '',
             password: '',
             passwordConfirm: '',
             email: '',
@@ -39,7 +39,7 @@ export const SingUp = ({ navigation }) => {
                 error: false,
                 text: 'Valeur non valide'
             },
-            username: {
+            emailConfirm: {
                 error: false,
                 text: 'Valeur non valide'
             },
@@ -63,11 +63,19 @@ export const SingUp = ({ navigation }) => {
         lastname.repeat(1).length > 0 && toString(lastname)
             ? data.lastname = lastname : errorData.lastname.error = true;
 
-        username.repeat(1).length > 0 && toString(username)
-            ? data.username = username : errorData.username.error = true;
+            console.log(email, emailConfirm,  toString(email) === toString(emailConfirm))
 
-        email.repeat(1).length > 0 && toString(email) && email.includes('@')
-            ? data.email = email : errorData.email.error = true;
+        if (email.repeat(1).length > 0
+            && email.includes('@')
+            && emailConfirm.repeat(1).length > 0
+            && toString(email) === toString(emailConfirm)
+        ) {
+            data.email = email;
+            data.emailConfirm = emailConfirm;
+        } else {
+            errorData.email.error = true;
+            errorData.emailConfirm.error = true;
+        }
 
         if (password.repeat(1).length > 7
             && passwordConfirm.repeat(1).length > 7
@@ -83,6 +91,7 @@ export const SingUp = ({ navigation }) => {
         }
         let errors = JSON.stringify(errorData);
 
+        console.log(data)
 
         if (!errors.includes("true")) {
             fetch(ConstEnv.host + ConstEnv.signUp, {
@@ -95,13 +104,13 @@ export const SingUp = ({ navigation }) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
+                    console.log(responseJson)
                     if (responseJson.error) {
                         setResponse(<Error message={responseJson.message} />);
                     } else {
                         setResponse(<Success message={responseJson.message} />);
                         const userApp = JSON.parse(responseJson.user);
                         AsyncStorage.setItem('userToken', userApp.apitoken);
-                        AsyncStorage.setItem('username', userApp.username);
                         AsyncStorage.setItem('firstname', userApp.firstname);
                         AsyncStorage.setItem('lastname', userApp.lastname);
                         AsyncStorage.setItem('email', userApp.email);
@@ -128,63 +137,61 @@ export const SingUp = ({ navigation }) => {
     }
     return (
         <ScrollView style={main.scroll}>
-            <View style={flexTall.flex1}></View>
-            <View style={flexTall.flex1}>
+            <View style={flexTall.flex2}>
                 <Text style={text.h1}>MyCouturier</Text>
             </View>
-            <KeyboardAvoidingView style={flexTall.flex7} behavior="height" enabled>
-                <View style={widthTall.width08, { alignItems: 'center' }}>
-                    <View style={{}}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Nom d'utilisateur"
-                            onChangeText={setUername}
-                            defaultValue={username}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Nom"
-                            onChangeText={setLastname}
-                            defaultValue={lastname}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Prénom"
-                            onChangeText={setFirstname}
-                            defaultValue={firstname}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Adresse email"
-                            onChangeText={setEmail}
-                            defaultValue={email}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Mot de passe"
-                            onChangeText={setPassword}
-                            value={password}
-                            secureTextEntry={true}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Confirmer mot de passe"
-                            onChangeText={setPasswordConfirm}
-                            value={passwordConfirm}
-                            secureTextEntry={true}
-                        />
-                        <TouchableOpacity
-                            style={btn.primaire}
-                            onPress={() => _signupSend()}
-                        >
-                            <Text style={text.btnPrimaire}>Inscription</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View >
-                        {response}
-                    </View>
-                </View>
-            </KeyboardAvoidingView>
+            <View style={widthTall.width08, { alignItems: 'center' }}>
+                <KeyboardAvoidingView style={main.backgroundColor} behavior="padding" enabled>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Nom"
+                        onChangeText={setLastname}
+                        defaultValue={lastname}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Prénom"
+                        onChangeText={setFirstname}
+                        defaultValue={firstname}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Adresse email"
+                        onChangeText={setEmail}
+                        defaultValue={email}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Confirmer adresse email"
+                        onChangeText={setEmailConfirm}
+                        defaultValue={emailConfirm}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Mot de passe"
+                        onChangeText={setPassword}
+                        value={password}
+                        secureTextEntry={true}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Confirmer mot de passe"
+                        onChangeText={setPasswordConfirm}
+                        value={passwordConfirm}
+                        secureTextEntry={true}
+                    />
+                    <TouchableOpacity
+                        style={btn.primaire}
+                        onPress={() => _signupSend()}
+                    >
+                        <Text style={text.btnPrimaire}>Inscription</Text>
+                    </TouchableOpacity>
+                </KeyboardAvoidingView>
+            </View>
+            <View >
+                {response}
+            </View>
+
             <View style={flexTall.flex1}>
                 <TouchableOpacity
                     style={btn.secondaire}

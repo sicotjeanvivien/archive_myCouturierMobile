@@ -5,7 +5,7 @@ export const ConstEnv = {
     signUp: '/userapp_create',
     updateUser: '/api/account',
     updatePassword: '/api/password',
-    contactUs: '/api/contactUs',
+    contactUs: '/api/ContactUs',
     retouching: '/api/retouching',
     prestation: '/api/prestations',
     privateMode:'/api/privateMode',
@@ -16,4 +16,6 @@ export const ConstEnv = {
     searchPrestation:'/api/searchPrestation',
     passwordForgotten:'/passwordForgotten',
     cgv:'/cgv',
+    deleteAccount: '/api/deleteAccount',
+    createPrestation: '/api/createPrestation'
 };

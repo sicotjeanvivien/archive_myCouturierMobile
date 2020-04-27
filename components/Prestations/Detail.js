@@ -1,75 +1,84 @@
 import * as React from 'react';
-import { View, Text, ActivityIndicator, ScrollView } from 'react-native';
-import {styles} from '../../assets/stylesCustom';
+import { View, Text, ActivityIndicator, ScrollView, AsyncStorage } from 'react-native';
+import { styles, main } from '../../assets/stylesCustom';
 import { ConstEnv } from '../tools/ConstEnv';
+import { AuthContext } from '../../Context/AuthContext';
 
 
-export default class Detail extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            isLoading: true,
-        }
-    }
+export const Detail = ({ navigation, route }) => {
 
-    componentDidMount() {
-        let { prestation } = this.props.route.params
-        let { userToken } = this.props.route.params;
-
-        fetch(ConstEnv.host + ConstEnv.prestationDetail + prestation.id, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                'X-AUTH-TOKEN': userToken,
-            },
-        })
-            .then(response => response.json())
-            .then(responseJson => {
-                this.setState({
-                    isLoading: false,
-
+    React.useEffect(() => {
+        const bootData = async () => {
+            let apitokenData = await AsyncStorage.getItem('userToken');
+            setApitoken(apitokenData);
+            fetch(ConstEnv.host + ConstEnv.prestationDetail + route.params.prestation.id, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-AUTH-TOKEN': apitokenData,
                 },
-                    function () { });
             })
-            .catch(error => {
-                console.error(error);
-            });
+                .then(response => response.json())
+                .then(responseJson => {
+                    console.log(responseJson);
+                    if (responseJson.error === 'invalid credentials') {
+                        signOut()
+                    }
+                   if (responseJson) {
+                       setIsloading(true);
 
-    }
-    render() {
+                   }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        };
+        bootData();
+    }, [])
 
-        if (this.state.isLoading) {
-            return (
-                <View style={styles.container}>
-                    <ActivityIndicator />
+    const [apitoken, setApitoken] = React.useState();
+    const [isLoading, setIsloading] = React.useState();
+    const [prestation, setPrestation] = React.useState( route.params.prestation);
+
+    const { signOut } = React.useContext(AuthContext);
+
+    const sendAcceptPrestation = ()=>{
+
+    };
+
+
+let contentPage = <ActivityIndicator />;
+if(isLoading){
+    if (prestation.state === 'active') {
+        return (
+            <View style={styles.scrollView}>
+                <View>
+                    <Text></Text>
                 </View>
-            );
-        } else {
-            if (this.state) {
-                return (
-                    <ScrollView style={styles.scrollView}>
-                        <View>
-                            <Text></Text>
-                        </View>
-                        <Text>
-                            detail presation
-                        </Text>
-                    </ScrollView>
-                )
-            } else {
-
-                return (
-                    <ScrollView style={styles.scrollView}>
-                        <View>
-                            <Text></Text>
-                        </View>
-                        <Text>
-                            detail presation
-                    </Text>
-                    </ScrollView>
-                )
-            }
-        }
+                <Text>
+                    detail presation
+                </Text>
+            </View>
+        )
+    } else {
+        return (
+            <View style={styles.scrollView}>
+                <View>
+                    <Text></Text>
+                </View>
+                <Text>
+                    detail presation
+                </Text>
+            </View>
+        )
     }
+}
+
+    return (
+        <ScrollView style={main.scroll}>
+            {contentPage}
+        </ScrollView>
+    )
+
 }

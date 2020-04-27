@@ -6,7 +6,7 @@ import { ConstEnv } from "./tools/ConstEnv";
 import { Error } from "./tools/Error";
 
 export const Login = ({ navigation }) => {
-    const [username, setUsername] = React.useState();
+    const [email, setEmail] = React.useState();
     const [password, setPassword] = React.useState();
     const [response, setResponse] = React.useState();
 
@@ -14,14 +14,12 @@ export const Login = ({ navigation }) => {
 
 
     const _signIn = (elem) => {
-        console.log(elem.username, elem.password)
-        if (elem.username && elem.password) {
+        console.log(elem.email, elem.password)
+        if (elem.email && elem.password) {
             let data = {
                 "security": {
-                    "credentials": {
-                        "login": elem.username,
-                        "password": elem.password
-                    }
+                    "email": elem.email,
+                    "password": elem.password
                 }
             };
             let header = {
@@ -38,19 +36,20 @@ export const Login = ({ navigation }) => {
                 .then((responseJson) => {
                     console.log(responseJson)
                     if (responseJson.apitoken) {
+                        AsyncStorage.setItem('data', responseJson);
                         AsyncStorage.setItem('userToken', responseJson.apitoken);
-                        AsyncStorage.setItem('username', responseJson.username);
+                        AsyncStorage.setItem('activeCouturier', responseJson.activeCouturier);
                         AsyncStorage.setItem('firstname', responseJson.firstname);
                         AsyncStorage.setItem('lastname', responseJson.lastname);
+                        AsyncStorage.setItem('username', responseJson.username);
                         AsyncStorage.setItem('email', responseJson.email);
                         AsyncStorage.setItem('id', responseJson.id);
                         AsyncStorage.setItem('privateMode', responseJson.privateMode);
-                        AsyncStorage.setItem('imageProfil', responseJson.imageProfil);
+                        responseJson.imageProfil !== null && AsyncStorage.setItem('imageProfil', responseJson.imageProfil); //todoo
                         AsyncStorage.setItem('bio', responseJson.bio);
-                        AsyncStorage.setItem('activeCouturier', responseJson.activeCouturier);
                         signInContext(responseJson.apitoken);
                     } else {
-                        setResponse(<Error message={responseJson.message} />);
+                        setResponse(<Error message={responseJson.error} />);
                         signOut()
                     }
                 })
@@ -69,13 +68,13 @@ export const Login = ({ navigation }) => {
             <View style={flexTall.flex2}>
                 <Text style={text.h1}>MyCouturier</Text>
             </View>
-            <KeyboardAvoidingView style={flexTall.flex4, {alignItems: 'center'}} behavior="padding" enabled>
+            <KeyboardAvoidingView style={flexTall.flex4, { alignItems: 'center' }} behavior='position' enabled>
                 <View style={widthTall.width08}>
                     <TextInput
                         style={styles.input}
-                        placeholder="Nom d'utilisateur"
-                        onChangeText={setUsername}
-                        value={username}
+                        placeholder="Adresse email"
+                        onChangeText={setEmail}
+                        value={email}
                     />
                     <TextInput
                         style={styles.input}
@@ -86,7 +85,7 @@ export const Login = ({ navigation }) => {
                     />
                     <TouchableOpacity
                         style={btn.primaire}
-                        onPress={() => _signIn({ username, password })}
+                        onPress={() => _signIn({ email, password })}
                     >
                         <Text style={text.btnPrimaire}>Connexion</Text>
                     </TouchableOpacity>
@@ -97,7 +96,7 @@ export const Login = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>
-            <View style={flexTall.flex2, {alignItems: 'center'}}>
+            <View style={flexTall.flex2, { alignItems: 'center' }}>
                 <View style={widthTall.width08}>
                     {response}
                 </View>
@@ -110,7 +109,7 @@ export const Login = ({ navigation }) => {
                     <Text style={text.btnSecondaire}>Inscription</Text>
                 </TouchableOpacity>
             </View>
-            
+
             <View style={flexTall.flex1}></View>
             <View style={flexTall.flex1}>
                 <View style={positions.end}>

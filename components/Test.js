@@ -7,7 +7,7 @@ export default class HelloWorldApp extends Component {
             <View>
                 <Text>
                     Hello World
-          </Text>
+                </Text>
             </View>
         );
     }

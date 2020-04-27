@@ -7,6 +7,9 @@ const color = {
     white: "rgb(255,255,255)",
     colorBackGrouds: 'rgba(192,192,192, 100)',
     yellow: 'rgb(255,195,11)',
+    black: 'black',
+    red: 'red',
+    green: 'green'
 };
 
 export const main = StyleSheet.create({
@@ -14,9 +17,9 @@ export const main = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         backgroundColor: color.colorBackGrouds,
-        padding: 10,
+        // padding: 10,
         paddingTop: 24,
-        // width: Dimensions.get('window').width
+        width: Dimensions.get('window').width
     },
     scroll: {
         flex: 1,
@@ -25,8 +28,87 @@ export const main = StyleSheet.create({
         backgroundColor: color.colorBackGrouds,
         padding: 10,
         paddingTop: 24,
+        paddingBottom: 48,
+        // marginBottom:64,
     },
-    backgroundColor: { backgroundColor: color.colorBackGrouds }
+    backgroundColor: { backgroundColor: color.colorBackGrouds, zIndex: 100 },
+    tile: {
+        width: Dimensions.get('screen').width * 0.8,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: color.white,
+        borderBottomWidth: 0,
+        shadowColor: color.black,
+        shadowOffset: { width: 10, height: 20 },
+        shadowOpacity: 0.5,
+        shadowRadius: 25,
+        padding: 5,
+        elevation: 2,
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 0,
+        marginBottom: 25,
+    },
+    tileMap: {
+        flexDirection: 'row',
+        padding: 5,
+        opacity: 0.9,
+        backgroundColor: color.white,
+
+    }
+});
+
+export const tab = StyleSheet.create({
+    btnCouturier:{
+        padding: 10,
+        borderLeftWidth: 2,
+        borderRightWidth: 2,
+        borderBottomWidth: 2,
+        width: Dimensions.get('screen').width * 0.5,
+    },
+    btnCouturierActif:{
+        padding: 10,
+        borderWidth:2,
+        width: Dimensions.get('screen').width * 0.5,
+    },
+    btnText:{
+        textAlign: 'center',
+        fontSize: 16
+    },
+    btnClient:{
+        textAlign: 'center',
+        fontSize: 28,
+        padding: 10,
+        borderWidth:2,
+        width: Dimensions.get('screen').width ,
+    }
+});
+
+export const presta = StyleSheet.create({
+    listTile:{
+        width: Dimensions.get('screen').width * 0.9,
+        padding: 10,
+    },
+    listText:{
+        fontSize: 24,
+        color: color.yellow,
+    },
+    listItem:{
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: color.white,
+        borderBottomWidth: 0,
+        shadowColor: color.black,
+        shadowOffset: { width: 10, height: 20 },
+        shadowOpacity: 0.5,
+        shadowRadius: 25,
+        padding: 5,
+        elevation: 2,
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 0,
+        marginBottom: 25,
+    }
 });
 
 export const padding = StyleSheet.create({
@@ -43,6 +125,13 @@ export const flexDirection = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+    },
+    justRow:{flexDirection: 'row'},
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignContent: 'space-between',
+        alignItems: 'flex-start',
     }
 })
 
@@ -58,24 +147,24 @@ export const flexTall = StyleSheet.create({
 });
 
 export const widthTall = StyleSheet.create({
-    width08: { width: Dimensions.get('screen').width*0.8}
+    width08: { width: Dimensions.get('screen').width * 0.8, backgroundColor: color.colorBackGrouds, zIndex: 100 }
 })
 
 export const positions = StyleSheet.create({
     start: { alignItems: 'flex-start' },
-    end: { alignItems: 'flex-end', justifyContent: 'flex-end', alignContent:'flex-end' },
+    end: { alignItems: 'flex-end', justifyContent: 'flex-end', alignContent: 'flex-end' },
     center: { alignItems: 'center' }
 
 });
 
 export const linkNavigation = StyleSheet.create({
-    profil:{
-        padding:10
+    profil: {
+        padding: 10
     },
-    link:{
+    link: {
         borderTopWidth: 3,
         borderColor: 'rgba(224,224,224, 100)',
-        padding:10 
+        padding: 10
     }
 })
 
@@ -95,7 +184,7 @@ export const btn = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         backgroundColor: color.yellow,
-        width: Dimensions.get('screen').width * 0.8
+        maxWidth: Dimensions.get('screen').width * 0.8
     },
     secondaire: {
         justifyContent: 'center',
@@ -131,8 +220,55 @@ export const text = StyleSheet.create({
     sizeLarge: { fontSize: 24, color: color.yellow },
 })
 
+export const input = StyleSheet.create({
+    textarea: {
+        width: 256,
+        height: 128,
+        backgroundColor: color.white,
+        color: 'black',
+        textAlignVertical: 'top',
+        textAlign: 'left',
+    }
+})
 
 
+export const modal = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22,
+        backgroundColor: color.black,
+        opacity: 0.6,
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
+    btnCancel: {
+        backgroundColor: color.red,
+        borderRadius: 20,
+        margin: 10,
+        padding: 5
+    },
+    btnConfirm: {
+        backgroundColor: color.green,
+        borderRadius: 20,
+        margin: 10,
+        padding: 5
+    }
+})
 
 export const styles = StyleSheet.create({
     page: {

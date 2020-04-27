@@ -14,7 +14,7 @@ import { ConstEnv } from "./components/tools/ConstEnv";
 
 import { Login } from './components/Login';
 import { SingUp } from './components/SignUp';
-import { Search } from './components/Search/Search';
+import { Search, SearchStackScreen } from './components/Search/Search';
 import { ProfilStackScreen } from './Navigation/NavigationProfil';
 import { PrestationStackScreen } from './components/Prestations/Prestation';
 import { Shop } from './components/Shop/Shop';
@@ -23,24 +23,38 @@ import { PasswordForgotten } from './components/Homepage/PasswordForgotten';
 
 const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
-  <AuthStack.Navigator headerMode="none">
+  <AuthStack.Navigator >
     <AuthStack.Screen
       name='Login'
       component={Login}
-      options={{ title: '' }}
+      options={{
+        title: ' ',
+        headerShown: false,
+      }}
     />
     <AuthStack.Screen
       name='SignUp'
       component={SingUp}
-      options={{ title: '' }}
+      options={{
+        title: ' ',
+        headerShown: false,
+      }}
     />
     <AuthStack.Screen
       name='cgv'
       component={CGV}
+      options={{
+        title: ' ',
+        headerShown: true,
+      }}
     />
     <AuthStack.Screen
       name='passwordForgotten'
       component={PasswordForgotten}
+      options={{
+        title: ' ',
+        headerShown: false,
+      }}
     />
   </AuthStack.Navigator>
 );
@@ -73,6 +87,7 @@ const RootStackScreen = ({ state }) => {
 const Tabs = createBottomTabNavigator();
 const TabsScreen = () => (
   <Tabs.Navigator
+    tabBarTestID
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
@@ -95,7 +110,7 @@ const TabsScreen = () => (
   >
     <Tabs.Screen
       name='Search'
-      component={Search}
+      component={SearchStackScreen}
       options={{
         title: 'recherche'
       }}
@@ -104,7 +119,8 @@ const TabsScreen = () => (
       name='Prestation'
       component={PrestationStackScreen}
       options={{
-        title: 'Prestation'
+        title: 'Prestation',
+        unmountOnBlur: true
       }}
     />
     <Tabs.Screen
