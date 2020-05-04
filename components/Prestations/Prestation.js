@@ -6,13 +6,14 @@ import { Detail } from './Detail';
 import { ConstEnv } from '../tools/ConstEnv';
 import { PrestationList } from './PrestationList';
 import { AuthContext } from '../../Context/AuthContext';
+import { PaymentForm } from './PaymentForm';
 
 
 export const Prestations = ({ navigation }) => {
 
     React.useEffect(() => {
         const bootdata = async () => {
-            console.log(await AsyncStorage.getAllKeys());
+            // console.log(await AsyncStorage.getAllKeys());
             const apitokenData = await AsyncStorage.getItem('userToken');
             setApitoken(apitokenData);
             const onCouturierData = await AsyncStorage.getItem('activeCouturier');
@@ -27,6 +28,7 @@ export const Prestations = ({ navigation }) => {
             })
                 .then(response => response.json())
                 .then(responseJson => {
+                    console.log(responseJson)
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }
@@ -50,7 +52,7 @@ export const Prestations = ({ navigation }) => {
 
     const { signOut } = React.useContext(AuthContext);
 
-    console.log('state', activeCouturier, apitoken)
+    // console.log('state', activeCouturier, apitoken)
     const prestationView = (userType) => {
         setPrestationShow(userType);
         console.log(userType, prestationShow, isLoading, prestaClientData);
@@ -58,22 +60,22 @@ export const Prestations = ({ navigation }) => {
 
     let prestationRenderView = <ActivityIndicator />;
     if (isLoading && prestationShow === 'client') {
-        prestationRenderView = <PrestationList data={prestaClientData} navigation={navigation}/>;
+        prestationRenderView = <PrestationList data={prestaClientData} navigation={navigation} />;
     }
     if (isLoading && prestationShow === 'couturier') {
-        prestationRenderView = <PrestationList data={prestaCouturierData} navigation={navigation}/>;
+        prestationRenderView = <PrestationList data={prestaCouturierData} navigation={navigation} />;
     }
 
     let prestaHeaderView = <View style={flexDirection.justRow}><Text style={tab.btnClient}>Prestations</Text></View>;
     if (activeCouturier === 'true') {
         prestaHeaderView = <View style={flexDirection.justRow}>
-                                <TouchableOpacity onPress={() => prestationView('client')} style={tab.btnCouturier}>
-                                    <Text style={tab.btnText}>Client</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => prestationView('couturier')} style={tab.btnCouturier}>
-                                    <Text style={tab.btnText}>Couturier</Text>
-                                </TouchableOpacity>
-                            </View>
+            <TouchableOpacity onPress={() => prestationView('client')} style={tab.btnCouturier}>
+                <Text style={tab.btnText}>Client</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => prestationView('couturier')} style={tab.btnCouturier}>
+                <Text style={tab.btnText}>Couturier</Text>
+            </TouchableOpacity>
+        </View>
     }
 
 
@@ -105,6 +107,14 @@ export const PrestationStackScreen = () => {
                 options={{
                     headerShown: true,
                     title: 'Détail prestation'
+                }}
+            />
+            <PrestationStack.Screen
+                name='PaymentForm'
+                component={PaymentForm}
+                options={{
+                    headerShown: true,
+                    title: ''
                 }}
             />
         </PrestationStack.Navigator>

@@ -57,7 +57,7 @@ export const CreatePrestation = ({ navigation, route }) => {
         };
 
         console.log(data);
-        fetch(ConstEnv.host + ConstEnv.createPrestation, {
+        fetch(ConstEnv.host + ConstEnv.prestation, {
             method: 'POST',
             headers: {
                 'X-AUTH-TOKEN': apitoken,

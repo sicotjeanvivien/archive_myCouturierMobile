@@ -192,7 +192,15 @@ export const btn = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         backgroundColor: color.colorBackGrouds,
+    },
+    accept:{
+        backgroundColor: color.green
+    },
+    decline:{
+        backgroundColor: color.red,
+        
     }
+
 });
 
 export const text = StyleSheet.create({

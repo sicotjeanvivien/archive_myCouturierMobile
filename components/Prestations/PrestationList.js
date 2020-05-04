@@ -3,13 +3,13 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { styles, main, widthTall, presta } from '../../assets/stylesCustom';
 
 
-export const PrestationList = ({data, navigation}) => {
-console.log( 'prestation list',data)
+export const PrestationList = ({ data, navigation }) => {
+    console.log('prestation list', data)
     const prestaInProgressData = data.inProgress;
     const prestaEndData = data.end;
-    
+
     let prestaInProgressView = <Text>Aucune prestation en cours.</Text>;
-    if (prestaInProgressData) {
+    if (prestaInProgressData && prestaInProgressData.length > 0) {
         prestaInProgressView = Object.keys(prestaInProgressData).map((key, i) => {
             return (
                 <TouchableOpacity
@@ -17,27 +17,29 @@ console.log( 'prestation list',data)
                     style={presta.listItem}
                     onPress={() => navigation.navigate('PrestationDetail', {
                         prestation: prestaInProgressData[key],
+                        state: 'active',
                     })}
                 >
-                    <Text> prestation {prestaInProgressData[key].statut}</Text>
+                    <Text> prestation: {prestaInProgressData[key].type}</Text>
                 </TouchableOpacity>
             )
         });
     }
 
     let prestaEndView = <Text>Aucune prestation.</Text>;
-    console.log('prestaEndData', prestaEndData.lenght> 0);
-    if (prestaEndData && prestaEndData.lenght> 0) {
+    if (prestaEndData && prestaEndData.length > 0) {
         prestaEndView = Object.keys(prestaEndData).map((key, i) => {
+            console.log('end', prestaEndData);
             return (
                 <TouchableOpacity
                     key={i}
                     style={presta.listItem}
                     onPress={() => navigation.navigate('PrestationDetail', {
                         prestation: prestaEndData[key],
+                        state: 'inactive',
                     })}
                 >
-                    <Text> prestation {prestaEndData[key].statut}</Text>
+                    <Text> prestation: {prestaEndData[key].type}</Text>
                 </TouchableOpacity>
             )
         });

@@ -31,7 +31,7 @@ export const ContactUs = () => {
                 content: content,
             };
     
-            fetch(ConstEnv.host + ConstEnv.contactUs, {
+            fetch(ConstEnv.host + ConstEnv.contactUsCreate, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
