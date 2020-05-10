@@ -6,7 +6,6 @@ import { Detail } from './Detail';
 import { ConstEnv } from '../tools/ConstEnv';
 import { PrestationList } from './PrestationList';
 import { AuthContext } from '../../Context/AuthContext';
-import { PaymentForm } from './PaymentForm';
 
 
 export const Prestations = ({ navigation }) => {
@@ -28,7 +27,6 @@ export const Prestations = ({ navigation }) => {
             })
                 .then(response => response.json())
                 .then(responseJson => {
-                    console.log(responseJson)
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }
@@ -52,10 +50,8 @@ export const Prestations = ({ navigation }) => {
 
     const { signOut } = React.useContext(AuthContext);
 
-    // console.log('state', activeCouturier, apitoken)
     const prestationView = (userType) => {
         setPrestationShow(userType);
-        console.log(userType, prestationShow, isLoading, prestaClientData);
     }
 
     let prestationRenderView = <ActivityIndicator />;
@@ -107,14 +103,6 @@ export const PrestationStackScreen = () => {
                 options={{
                     headerShown: true,
                     title: 'Détail prestation'
-                }}
-            />
-            <PrestationStack.Screen
-                name='PaymentForm'
-                component={PaymentForm}
-                options={{
-                    headerShown: true,
-                    title: ''
                 }}
             />
         </PrestationStack.Navigator>

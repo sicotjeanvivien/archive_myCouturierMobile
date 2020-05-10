@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Text, View, Button, StyleSheet, TextInput, TouchableOpacity, AsyncStorage, KeyboardAvoidingView, ScrollView } from 'react-native';
-import { styles, main, widthTall, flexTall, text, btn } from '../assets/stylesCustom';
+import { styles, main, widthTall, flexTall, text, btn, input, flexDirection } from '../assets/stylesCustom';
 import { AuthContext } from '../Context/AuthContext';
 import { ConstEnv } from './tools/ConstEnv';
 import { Error } from './tools/Error';
@@ -16,91 +17,108 @@ export const SingUp = ({ navigation }) => {
     const [emailConfirm, setEmailConfirm] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [passwordConfirm, setPasswordConfirm] = React.useState('');
+    const [birthday, setBirthday] = React.useState();
+    const [addressLine1, setAddressLine1] = React.useState('');
+    const [addressLine2, setAddressLine2] = React.useState('');
+    const [city, setCity] = React.useState('');
+    const [postalCode, setPostalCode] = React.useState('');
     const [response, setResponse] = React.useState();
+    const [date, setDate] = React.useState();
+    const [mode, setMode] = React.useState('date');
+    const [show, setShow] = React.useState(false);
 
     const { signUpContext } = React.useContext(AuthContext);
 
-    const _signupSend = () => {
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(Platform.OS === 'ios');
+        setDate(currentDate);
+        console.log(date);
+    };
+
+    const showMode = currentMode => {
+        setShow(true);
+        setMode(currentMode);
+    };
+
+    const showDatepicker = () => {
+        setDate(new Date())
+        showMode('date');
+    };
+
+    const validatorData = () => {
         let data = {
-            firstname: '',
-            lastname: '',
-            emailConfirm: '',
-            password: '',
-            passwordConfirm: '',
-            email: '',
-        }
-
-        let errorData = {
-            firstname: {
-                error: false,
-                text: 'Valeur non valide'
+            address: {
+                Country: "FR"
             },
-            lastname: {
-                error: false,
-                text: 'Valeur non valide'
-            },
-            emailConfirm: {
-                error: false,
-                text: 'Valeur non valide'
-            },
-            password: {
-                error: false,
-                text: 'Valeur non valide (8 caratères minimun)'
-            },
-            passwordConfirm: {
-                error: false,
-                text: 'Valeur non valide (8 caratères minimun)'
-            },
-            email: {
-                error: false,
-                text: 'Adresse email non valide'
-            },
+            Nationality: "FR",
+            CountryOfResidence: "FR",
+            Capacity: "NORMAL",
+            Tag: "Postman create a user"
         };
+        let errorData = {error:false};
 
-        firstname.repeat(1).length > 0 && toString(firstname)
-            ? data.firstname = firstname : errorData.firstname.error = true;
-
-        lastname.repeat(1).length > 0 && toString(lastname)
-            ? data.lastname = lastname : errorData.lastname.error = true;
-
-            console.log(email, emailConfirm,  toString(email) === toString(emailConfirm))
-
-        if (email.repeat(1).length > 0
-            && email.includes('@')
-            && emailConfirm.repeat(1).length > 0
-            && toString(email) === toString(emailConfirm)
+        if (firstname.repeat(1).length > 0 && toString(firstname)) {
+            data.firstname = firstname
+        } else {
+            errorData.error = true;
+            errorData.champ = ["firstname"]
+        }
+        if (lastname.repeat(1).length > 0 && toString(lastname)) {
+            data.lastname = lastname
+        } else {
+            errorData.error = true;
+            errorData.champ = ["lastname"]
+        }
+        if (email.repeat(1).length > 0 && email.includes('@') && emailConfirm.repeat(1).length > 0 && toString(email) === toString(emailConfirm)
         ) {
             data.email = email;
             data.emailConfirm = emailConfirm;
         } else {
-            errorData.email.error = true;
-            errorData.emailConfirm.error = true;
+            errorData.error = true;
+            errorData.champ = ["email", "emailConfirm"];
         }
-
-        if (password.repeat(1).length > 7
-            && passwordConfirm.repeat(1).length > 7
-            && toString(password)
-            && toString(passwordConfirm)
-            && password === passwordConfirm
+        if (password.repeat(1).length > 7 && passwordConfirm.repeat(1).length > 7 && toString(password) && toString(passwordConfirm) && password === passwordConfirm
         ) {
             data.password = password;
             data.passwordConfirm = passwordConfirm;
         } else {
-            errorData.password.error = true;
-            errorData.passwordConfirm.error = true;
+            errorData.error = true;
+            errorData.champ = ["password", "passWordConfirm"];
         }
-        let errors = JSON.stringify(errorData);
+        if (addressLine1.repeat(1).length > 0 && toString(addressLine1)) {
+            data.address.addressLine1 = addressLine1;
+        } else {
+            errorData.error = true;
+            errorData.champ = ["addressLine1"];
+        }
+        if (city.repeat(1).length > 0 && toString(city)) {
+            data.address.city = city;
+        } else {
+            errorData.error = true;
+            errorData.champ = ["city"];
+        }
+        data.address.addressLine2 = addressLine2;
+        data.address.postalCode = postalCode;
+        data.birthday = new Date(date).valueOf();
+        return { data, errorData };
 
-        console.log(data)
+    }
 
-        if (!errors.includes("true")) {
+    const _signupSend = () => {
+        let data = validatorData()
+        let dataRequest = data.data;
+        let errorData = data.errorData;
+        console.log(dataRequest, errorData)
+
+        if (!errorData.error) {
+            console.log('start create mango user')
             fetch(ConstEnv.host + ConstEnv.signUp, {
                 method: 'POST',
                 headers: {
-                    Accept: 'application/json',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify(dataRequest),
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
@@ -123,16 +141,7 @@ export const SingUp = ({ navigation }) => {
                     console.error(error);
                 });
         } else {
-            let message = '';
-            for (const key in errorData) {
-                if (errorData.hasOwnProperty(key)) {
-                    const elem = errorData[key];
-                    if (elem.error) {
-                        message += elem.text;
-                    }
-                }
-            }
-            setResponse(<Error message={message} />);
+            setResponse(<Error message={"champs non valide ou incorrecte"} />);
         }
     }
     return (
@@ -141,58 +150,109 @@ export const SingUp = ({ navigation }) => {
                 <Text style={text.h1}>MyCouturier</Text>
             </View>
             <View style={widthTall.width08, { alignItems: 'center' }}>
-                <KeyboardAvoidingView style={main.backgroundColor} behavior="padding" enabled>
+                <TextInput
+                    style={input.signUp}
+                    placeholder="Nom"
+                    onChangeText={setLastname}
+                    defaultValue={lastname}
+                />
+                <TextInput
+                    style={input.signUp}
+                    placeholder="Prénom"
+                    onChangeText={setFirstname}
+                    defaultValue={firstname}
+                />
+                {/* <TextInput
+                    style={input.signUp}
+                    autoCompleteType='cc-exp-month'
+                    placeholder="date d'anniversaire"
+                    onChangeText={setBirthday}
+                    defaultValue={birthday}
+                /> */}
+                <View style={flexDirection.row} >
                     <TextInput
-                        style={styles.input}
-                        placeholder="Nom"
-                        onChangeText={setLastname}
-                        defaultValue={lastname}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Prénom"
-                        onChangeText={setFirstname}
-                        defaultValue={firstname}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Adresse email"
-                        onChangeText={setEmail}
-                        defaultValue={email}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Confirmer adresse email"
-                        onChangeText={setEmailConfirm}
-                        defaultValue={emailConfirm}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Mot de passe"
-                        onChangeText={setPassword}
-                        value={password}
-                        secureTextEntry={true}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Confirmer mot de passe"
-                        onChangeText={setPasswordConfirm}
-                        value={passwordConfirm}
-                        secureTextEntry={true}
-                    />
+                        editable={false}
+                        style={input.date}
+                        value={new Date(date).getUTCDay() + "/" + new Date(date).getUTCMonth() + "/" + new Date(date).getUTCFullYear()} />
+                    <View style={{ marginLeft: 15 }}>
+                        <Button onPress={showDatepicker} title="date de naissance" />
+                    </View>
+                    {show && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            timeZoneOffsetInMinutes={0}
+                            value={date}
+                            mode="date"
+                            is24Hour={true}
+                            display="spinner"
+                            onChange={onChange}
+                        />
+                    )}
+                </View>
+                <TextInput
+                    style={input.signUp}
+                    placeholder="Adresse email"
+                    onChangeText={setEmail}
+                    defaultValue={email}
+                />
+                <TextInput
+                    style={input.signUp}
+                    placeholder="Confirmer adresse email"
+                    onChangeText={setEmailConfirm}
+                    defaultValue={emailConfirm}
+                />
+                <TextInput
+                    style={input.signUp}
+                    placeholder="adresse"
+                    onChangeText={setAddressLine1}
+                    defaultValue={addressLine1}
+                />
+                <TextInput
+                    style={input.signUp}
+                    placeholder="complément d'adresse"
+                    onChangeText={setAddressLine2}
+                    defaultValue={addressLine2}
+                />
+                <TextInput
+                    style={input.signUp}
+                    placeholder="ville"
+                    onChangeText={setCity}
+                    defaultValue={city}
+                />
+                <TextInput
+                    style={input.signUp}
+                    placeholder="code postal"
+                    onChangeText={setPostalCode}
+                    defaultValue={postalCode}
+                />
+                <TextInput
+                    style={input.signUp}
+                    placeholder="Mot de passe"
+                    onChangeText={setPassword}
+                    value={password}
+                    secureTextEntry={true}
+                />
+                <TextInput
+                    style={input.signUp}
+                    placeholder="Confirmer mot de passe"
+                    onChangeText={setPasswordConfirm}
+                    value={passwordConfirm}
+                    secureTextEntry={true}
+                />
+                <View>
                     <TouchableOpacity
                         style={btn.primaire}
                         onPress={() => _signupSend()}
                     >
                         <Text style={text.btnPrimaire}>Inscription</Text>
                     </TouchableOpacity>
-                </KeyboardAvoidingView>
+                </View>
             </View>
+
             <View >
                 {response}
             </View>
-
-            <View style={flexTall.flex1}>
+            <View style={{ marginBottom: 40 }}>
                 <TouchableOpacity
                     style={btn.secondaire}
                     onPress={() => navigation.navigate('Login')}
@@ -200,6 +260,7 @@ export const SingUp = ({ navigation }) => {
                     <Text style={text.btnSecondaire}>connexion</Text>
                 </TouchableOpacity>
             </View>
+
         </ScrollView>
 
     );

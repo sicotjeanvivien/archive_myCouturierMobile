@@ -5,8 +5,8 @@ const heightWindows = Dimensions.get('window').height;
 
 const color = {
     white: "rgb(255,255,255)",
-    colorBackGrouds: 'rgba(192,192,192, 100)',
-    yellow: 'rgb(255,195,11)',
+    colorBackGrouds: '#E5E5E5',
+    yellow: '#F5B30F',
     black: 'black',
     red: 'red',
     green: 'green'
@@ -17,19 +17,18 @@ export const main = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         backgroundColor: color.colorBackGrouds,
-        // padding: 10,
         paddingTop: 24,
-        width: Dimensions.get('window').width
+        width: Dimensions.get('window').width,
+        fontFamily: "Roboto",
+
     },
     scroll: {
         flex: 1,
-        // justifyContent: 'flex-start',
-        // alignItems: 'center',
         backgroundColor: color.colorBackGrouds,
         padding: 10,
         paddingTop: 24,
         paddingBottom: 48,
-        // marginBottom:64,
+        fontFamily: "Roboto",
     },
     backgroundColor: { backgroundColor: color.colorBackGrouds, zIndex: 100 },
     tile: {
@@ -59,41 +58,41 @@ export const main = StyleSheet.create({
 });
 
 export const tab = StyleSheet.create({
-    btnCouturier:{
+    btnCouturier: {
         padding: 10,
         borderLeftWidth: 2,
         borderRightWidth: 2,
         borderBottomWidth: 2,
         width: Dimensions.get('screen').width * 0.5,
     },
-    btnCouturierActif:{
+    btnCouturierActif: {
         padding: 10,
-        borderWidth:2,
+        borderWidth: 2,
         width: Dimensions.get('screen').width * 0.5,
     },
-    btnText:{
+    btnText: {
         textAlign: 'center',
         fontSize: 16
     },
-    btnClient:{
+    btnClient: {
         textAlign: 'center',
         fontSize: 28,
         padding: 10,
-        borderWidth:2,
-        width: Dimensions.get('screen').width ,
+        borderWidth: 2,
+        width: Dimensions.get('screen').width,
     }
 });
 
 export const presta = StyleSheet.create({
-    listTile:{
+    listTile: {
         width: Dimensions.get('screen').width * 0.9,
         padding: 10,
     },
-    listText:{
+    listText: {
         fontSize: 24,
         color: color.yellow,
     },
-    listItem:{
+    listItem: {
         borderWidth: 1,
         borderRadius: 5,
         borderColor: color.white,
@@ -126,7 +125,7 @@ export const flexDirection = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    justRow:{flexDirection: 'row'},
+    justRow: { flexDirection: 'row' },
     row: {
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -184,7 +183,8 @@ export const btn = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         backgroundColor: color.yellow,
-        maxWidth: Dimensions.get('screen').width * 0.8
+        maxWidth: Dimensions.get('screen').width * 0.8,
+        padding: 5,
     },
     secondaire: {
         justifyContent: 'center',
@@ -193,12 +193,12 @@ export const btn = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: color.colorBackGrouds,
     },
-    accept:{
+    accept: {
         backgroundColor: color.green
     },
-    decline:{
+    decline: {
         backgroundColor: color.red,
-        
+
     }
 
 });
@@ -236,7 +236,25 @@ export const input = StyleSheet.create({
         color: 'black',
         textAlignVertical: 'top',
         textAlign: 'left',
+    },
+    signUp: {
+        width: Dimensions.get('screen').width * 0.8,
+        backgroundColor: color.white,
+        color: color.black,
+        alignItems: 'center',
+        margin: 15,
+        padding: 5,
+        zIndex: 100,
+    }, 
+    date:{
+        width: Dimensions.get('screen').width * 0.3,
+        backgroundColor: color.white,
+        color: color.black,
+        alignItems: 'center',
+        padding: 5,
+        zIndex: 100,
     }
+
 })
 
 

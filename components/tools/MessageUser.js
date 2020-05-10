@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Button, Dimensions } from "react-native";
 
 export const MessageUser = (data) => {
-    console.log(data)
+    // console.log(data)
     const style = StyleSheet.create({
         bulle: {
             width: Dimensions.get('screen').width * 0.6,
