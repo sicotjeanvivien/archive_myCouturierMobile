@@ -4,7 +4,6 @@ import { styles, main, widthTall, presta } from '../../assets/stylesCustom';
 
 
 export const PrestationList = ({ data, navigation }) => {
-    console.log('prestation list', data)
     const prestaInProgressData = data.inProgress;
     const prestaEndData = data.end;
 
@@ -29,7 +28,6 @@ export const PrestationList = ({ data, navigation }) => {
     let prestaEndView = <Text>Aucune prestation.</Text>;
     if (prestaEndData && prestaEndData.length > 0) {
         prestaEndView = Object.keys(prestaEndData).map((key, i) => {
-            console.log('end', prestaEndData);
             return (
                 <TouchableOpacity
                     key={i}

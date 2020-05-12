@@ -16,9 +16,10 @@ export const ConstEnv = {
     imageProfil : '/api/userapp/imageProfil',
     searchPrestation:'/api/userapp/searchPrestation',
     contactUsCreate: '/api/ContactUs/create',
-    retouching: '/api/userPriceRetouching',
-    prestation: '/api/prestation',
+    retouching: '/api/userPriceRetouching/',
+    prestation: '/api/prestation/',
     prestationDetail: '/api/prestation/detail/',
+    createToken: '/api/prestation/createToken',
     imageProfilDefault: '/assets/default-profile.svg',
     message: '/api/message',
     commentary: '/api/commentary'

@@ -7,10 +7,11 @@ import * as ImagePicker from 'expo-image-picker';
 import { Error } from '../tools/Error';
 import { Success } from '../tools/Success';
 import { AuthContext } from '../../Context/AuthContext';
+import { Navigation } from 'react-native-navigation';
 
 
 
-export const Profil = () => {
+export const ProfilClient = ({ navigation }) => {
 
     React.useEffect(() => {
         const bootData = async () => {
@@ -46,6 +47,10 @@ export const Profil = () => {
                                 id: element.id,
                                 active: false,
                                 value: element.value,
+                                type: element.type,
+                                description: element.description,
+                                categoryRetouching: element.categoryRetouching,
+                                supplyCost: '',
                             });
                         });
                         setSendData(array)
@@ -61,7 +66,7 @@ export const Profil = () => {
     const [imageProfil, setImageProfil] = React.useState();
     const [apitoken, setApitoken] = React.useState(null);
     const [username, setUsername] = React.useState(null);
-    const [bio, setBio] = React.useState();
+    const [bio, setBio] = React.useState('');
     const [sendData, setSendData] = React.useState();
     const [errorResponse, setErrorResponse] = React.useState()
     const [activeCouturier, setActiveCouturier] = React.useState();
@@ -72,18 +77,8 @@ export const Profil = () => {
 
 
     //SEND dataRetouche
-    const sendDataRetouche = () => {
+    const updateProfil = () => {
         let errorData = false;
-        Object.keys(sendData).map((key, i) => {
-            let retouche = sendData[key];
-            if (retouche.active, Math.round(retouche.value) == Number(retouche.value), retouche.value > 1) {
-                setErrorResponse(<Success message={'valeur correcte'} />);
-                errorData = false;
-            } else if (retouche.active) {
-                setErrorResponse(<Error message={'valeur incorrecte'} />);
-                errorData = true;
-            }
-        });
         if (bio.length > 250) {
             errorData = true;
             setErrorResponse(<Error message={'bio trop longue. (max 250 caratères)'} />);
@@ -91,11 +86,10 @@ export const Profil = () => {
 
         if (!errorData) {
             const bodyContent = {
-                retouche: sendData,
                 bio: bio,
                 activeCouturier: activeCouturier,
             };
-            fetch(ConstEnv.host + ConstEnv.retouching, {
+            fetch(ConstEnv.host + ConstEnv.updateUser, {
                 method: 'PUT',
                 headers: {
                     Accept: 'application/json',
@@ -110,41 +104,13 @@ export const Profil = () => {
                         signOut()
                     }
                     if (!responseJson.error) {
-                        setErroResponse(<Success message={responseJson.message} />);
+                        setErrorResponse(<Success message={responseJson.message} />);
                         AsyncStorage.setItem('bio', bio)
                     } else {
-                        setErroResponse(<Error message={responseJson.message} />);
+                        setErrorResponse(<Error message={responseJson.message} />);
                     }
                 })
         }
-    }
-
-    //SEND ACTIVE COUTURIER
-    let sendActiveCouturier = () => {
-        activeCouturier ? setActiveCouturier(false) : setActiveCouturier(true);
-        fetch(ConstEnv.host + ConstEnv.activeCouturier, {
-            method: 'PATCH',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                'X-AUTH-TOKEN': apitoken,
-            },
-            body: JSON.stringify({ activeCouturier: !activeCouturier })
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson)
-                if (responseJson.error === 'invalid credentials') {
-                    signOut()
-                }
-                if (!responseJson.error) {
-                    setErrorResponse(<Success message={responseJson.message} />);
-                    AsyncStorage.setItem('activeCouturier', responseJson.activeCouturier)
-                } else {
-                    setErrorResponse(<Error message={responseJson.message} />);
-                }
-            })
-
     }
 
     //IMAGE PICKER
@@ -172,39 +138,6 @@ export const Profil = () => {
         })
     };
 
-    //Rendu View retouche
-    const dataRetoucheView = sendData != null ? Object.keys(sendData).map((key, i) => {
-        return (
-            <View key={i} style={main.tile}>
-                <View style={styles.containerRow}>
-                    <Text style={styles.text}>{dataRetouche[key].type}</Text>
-                    <View style={styles.containerRow}>
-                        <TextInput
-                            style={styles.inputRetouche}
-                            keyboardType='number-pad'
-                            textContentType='oneTimeCode'
-                            id={dataRetouche[key].id}
-                            onChangeText={(value) => {
-                                if (value > 0) {
-                                    sendData[key].value = value;
-                                    sendData[key].active = true;
-                                } else {
-                                    sendData[key].value = '';
-                                    sendData[key].active = false;
-                                }
-                            }}
-                            defaultValue={sendData[key].value}
-                        />
-                        <Text>  €</Text>
-                    </View>
-                </View>
-                <View>
-                    <Text style={styles.textInfo}>{dataRetouche[key].description}</Text>
-                </View>
-            </View>
-        )
-    }) : <ActivityIndicator />;
-
     let imageSource = <Image resizeMethod="resize" source={require(imageProfilDefault)} style={styles.thumbnail} />;
     if (imageProfil) {
         imageSource = <Image resizeMethod="resize" source={{ uri: imageProfil }} style={styles.thumbnail} />
@@ -213,20 +146,17 @@ export const Profil = () => {
     return (
         <ScrollView style={main.scroll}>
             <View style={styles.containerRowEnd}>
-                <TouchableOpacity onPress={() => sendActiveCouturier()}>
-                    <Text style={styles.inputBecomeCouturier}>{activeCouturier ? 'Ne plus être couturier' : 'Devenir Couturier'}</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('BecomeCouturier', {
+                    retouches: sendData
+                })}>
+                    <Text style={styles.inputBecomeCouturier}>'Mode Couturier'</Text>
                 </TouchableOpacity>
             </View>
-
-            <KeyboardAvoidingView style={{ alignItems: 'center' }} behavior='padding' enabled>
-                <View style={styles.blocCenter}>
-                    <TouchableOpacity onPress={openImagePickerAsync} >
-                        {imageSource}
-
-                    </TouchableOpacity>
-                    <Text>{username}</Text>
-                </View>
-                {/* <View> */}
+            <View style={styles.blocCenter}>
+                <TouchableOpacity onPress={openImagePickerAsync} >
+                    {imageSource}
+                </TouchableOpacity>
+                <Text>{username}</Text>
                 <TextInput
                     multiline={true}
                     numberOfLines={5}
@@ -235,19 +165,10 @@ export const Profil = () => {
                     onChangeText={setBio}
                     defaultValue={bio}
                 />
-                {/* </View> */}
-                <View style={styles.blocCenter}>
-                    {errorResponse}
-                </View>
-                <View style={activeCouturier ? styles.show : styles.hidden}>
-                    {dataRetoucheView}
-                </View>
-            </KeyboardAvoidingView>
-            <View style={styles.blocCenter}>
-
-                <TouchableOpacity onPress={() => sendDataRetouche()}>
+                <TouchableOpacity onPress={() => updateProfil()}>
                     <Text style={styles.btnValide}>Valider</Text>
                 </TouchableOpacity>
+                {errorResponse}
             </View>
         </ScrollView>
     );

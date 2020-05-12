@@ -13,11 +13,9 @@ export const PasswordForgotten = ({ navigation }) => {
     const sendPasswordForgotten = () => {
         if (email) {
             if (email.repeat(1).length > 0 && toString(email) && email.includes('@')) {
-                console.log(ConstEnv.host + ConstEnv.passwordForgotten + '/' + email)
                 fetch(ConstEnv.host + ConstEnv.passwordForgotten + '/' + email)
                     .then((response) => { response.json() })
                     .then((responseJson) => {
-                        console.log(responseJson)
                         if (!responseJson.error) {
                             setResponse(<Success message={responseJson.message} />)
                         } else {

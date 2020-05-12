@@ -14,7 +14,6 @@ export const Login = ({ navigation }) => {
 
 
     const _signIn = (elem) => {
-        console.log(elem.email, elem.password)
         if (elem.email && elem.password) {
             let data = {
                 "security": {
@@ -34,7 +33,6 @@ export const Login = ({ navigation }) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (responseJson.apitoken) {
                         AsyncStorage.setItem('data', responseJson);
                         AsyncStorage.setItem('userToken', responseJson.apitoken);
@@ -89,11 +87,6 @@ export const Login = ({ navigation }) => {
                     >
                         <Text style={text.btnPrimaire}>Connexion</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={btn.secondaire}
-                        onPress={() => navigation.navigate('passwordForgotten')}>
-                        <Text style={text.btnTertiaire}>mot de passe oublié?</Text>
-                    </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>
             <View style={flexTall.flex2, { alignItems: 'center' }}>
@@ -112,11 +105,16 @@ export const Login = ({ navigation }) => {
 
             <View style={flexTall.flex1}></View>
             <View style={flexTall.flex1}>
-                <View style={positions.end}>
+                <View style={flexDirection.row}>
+                    <TouchableOpacity
+                        style={btn.secondaire}
+                        onPress={() => navigation.navigate('passwordForgotten')}>
+                        <Text style={text.btnTertiaire}>mot de passe oublié?</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity
                         style={btn.secondaire}
                         onPress={() => navigation.navigate('cgv')}>
-                        <Text style={text.sizeSmall}>Condition générale de vente.</Text>
+                        <Text style={text.btnTertiaire}>CGU</Text>
                     </TouchableOpacity>
                 </View>
             </View>

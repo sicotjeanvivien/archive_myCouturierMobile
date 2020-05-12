@@ -7,13 +7,15 @@ import { AuthContext } from "../Context/AuthContext";
 import { styles, main, flexTall, flexDirection, linkNavigation } from '../assets/stylesCustom';
 
 import Test from '../components/Test';
-import { Profil } from "../components/Profil/Profil";
+import { ProfilClient } from "../components/Profil/ProfilClient";
 import { Prestation } from "../components/Prestations/Prestation";
 import { Guide } from '../components/Profil/Guide';
 import { Favoris } from '../components/Profil/Favoris';
 import { ContactUs } from '../components/Profil/ContactUs';
 import { Account } from '../components/Profil/Account';
 import { CGV } from '../components/Homepage/CGV';
+import { ProfilCouturier } from '../components/Profil/ProfilCouturier';
+import { BecomeCouturier } from '../components/Profil/BecomeCouturier';
 const imageProfilDefault = '../assets/default-profile.png';
 
 
@@ -22,20 +24,21 @@ const NavigationProfil = ({ navigation }) => {
     React.useEffect(() => {
         const bootData = async () => {
             setUsername(await AsyncStorage.getItem('username'));
-            setImageProfil(await AsyncStorage.getItem('imageProfil'))
+            setImageProfil(await AsyncStorage.getItem('imageProfil'));
+            setActiveCouturier(await AsyncStorage.getItem('activeCouturier'));
         };
         bootData();
     }, [])
 
     const [imageProfil, setImageProfil] = React.useState();
     const [username, setUsername] = React.useState();
-    console.log(username)
+    const [activeCouturier, setActiveCouturier] = React.useState();
 
     const { signOut } = React.useContext(AuthContext);
 
     let imgProfilViewRender = <Image resizeMethod="resize" source={require(imageProfilDefault)} style={styles.thumbnail} />;
     if (imageProfil) {
-        imgProfilViewRender = <Image resizeMethod="resize" source={{ uri: imageProfil }} style={styles.thumbnail}/>
+        imgProfilViewRender = <Image resizeMethod="resize" source={{ uri: imageProfil }} style={styles.thumbnail} />
     }
 
     return (
@@ -43,7 +46,7 @@ const NavigationProfil = ({ navigation }) => {
             <View style={flexTall.flex12}>
                 <TouchableOpacity
                     style={linkNavigation.profil}
-                    onPress={() => navigation.navigate('Profil')}
+                    onPress={activeCouturier === 'true' ? () => navigation.navigate('ProfilCouturier') : () => navigation.navigate('ProfilClient')}
                 >
                     <View style={flexDirection.rowCenter}>
                         {imgProfilViewRender}
@@ -105,11 +108,26 @@ export const ProfilStackScreen = () => {
                 }}
             />
             <ProfilStack.Screen
-                name='Profil'
-                component={Profil}
+                name='ProfilClient'
+                component={ProfilClient}
                 options={{
                     title: 'Profil',
                     headerShown: false,
+                }}
+            />
+            <ProfilStack.Screen
+                name='ProfilCouturier'
+                component={ProfilCouturier}
+                options={{
+                    title: 'Profil',
+                    headerShown: false,
+                }}
+            />
+            <ProfilStack.Screen
+                name='BecomeCouturier'
+                component={BecomeCouturier}
+                options={{
+                    title:'Formulaire pour devenir coutrurier'
                 }}
             />
             <ProfilStack.Screen

@@ -76,11 +76,11 @@ const Search = ({ navigation }) => {
     const [mapShow, setMapShow] = React.useState(false);
     const [errorResponse, setErroResponse] = React.useState();
     const [couturierResult, setCouturierResult] = React.useState();
+    const [address, setAddress]= React.useState()
 
     const imageProfilDefault = '../../assets/default-profile.png';
 
     const { signOut } = React.useContext(AuthContext);
-
 
     const findRetouche = (itemValue) => {
         const bodyContent = {
@@ -91,7 +91,6 @@ const Search = ({ navigation }) => {
         };
         setErroResponse(undefined);
         if (itemValue === 'noSelect') {
-            console.log('start findAll')
             findAllRetouche()
         } else {
             fetch(ConstEnv.host + ConstEnv.searchPrestation, {
@@ -105,7 +104,6 @@ const Search = ({ navigation }) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }
@@ -166,7 +164,6 @@ const Search = ({ navigation }) => {
 
     const findAllRetouche = () => {
         //findAllRetouche TODO better
-        console.log('findALLretouche', longitudeUser, latitudeUser)
         fetch(ConstEnv.host + ConstEnv.searchPrestation, {
             method: 'POST',
             headers: {
@@ -208,6 +205,15 @@ const Search = ({ navigation }) => {
                 }
             })
     };
+
+    const geocodeAddress = async ()=>{
+        let location = await Location.geocodeAsync(address);
+        location.forEach((geoloc, i)=>{
+            setLongitudeUser(geoloc.longitude);
+            setLatitudeUser(geoloc.latitude);
+        })
+        setLongitudeUser(location)
+    }
 
     if (latitudeUser != null && longitudeUser != null && couturierResult === undefined) {
         findAllRetouche();
@@ -273,7 +279,7 @@ const Search = ({ navigation }) => {
             <View style={flexTall.flex2}>
                 <HeaderApp />
             </View>
-            <View style={flexTall.flex8}>
+            <View style={flexTall.flex9}>
                 {mapViewRender}
             </View>
             <View style={flexTall.flex2}>
@@ -287,8 +293,10 @@ const Search = ({ navigation }) => {
                         {itemPicker}
                     </Picker>
                     <TextInput
-                        style={styles.input}
+                        style={styles.inputPicker}
                         placeholder="Adresse"
+                        onChangeText={()=>geocodeAddress()}
+                        defaultValue={address}
                     />
                 </View>
                 {errorResponse}

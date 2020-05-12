@@ -8,7 +8,6 @@ export const CGV = () => {
 
     React.useEffect(() => {
         const bootdata = async () => {
-            console.log(ConstEnv.host + ConstEnv.cgv);
             fetch(ConstEnv.host + ConstEnv.cgv)
                 .then((response) => response.json())
                 .then((responseJson) => {
@@ -25,13 +24,13 @@ export const CGV = () => {
     const [cgv, setCgv] = React.useState();
     let cgvViewRender = <ActivityIndicator />;
     if (cgv) {
-        cgvViewRender = <Text style={text.sizeSmall}>{cgv}</Text>
+        cgvViewRender = <View style={{marginBottom: 36}} ><Text style={text.sizeSmall}>{cgv}</Text></View>
     }
 
 
     return (
-        <ScrollView style={main.scroll}>            
-                {cgvViewRender}
+        <ScrollView style={main.scroll}>
+            {cgvViewRender}
         </ScrollView>
     )
 }

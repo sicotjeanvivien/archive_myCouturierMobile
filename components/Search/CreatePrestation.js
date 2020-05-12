@@ -9,9 +9,6 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput, Image } from "reac
 import { main, styles, input, btn, text } from "../../assets/stylesCustom";
 
 export const CreatePrestation = ({ navigation, route }) => {
-    console.log('start create prestation');
-    console.log(route.params);
-
     const [apitoken, setApitoken] = React.useState(route.params.apitoken);
     const [couturier, setCouturier] = React.useState(route.params.couturier);
     const [description, setDescription] = React.useState();
@@ -37,7 +34,6 @@ export const CreatePrestation = ({ navigation, route }) => {
         photoPrestaData.push('data:image/jpeg;base64,' + pickerResult.base64);
         setPhotoPresta(photoPrestaData);
         setPhotoPrestaView(photoPresta.map((key, i) => {
-            console.log(key)
             return (
                 <Image key={i} resizeMethod="resize" source={{ uri: key }} style={styles.thumbnail} />
                 // <Text>{key}</Text>
@@ -47,8 +43,6 @@ export const CreatePrestation = ({ navigation, route }) => {
 
     //SEND CREATE PRESTATION 
     const sendCreatePrestation = () => {
-        console.log('start send presta');
-
         let data = {
             retoucheId: couturier.retouche.id,
             description: description,
@@ -56,7 +50,6 @@ export const CreatePrestation = ({ navigation, route }) => {
             material: '',
         };
 
-        console.log(data);
         fetch(ConstEnv.host + ConstEnv.prestation, {
             method: 'POST',
             headers: {
@@ -68,7 +61,6 @@ export const CreatePrestation = ({ navigation, route }) => {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (!responseJson.error) {
                     navigation.navigate('Prestation', {
                         message: responseJson.message

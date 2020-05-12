@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { View, Text, ActivityIndicator, ScrollView, AsyncStorage, TouchableOpacity } from 'react-native';
 
-import { styles, main, flexDirection, btn, text } from '../../assets/stylesCustom';
+import { styles, main, flexDirection, btn, text, input } from '../../assets/stylesCustom';
 import { ConstEnv } from '../tools/ConstEnv';
 import { AuthContext } from '../../Context/AuthContext';
 import { MessageUser } from '../tools/MessageUser';
 import { MessageContact } from '../tools/MessageContact';
+import { TextInput } from 'react-native-gesture-handler';
 
 
 export const Detail = ({ navigation, route }) => {
@@ -16,7 +17,7 @@ export const Detail = ({ navigation, route }) => {
             setApitoken(apitokenData);
             let usernameAsyncStorage = await AsyncStorage.getItem('username');
             setUsername(usernameAsyncStorage)
-            fetch(ConstEnv.host + ConstEnv.prestationDetail + route.params.prestation.id, {
+            fetch(ConstEnv.host + ConstEnv.prestation + route.params.prestation.id, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -26,7 +27,6 @@ export const Detail = ({ navigation, route }) => {
             })
                 .then(response => response.json())
                 .then(responseJson => {
-                    // console.log(responseJson);
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }
@@ -52,9 +52,8 @@ export const Detail = ({ navigation, route }) => {
     const { signOut } = React.useContext(AuthContext);
 
     const sendAcceptPrestation = (elem) => {
-        // console.log(elem)
         fetch(ConstEnv.host + ConstEnv.prestation + '/accept', {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
@@ -67,7 +66,6 @@ export const Detail = ({ navigation, route }) => {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                // console.log(responseJson);
                 if (responseJson.error === 'invalid credentials') {
                     signOut()
                 }
@@ -78,6 +76,30 @@ export const Detail = ({ navigation, route }) => {
                 }
             });
     };
+
+    const createTokenCard = ()=>{
+
+        fetch(ConstEnv.host+ ConstEnv.createToken,{
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-AUTH-TOKEN': apitoken,
+            },
+        })
+        .then((response)=>response.json())
+        .then((responseJson)=>{
+            if (responseJson.error === 'invalid credentials') {
+                signOut()
+            }
+            if (!responseJson.error) {
+                navigation.navigate('CardRegistrationForm',{
+                    tokenCard: responseJson.token
+                })
+            }
+        })
+
+    }
 
     if (isLoading) {
         if (prestation.state === 'active') {
@@ -101,7 +123,7 @@ export const Detail = ({ navigation, route }) => {
                         }
 
                     </View>
-        {/* ACCEPT */}
+                    {/* ACCEPT */}
                     {
                         username === prestation.couturier && prestation.accept === null &&
                         <View style={flexDirection.row}>
@@ -115,37 +137,40 @@ export const Detail = ({ navigation, route }) => {
                             ><Text style={text.btnPrimaire}>Accepter</Text></TouchableOpacity>
                         </View>
                     }
-        {/* PAYMENT */}
+                    {/* PAYMENT */}
                     {
                         username === prestation.client && prestation.accept === true &&
                         <View style={flexDirection.row}>
                             <TouchableOpacity
                                 style={btn.primaire}
-                                // onPress={() => { sendPayment() }}
-                                onPress={()=>{console.log('payement')}}
+                                onPress={() => navigation.navigate('CardRegistrationForm')}
                             ><Text style={text.btnPrimaire}>Payer</Text></TouchableOpacity>
 
                         </View>
                     }
-        {/* MESSAGES */}
+                    {/* MESSAGES */}
                     {
-                        // prestation.accept === true && prestation.pay === true &&
+                        (prestation.accept === true || prestation.message.length > 0) &&
                         <View style={main.tile}>
                             <Text>Messagerie</Text>
                             {
                                 (prestation.message).map((key, i) =>
                                     <View>
                                         {
-                                            username === key.username && 
-                                            <MessageUser key={i+ 'mu'} message={key.message} date={key.editedDate} />
+                                            username === key.username &&
+                                            <MessageUser key={i + 'mu'} message={key.message} date={key.editedDate} />
                                         }
                                         {
                                             username !== key.username &&
-                                            <MessageContact key={i+'mc'} message={key.message} date={key.editedDate} />
+                                            <MessageContact key={i + 'mc'} message={key.message} date={key.editedDate} />
                                         }
                                         {/* < Text key={i}>azea {key.message}</Text> */}
                                     </View>
                                 )
+                            }
+                            {
+                                prestation.accept && prestation.payemnt === true &&
+                                <TextInput style={input.textarea} />
                             }
                         </View>
                     }

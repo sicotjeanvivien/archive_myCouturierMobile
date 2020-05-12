@@ -6,13 +6,13 @@ import { Detail } from './Detail';
 import { ConstEnv } from '../tools/ConstEnv';
 import { PrestationList } from './PrestationList';
 import { AuthContext } from '../../Context/AuthContext';
+import { CardRegistrationForm } from './CardRegistrationForm';
 
 
 export const Prestations = ({ navigation }) => {
 
     React.useEffect(() => {
         const bootdata = async () => {
-            // console.log(await AsyncStorage.getAllKeys());
             const apitokenData = await AsyncStorage.getItem('userToken');
             setApitoken(apitokenData);
             const onCouturierData = await AsyncStorage.getItem('activeCouturier');
@@ -74,7 +74,6 @@ export const Prestations = ({ navigation }) => {
         </View>
     }
 
-
     // VIEW
     return (
         <View style={main.page}>
@@ -103,6 +102,14 @@ export const PrestationStackScreen = () => {
                 options={{
                     headerShown: true,
                     title: 'Détail prestation'
+                }}
+            />
+            <PrestationStack.Screen
+                name='CardRegistrationForm'
+                component={CardRegistrationForm}
+                options={{
+                    herdershow: true,
+                    title: 'Formulaire carte bancaire'
                 }}
             />
         </PrestationStack.Navigator>

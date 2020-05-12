@@ -162,7 +162,6 @@ export const Account = ({ navigation }) => {
                 .then((response) => response.json())
                 .then((responseJson) => {
                     if (responseJson.error === 'invalid credentials') {
-                        console.log('invalid credentials')
                         signOut()
                     }
                     if (!responseJson.error) {
@@ -204,7 +203,6 @@ export const Account = ({ navigation }) => {
             .then((response) => response.json())
             .then((responseJson) => {
                 if (responseJson.error === 'invalid credentials') {
-                    console.log('invalid credentials')
                     signOut()
                 }
                 if (!responseJson.error) {
@@ -221,7 +219,6 @@ export const Account = ({ navigation }) => {
     }
 
     const sendDeleteAccount = () => {
-        console.log('start delete account')
         fetch(ConstEnv.host + ConstEnv.deleteAccount, {
             method: 'POST',
             headers: {
@@ -233,9 +230,7 @@ export const Account = ({ navigation }) => {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson)
                 if (responseJson.error === 'invalid credentials') {
-                    console.log('invalid credentials')
                     signOut()
                 }
                 if (!responseJson.error) {

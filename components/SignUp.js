@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+
+import Constants from 'expo-constants';
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
+
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Text, View, Button, StyleSheet, TextInput, TouchableOpacity, AsyncStorage, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { styles, main, widthTall, flexTall, text, btn, input, flexDirection } from '../assets/stylesCustom';
@@ -23,7 +28,7 @@ export const SingUp = ({ navigation }) => {
     const [city, setCity] = React.useState('');
     const [postalCode, setPostalCode] = React.useState('');
     const [response, setResponse] = React.useState();
-    const [date, setDate] = React.useState();
+    const [date, setDate] = React.useState(Date.now());
     const [mode, setMode] = React.useState('date');
     const [show, setShow] = React.useState(false);
 
@@ -33,7 +38,6 @@ export const SingUp = ({ navigation }) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
-        console.log(date);
     };
 
     const showMode = currentMode => {
@@ -42,7 +46,7 @@ export const SingUp = ({ navigation }) => {
     };
 
     const showDatepicker = () => {
-        setDate(new Date())
+        setDate(date)
         showMode('date');
     };
 
@@ -100,7 +104,17 @@ export const SingUp = ({ navigation }) => {
         }
         data.address.addressLine2 = addressLine2;
         data.address.postalCode = postalCode;
-        data.birthday = new Date(date).valueOf();
+        data.birthday = Math.round(new Date(date).getTime()/1000);
+        
+        // if (Platform.OS === 'android' && !Constants.isDevice) {
+        //     setErrorMessage('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
+        // } else {
+        //     let { status } = Permissions.askAsync(Permissions.LOCATION);
+        //     if (status !== 'granted') {
+        //         setErrorMessage('Permission to access location was denied');
+        //     }
+        //     let localisation = Location.geocodeAsync();
+        // };
         return { data, errorData };
 
     }
@@ -109,20 +123,18 @@ export const SingUp = ({ navigation }) => {
         let data = validatorData()
         let dataRequest = data.data;
         let errorData = data.errorData;
-        console.log(dataRequest, errorData)
 
         if (!errorData.error) {
-            console.log('start create mango user')
             fetch(ConstEnv.host + ConstEnv.signUp, {
                 method: 'POST',
                 headers: {
+                    Accept: 'application/json',
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(dataRequest),
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (responseJson.error) {
                         setResponse(<Error message={responseJson.message} />);
                     } else {
@@ -133,6 +145,8 @@ export const SingUp = ({ navigation }) => {
                         AsyncStorage.setItem('lastname', userApp.lastname);
                         AsyncStorage.setItem('email', userApp.email);
                         AsyncStorage.setItem('id', userApp.id);
+                        AsyncStorage.setItem('username', userApp.username);
+                        AsyncStorage.setItem('activeCouturier', userApp.activeCouturier);
                         AsyncStorage.setItem('privateMode', userApp.privateMode);
                         signUpContext(userApp.apitoken)
                     }
@@ -162,13 +176,6 @@ export const SingUp = ({ navigation }) => {
                     onChangeText={setFirstname}
                     defaultValue={firstname}
                 />
-                {/* <TextInput
-                    style={input.signUp}
-                    autoCompleteType='cc-exp-month'
-                    placeholder="date d'anniversaire"
-                    onChangeText={setBirthday}
-                    defaultValue={birthday}
-                /> */}
                 <View style={flexDirection.row} >
                     <TextInput
                         editable={false}

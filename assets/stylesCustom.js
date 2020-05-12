@@ -32,7 +32,7 @@ export const main = StyleSheet.create({
     },
     backgroundColor: { backgroundColor: color.colorBackGrouds, zIndex: 100 },
     tile: {
-        width: Dimensions.get('screen').width * 0.8,
+        width: Dimensions.get('screen').width * 0.9,
         borderWidth: 1,
         borderRadius: 5,
         borderColor: color.white,
@@ -137,7 +137,9 @@ export const flexDirection = StyleSheet.create({
 export const flexTall = StyleSheet.create({
     flex12: { flex: 12 },
     flex10: { flex: 10 },
+    flex9: { flex: 9 },
     flex8: { flex: 8 },
+    flex7: { flex: 7 },
     flex6: { flex: 6 },
     flex4: { flex: 4 },
     flex3: { flex: 3 },
@@ -253,6 +255,27 @@ export const input = StyleSheet.create({
         alignItems: 'center',
         padding: 5,
         zIndex: 100,
+    },
+    retouche:{
+        backgroundColor: color.white,
+        color: color.black,
+        alignItems: 'center',
+        textAlign: 'center',
+        width: 48,
+        height:24,
+        margin: 5,
+        // borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#C4C4C4',
+        borderBottomWidth: 1,
+        shadowColor: color.black,
+        // shadowOffset: { width: 10, height: 16 },
+        shadowOpacity: 0.5,
+        // shadowRadius: 25,
+//         border: 1px solid #C4C4C4;
+// box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
+        // padding: 5,
+        // zIndex: 100,
     }
 
 })
@@ -346,7 +369,7 @@ export const styles = StyleSheet.create({
     title: {
         flexDirection: 'row',
         fontSize: 30,
-        color: 'rgb(255,195,11)',
+        color: '#F0B217',
 
     },
     input: {
@@ -456,7 +479,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: color.white,
-        margin: 16
+        margin: 4
 
     },
     inputPickerItem: {

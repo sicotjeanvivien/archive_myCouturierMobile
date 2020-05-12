@@ -131,7 +131,8 @@ const TabsScreen = () => (
       name='ProfilStack'
       component={ProfilStackScreen}
       options={{
-        title: 'Profil'
+        title: 'Profil',
+        unmountOnBlur: true
       }}
     />
   </Tabs.Navigator>
