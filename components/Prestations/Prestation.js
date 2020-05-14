@@ -7,6 +7,7 @@ import { ConstEnv } from '../tools/ConstEnv';
 import { PrestationList } from './PrestationList';
 import { AuthContext } from '../../Context/AuthContext';
 import { CardRegistrationForm } from './CardRegistrationForm';
+import { PaymentForm } from './PaymentForm';
 
 
 export const Prestations = ({ navigation }) => {
@@ -101,7 +102,15 @@ export const PrestationStackScreen = () => {
                 component={Detail}
                 options={{
                     headerShown: true,
-                    title: 'Détail prestation'
+                    title: ''
+                }}
+            />
+            <PrestationStack.Screen
+                name='PaymentForm'
+                component={PaymentForm}
+                options={{
+                    herdershow: true,
+                    title: 'Formulaire de payment'
                 }}
             />
             <PrestationStack.Screen

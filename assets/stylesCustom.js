@@ -5,17 +5,27 @@ const heightWindows = Dimensions.get('window').height;
 
 const color = {
     white: "rgb(255,255,255)",
-    colorBackGrouds: '#E5E5E5',
+    colorBackGrouds: '#F9F9F9',
     yellow: '#F5B30F',
     black: 'black',
     red: 'red',
-    green: 'green'
+    green: 'green',
+    greenSelect: '#99F499',
 };
 
 export const main = StyleSheet.create({
     page: {
         flex: 1,
         justifyContent: 'flex-start',
+        backgroundColor: color.colorBackGrouds,
+        paddingTop: 24,
+        width: Dimensions.get('window').width,
+        fontFamily: "Roboto",
+
+    },
+    pageEnd: {
+        flex: 1,
+        justifyContent: 'flex-end',
         backgroundColor: color.colorBackGrouds,
         paddingTop: 24,
         width: Dimensions.get('window').width,
@@ -47,6 +57,37 @@ export const main = StyleSheet.create({
         marginRight: 0,
         marginTop: 0,
         marginBottom: 25,
+    },
+    tileCard: {
+        width: Dimensions.get('screen').width * 0.8,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: color.white,
+        borderBottomWidth: 0,
+        shadowColor: color.black,
+        shadowOffset: { width: 10, height: 20 },
+        shadowOpacity: 0.5,
+        shadowRadius: 25,
+        padding: 5,
+        elevation: 2,
+        marginTop: 10,
+        marginBottom: 10
+    },
+    tileCardSelect: {
+        width: Dimensions.get('screen').width * 0.8,
+        backgroundColor: color.greenSelect,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: color.white,
+        borderBottomWidth: 0,
+        shadowColor: color.black,
+        shadowOffset: { width: 10, height: 20 },
+        shadowOpacity: 0.5,
+        shadowRadius: 25,
+        padding: 5,
+        elevation: 2,
+        marginTop: 10,
+        marginBottom: 10
     },
     tileMap: {
         flexDirection: 'row',
@@ -126,9 +167,17 @@ export const flexDirection = StyleSheet.create({
         alignItems: 'center',
     },
     justRow: { flexDirection: 'row' },
+    justRowEnd: { flexDirection: 'row', justifyContent: 'flex-end' },
+    rowEnd: { flexDirection: 'row', justifyContent: 'flex-end' },
     row: {
         flexDirection: 'row',
         justifyContent: 'space-around',
+        alignContent: 'space-between',
+        alignItems: 'flex-start',
+    },
+    rowBetween: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignContent: 'space-between',
         alignItems: 'flex-start',
     }
@@ -185,6 +234,7 @@ export const btn = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         backgroundColor: color.yellow,
+        borderRadius: 4,
         maxWidth: Dimensions.get('screen').width * 0.8,
         padding: 5,
     },
@@ -206,6 +256,24 @@ export const btn = StyleSheet.create({
 });
 
 export const text = StyleSheet.create({
+    message:{
+        backgroundColor: color.white,
+        color: color.black,
+        fontSize: 14,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: color.white,
+        borderBottomWidth: 0,
+        shadowColor: color.black,
+        shadowOffset: { width: 10, height: 20 },
+        shadowOpacity: 0.5,
+        shadowRadius: 25,
+        elevation: 2,
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 0,
+        marginBottom: 25,
+    },
     btnPrimaire: {
         color: color.white,
         fontSize: 24,
@@ -239,6 +307,14 @@ export const input = StyleSheet.create({
         textAlignVertical: 'top',
         textAlign: 'left',
     },
+    message: {
+        height: 64,
+        backgroundColor: color.white,
+        color: 'black',
+        textAlignVertical: 'top',
+        marginTop: 10,
+        textAlign: 'left',
+    },
     signUp: {
         width: Dimensions.get('screen').width * 0.8,
         backgroundColor: color.white,
@@ -247,8 +323,8 @@ export const input = StyleSheet.create({
         margin: 15,
         padding: 5,
         zIndex: 100,
-    }, 
-    date:{
+    },
+    date: {
         width: Dimensions.get('screen').width * 0.3,
         backgroundColor: color.white,
         color: color.black,
@@ -256,13 +332,13 @@ export const input = StyleSheet.create({
         padding: 5,
         zIndex: 100,
     },
-    retouche:{
+    retouche: {
         backgroundColor: color.white,
         color: color.black,
         alignItems: 'center',
         textAlign: 'center',
         width: 48,
-        height:24,
+        height: 24,
         margin: 5,
         // borderWidth: 1,
         borderRadius: 5,
@@ -272,14 +348,21 @@ export const input = StyleSheet.create({
         // shadowOffset: { width: 10, height: 16 },
         shadowOpacity: 0.5,
         // shadowRadius: 25,
-//         border: 1px solid #C4C4C4;
-// box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
+        //         border: 1px solid #C4C4C4;
+        // box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
         // padding: 5,
         // zIndex: 100,
     }
 
 })
-
+export const img = StyleSheet.create({
+    messenger: {
+        width: 64,
+        height: 64,
+        resizeMode: "cover",
+        borderRadius: 64
+    }
+})
 
 export const modal = StyleSheet.create({
     centeredView: {
@@ -288,11 +371,12 @@ export const modal = StyleSheet.create({
         alignItems: "center",
         marginTop: 22,
         backgroundColor: color.black,
-        opacity: 0.6,
+        opacity: 0.8,
     },
     modalView: {
+        opacity: 1.5,
         margin: 20,
-        backgroundColor: "white",
+        backgroundColor: color.white,
         borderRadius: 20,
         padding: 35,
         alignItems: "center",

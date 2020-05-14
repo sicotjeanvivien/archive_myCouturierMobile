@@ -315,7 +315,6 @@ export const Account = ({ navigation }) => {
                 <View style={main.tile}>
                     <Modal
                         animationType="fade"
-                        transparent={false}
                         visible={modalVisible}
                         presentationStyle='overFullScreen'
                         transparent={true}
