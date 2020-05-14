@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { View, Text, ActivityIndicator, ScrollView, AsyncStorage, TouchableOpacity } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { View, Text, ActivityIndicator, ScrollView, AsyncStorage, TouchableOpacity, FlatList, TextInput } from 'react-native';
+import { AntDesign, FontAwesome } from '@expo/vector-icons';
 
 import { styles, main, flexDirection, btn, text, input, flexTall } from '../../assets/stylesCustom';
 import { ConstEnv } from '../tools/ConstEnv';
 import { AuthContext } from '../../Context/AuthContext';
 import { MessageUser } from '../tools/MessageUser';
 import { MessageContact } from '../tools/MessageContact';
-import { TextInput } from 'react-native-gesture-handler';
 
 
 export const Detail = ({ navigation, route }) => {
@@ -31,7 +30,6 @@ export const Detail = ({ navigation, route }) => {
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }
-                    console.log('prout');
                     if (!responseJson.error) {
                         setIsloading(true);
                         setPrestation(responseJson.prestation)
@@ -50,11 +48,11 @@ export const Detail = ({ navigation, route }) => {
     const [isLoading, setIsloading] = React.useState();
     const [username, setUsername] = React.useState();
     const [prestation, setPrestation] = React.useState(route.params.prestation);
-    const [message, setMessage] = React.useState()
+    const [message, setMessage] = React.useState();
+    const [confirmCode, setConfirmCode] = React.useState();
 
     const { signOut } = React.useContext(AuthContext);
-
-    console.log(prestation)
+    let countMessage = prestation.message && Object.keys(prestation.message).length;
 
     const sendAcceptPrestation = (elem) => {
         fetch(ConstEnv.host + ConstEnv.prestation + '/accept', {
@@ -83,7 +81,6 @@ export const Detail = ({ navigation, route }) => {
     };
 
     const sendMessage = () => {
-        console.log("sendMessage");
         if (message.length > 0) {
             setMessage(undefined)
             fetch(ConstEnv.host + ConstEnv.message, {
@@ -100,18 +97,42 @@ export const Detail = ({ navigation, route }) => {
             })
                 .then(response => response.json())
                 .then(responseJson => {
-                    console.log(responseJson);
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }
                     if (!responseJson.error) {
-
-                        // navigation.push('PrestationDetail', navigation.push('PrestationDetail',{prestation: prestation.id}))
+                        navigation.push('PrestationDetail', { prestation: prestation.id });
                     }
 
                 })
         }
     }
+
+    const getCodeConfirm = () => {
+        console.log('start get codeConfirm')
+        fetch(ConstEnv.host + ConstEnv.confirmCode, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-AUTH-TOKEN': apitokenData,
+            },
+        })
+        .then(response=>response.json())
+        .then(responseJson=>{
+            console.log(responseJson);
+            if (responseJson.error === 'invalid credentials') {
+                signOut()
+            }if (!responseJson.error) {
+                setConfirmCode(responseJson.code)
+            }
+        })
+
+    }
+    const sendCodeConfirm = () => {
+        console.log('start blabla')
+    }
+
 
     if (isLoading) {
         if (prestation.state === 'active') {
@@ -120,7 +141,7 @@ export const Detail = ({ navigation, route }) => {
                     <View style={{ flexDirection: 'row', flex: 2, backgroundColor: "#E5E5E5" }}>
                         <View style={flexTall.flex1}></View>
                         <View style={flexTall.flex8}>
-                            <Text>Détail prestation:</Text>
+                            <Text style={text.sizeMedium}>Détail prestation:</Text>
                             <View style={{ flexWrap: 'wrap', flexDirection: "row" }}>
 
                                 {
@@ -132,10 +153,10 @@ export const Detail = ({ navigation, route }) => {
                                 <Text>Outil: {prestation.tool !== null ? prestation.tool : 'non indiqué'} </Text>
                                 <Text>Description: {prestation.description !== null ? prestation.description : 'aucune'} </Text>
                                 {
-                                    username === prestation.couturier && <Text>Prix: {prestation.priceCouturier}</Text>
+                                    username === prestation.couturier && <Text>Prix: {prestation.priceCouturier}<FontAwesome style={flexTall.flex1} size={16} name='euro' /></Text>
                                 }
                                 {
-                                    username === prestation.client && <Text>Prix: {prestation.priceShow}</Text>
+                                    username === prestation.client && <Text>Prix: {prestation.priceShow}<FontAwesome style={flexTall.flex1} size={16} name='euro' /></Text>
                                 }
 
                             </View>
@@ -169,28 +190,29 @@ export const Detail = ({ navigation, route }) => {
                     {/* MESSAGES */}
                     {
                         ((prestation.accept === true && prestation.pay === true) || prestation.message.length > 0) &&
-                        <View style={{ flex: 8 }}>
-                            <Text>Messagerie</Text>
+                        <View style={{ flex: 8, marginTop: 5 }}>
                             <View style={flexDirection.justRow}>
                                 <View style={flexTall.flex1}></View>
-                                <View style={flexTall.flex8}>
-                                    <ScrollView>
-                                        {
-                                            (prestation.message).map((key, i) =>
-                                                <View>
-                                                    {
-                                                        username === key.username &&
-                                                        <MessageUser key={i + 'mu'} message={key.message} date={key.editedDate} />
-                                                    }
-                                                    {
-                                                        username !== key.username &&
-                                                        <MessageContact key={i + 'mc'} message={key.message} date={key.editedDate} />
-                                                    }
-                                                    {/* < Text key={i}>azea {key.message}</Text> */}
-                                                </View>
-                                            )
-                                        }
-                                    </ScrollView>
+                                <View style={flexTall.flex12}>
+                                    <FlatList
+                                        keyExtractor={item => item.id}
+                                        initialScrollIndex={countMessage - 1}
+                                        data={prestation.message}
+                                        renderItem={({ item, i, separators }) => (
+                                            <View style={{ minHeight: 48 }} key={i}>
+                                                {
+                                                    username === item.username &&
+                                                    <MessageUser message={item.message} date={item.editedDate} imageProfil={item.imageProfil} />
+                                                }
+                                                {
+                                                    username !== item.username &&
+                                                    <MessageContact message={item.message} date={item.editedDate} imageProfil={item.imageProfil} />
+                                                }
+
+                                            </View>
+                                        )}
+                                    />
+
                                 </View>
                                 <View style={flexTall.flex1}></View>
                             </View>
@@ -199,7 +221,6 @@ export const Detail = ({ navigation, route }) => {
                         <View style={{ flexDirection: 'row', flex: 2, backgroundColor: "#E5E5E5" }}>
                             <View style={flexTall.flex1}></View>
                             <View style={flexTall.flex8}>
-
                                 {
                                     prestation.accept === true && prestation.pay === true && prestation.state === "active" &&
                                     <View style={flexDirection.justRow}>
@@ -215,37 +236,34 @@ export const Detail = ({ navigation, route }) => {
                                             />
                                         </View>
                                         <View style={{ flex: 2, marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
-                                            <View style={flexTall.flex1}><AntDesign onPress={() => console.log("scanBar")} name="scan1" size={24} color="black" /></View>
+                                            <View style={flexTall.flex1}>
+                                                {
+                                                    username === prestation.client &&
+                                                    <AntDesign
+                                                        onPress={() => getCodeConfirm()}
+                                                        name="scan1" size={24} color="black"
+                                                    />
+                                                }
+                                                {
+                                                    username === prestation.couturier &&
+                                                    <FontAwesome
+                                                        onPress={() => senCodeConfirm()}
+                                                        name="qrcode" size={24} color="black"
+                                                    />
+                                                }
+                                            </View>
                                             <View style={flexTall.flex1}><AntDesign onPress={() => sendMessage()} name="rightcircleo" size={28} color="black" /></View>
                                         </View>
                                     </View>
                                 }
                             </View>
                             <View style={flexTall.flex1}></View>
-
                         </View>
                     }
-
                 </View >
-
-
             )
         }
-
-    } else {
-        if (prestation.state === 'inactive') {
-            contentPage =
-                <View >
-                    <View>
-                        <Text></Text>
-                    </View>
-                    <Text>
-                        detail presation 885
-                </Text>
-                </View>
-        }
     }
-
 
     return (
         <ScrollView style={main.scroll}>

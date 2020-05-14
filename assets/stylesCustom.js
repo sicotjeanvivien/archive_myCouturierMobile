@@ -18,7 +18,7 @@ export const main = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         backgroundColor: color.colorBackGrouds,
-        paddingTop: 24,
+        // paddingTop: 24,
         width: Dimensions.get('window').width,
         fontFamily: "Roboto",
 
@@ -258,6 +258,7 @@ export const btn = StyleSheet.create({
 export const text = StyleSheet.create({
     message:{
         backgroundColor: color.white,
+        margin:5,
         color: color.black,
         fontSize: 14,
         borderWidth: 1,
@@ -357,8 +358,9 @@ export const input = StyleSheet.create({
 })
 export const img = StyleSheet.create({
     messenger: {
-        width: 64,
-        height: 64,
+        width: 48,
+        height: 48,
+        margin:5,
         resizeMode: "cover",
         borderRadius: 64
     }

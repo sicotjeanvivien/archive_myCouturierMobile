@@ -18,6 +18,7 @@ export const ConstEnv = {
     retouching: '/api/userPriceRetouching/',
     //Prestations
     prestation: '/api/prestation/',
+    confirmCode: '/api/prestation/congirmCode',
     prestationDetail: '/api/prestation/detail/',
     //MangoPay
     createToken: '/api/mangopay/createToken',

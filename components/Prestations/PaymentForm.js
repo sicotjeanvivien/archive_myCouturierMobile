@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, View, Text, TextInput, TouchableOpacity, AsyncStorage, Picker, Modal, TouchableHighlight } from "react-native";
 import { main, styles, input, btn, text, flexDirection, modal } from "../../assets/stylesCustom";
-
+import { Ionicons, Entypo, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 
 import { Error } from '../tools/Error';
 import { Success } from '../tools/Success';
@@ -11,7 +11,6 @@ import { ConstEnv } from '../tools/ConstEnv';
 
 export const PaymentForm = ({ navigation, route }) => {
 
-    console.log(route.params.prestation.id);
     const { signOut } = React.useContext(AuthContext);
     const [apitoken, setApitoken] = useState();
     const [cardList, setCardList] = useState();
@@ -63,18 +62,17 @@ export const PaymentForm = ({ navigation, route }) => {
                 },
                 body: JSON.stringify(data)
             })
-            .then((response)=>response.json())
-            .then((responseJson)=>{
-                console.log(responseJson)
-                if (responseJson.error === 'invalid credentials') {
-                    signOut();
-                }
-                if (!responseJson.error) {
-                    navigation.push('PrestationDetail',{prestation: responseJson.prestation})
-                }else{
-                    setErrorResponse(<Error message={responseJson.message} />)
-                }
-            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    if (responseJson.error === 'invalid credentials') {
+                        signOut();
+                    }
+                    if (!responseJson.error) {
+                        navigation.push('PrestationDetail', { prestation: responseJson.prestation })
+                    } else {
+                        setErrorResponse(<Error message={responseJson.message} />)
+                    }
+                })
         } else {
             setErrorResponse(<Error message={'aucune carte selectionné'} />)
         }
@@ -120,15 +118,26 @@ export const PaymentForm = ({ navigation, route }) => {
                     <Text style={text.sizeMedium}>Résumé: </Text>
                     <View style={flexDirection.rowBetween}>
                         <Text style={text.sizeSmall}>Prix prestation: </Text>
-                        <Text style={text.sizeSmall}>{prestation.priceCouturier}</Text>
+                        <View>
+                            <Text style={text.sizeSmall}>{prestation.priceCouturier}</Text>
+                            <FontAwesome style={flexTall.flex1} size={16} name='euro' />
+                        </View>
                     </View>
                     <View style={flexDirection.rowBetween}>
                         <Text style={text.sizeSmall}>Frais: </Text>
-                        <Text style={text.sizeSmall}>{prestation.priceShow - prestation.priceCouturier}</Text>
+                        <View>
+                            <Text style={text.sizeSmall}>{prestation.priceShow - prestation.priceCouturier}</Text>
+                            <FontAwesome style={flexTall.flex1} size={16} name='euro' />
+                        </View>
                     </View>
                     <View style={flexDirection.rowBetween}>
                         <Text style={text.sizeSmall}>Total: </Text>
-                        <Text style={text.sizeSmall}>{prestation.priceShow}</Text>
+                        <View>
+                            <Text style={text.sizeSmall}>{prestation.priceShow}</Text>
+                            <FontAwesome style={flexTall.flex1} size={16} name='euro' />
+                        </View>
+
+
                     </View>
                 </View>
                 <View style={styles.blocCenter}>
