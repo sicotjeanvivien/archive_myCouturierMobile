@@ -8,9 +8,11 @@ import { PrestationList } from './PrestationList';
 import { AuthContext } from '../../Context/AuthContext';
 import { CardRegistrationForm } from './CardRegistrationForm';
 import { PaymentForm } from './PaymentForm';
+import { DetailFinished } from './DetailFinished';
 
 
-export const Prestations = ({ navigation }) => {
+export const Prestations = ({ navigation, route }) => {
+
 
     React.useEffect(() => {
         const bootdata = async () => {
@@ -48,6 +50,7 @@ export const Prestations = ({ navigation }) => {
     const [prestaCouturierData, setPrestaCouturierData] = React.useState();
     const [prestaClientData, setPrestaClientData] = React.useState();
     const [prestationShow, setPrestationShow] = React.useState('client');
+    const [response, setResponse] = React.useState()
 
     const { signOut } = React.useContext(AuthContext);
 
@@ -55,12 +58,16 @@ export const Prestations = ({ navigation }) => {
         setPrestationShow(userType);
     }
 
+    if (route.params && route.params.response && response === undefined) {
+        setResponse(route.params.response)
+    }
+
     let prestationRenderView = <ActivityIndicator />;
     if (isLoading && prestationShow === 'client') {
-        prestationRenderView = <PrestationList data={prestaClientData} navigation={navigation} />;
+        prestationRenderView = <PrestationList data={prestaClientData} navigation={navigation} response={response} />;
     }
     if (isLoading && prestationShow === 'couturier') {
-        prestationRenderView = <PrestationList data={prestaCouturierData} navigation={navigation} />;
+        prestationRenderView = <PrestationList data={prestaCouturierData} navigation={navigation} response={response} />;
     }
 
     let prestaHeaderView = <View style={flexDirection.justRow}><Text style={tab.btnClient}>Prestations</Text></View>;
@@ -100,6 +107,14 @@ export const PrestationStackScreen = () => {
             <PrestationStack.Screen
                 name='PrestationDetail'
                 component={Detail}
+                options={{
+                    headerShown: true,
+                    title: ''
+                }}
+            />
+            <PrestationStack.Screen
+                name='DetailFinished'
+                component={DetailFinished}
                 options={{
                     headerShown: true,
                     title: ''

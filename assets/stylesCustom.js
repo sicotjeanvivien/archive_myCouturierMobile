@@ -8,7 +8,7 @@ const color = {
     colorBackGrouds: '#F9F9F9',
     yellow: '#F5B30F',
     black: 'black',
-    red: 'red',
+    red: '#FF9999',
     green: 'green',
     greenSelect: '#99F499',
 };
@@ -246,19 +246,23 @@ export const btn = StyleSheet.create({
         backgroundColor: color.colorBackGrouds,
     },
     accept: {
-        backgroundColor: color.green
+        backgroundColor: color.greenSelect,
+        borderRadius: 12,
+        padding: 10,
     },
     decline: {
         backgroundColor: color.red,
+        borderRadius: 12,
+        padding: 10,
 
     }
 
 });
 
 export const text = StyleSheet.create({
-    message:{
+    message: {
         backgroundColor: color.white,
-        margin:5,
+        margin: 5,
         color: color.black,
         fontSize: 14,
         borderWidth: 1,
@@ -360,25 +364,25 @@ export const img = StyleSheet.create({
     messenger: {
         width: 48,
         height: 48,
-        margin:5,
+        margin: 5,
         resizeMode: "cover",
         borderRadius: 64
     }
 })
 
 export const modal = StyleSheet.create({
+
     centeredView: {
         flex: 1,
+        backgroundColor: color.black,
+        opacity:0.8,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 22,
-        backgroundColor: color.black,
-        opacity: 0.8,
     },
     modalView: {
-        opacity: 1.5,
         margin: 20,
-        backgroundColor: color.white,
+        width: Dimensions.get('window').width*0.8,
+        backgroundColor: "white",
         borderRadius: 20,
         padding: 35,
         alignItems: "center",
@@ -390,6 +394,20 @@ export const modal = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5
+    },
+    openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        textAlign: "center"
     },
     btnCancel: {
         backgroundColor: color.red,
@@ -577,8 +595,9 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
-    }
-})
+    },
+    
+});
 
 
 

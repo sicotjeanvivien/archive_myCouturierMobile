@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { View, Text, ActivityIndicator, ScrollView, AsyncStorage, TouchableOpacity, FlatList, TextInput } from 'react-native';
+import { View, Text, ActivityIndicator, ScrollView, AsyncStorage, TouchableOpacity, TouchableHighlight, FlatList, TextInput, Dimensions, Modal } from 'react-native';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 
-import { styles, main, flexDirection, btn, text, input, flexTall } from '../../assets/stylesCustom';
+import { styles, main, flexDirection, btn, text, input, flexTall, modal } from '../../assets/stylesCustom';
+import { Error } from '../tools/Error';
 import { ConstEnv } from '../tools/ConstEnv';
 import { AuthContext } from '../../Context/AuthContext';
 import { MessageUser } from '../tools/MessageUser';
 import { MessageContact } from '../tools/MessageContact';
+import { Success } from '../tools/Success';
 
 
 export const Detail = ({ navigation, route }) => {
@@ -32,7 +34,8 @@ export const Detail = ({ navigation, route }) => {
                     }
                     if (!responseJson.error) {
                         setIsloading(true);
-                        setPrestation(responseJson.prestation)
+                        setPrestation(responseJson.prestation);
+                        setMessages(responseJson.prestation)
 
                     }
                 })
@@ -48,11 +51,13 @@ export const Detail = ({ navigation, route }) => {
     const [isLoading, setIsloading] = React.useState();
     const [username, setUsername] = React.useState();
     const [prestation, setPrestation] = React.useState(route.params.prestation);
-    const [message, setMessage] = React.useState();
+    const [message, setMessage] = React.useState('');
+    const [messages, setMessages] = React.useState();
     const [confirmCode, setConfirmCode] = React.useState();
+    const [modalVisible, setModalVisible] = React.useState(false);
+    const [errorResponse, setErrorResponse] = React.useState();
 
     const { signOut } = React.useContext(AuthContext);
-    let countMessage = prestation.message && Object.keys(prestation.message).length;
 
     const sendAcceptPrestation = (elem) => {
         fetch(ConstEnv.host + ConstEnv.prestation + '/accept', {
@@ -101,7 +106,7 @@ export const Detail = ({ navigation, route }) => {
                         signOut()
                     }
                     if (!responseJson.error) {
-                        navigation.push('PrestationDetail', { prestation: prestation.id });
+                        refreshMessage()
                     }
 
                 })
@@ -109,30 +114,74 @@ export const Detail = ({ navigation, route }) => {
     }
 
     const getCodeConfirm = () => {
-        console.log('start get codeConfirm')
-        fetch(ConstEnv.host + ConstEnv.confirmCode, {
+        fetch(ConstEnv.host + ConstEnv.confirmCode + '/' + prestation.id, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'X-AUTH-TOKEN': apitokenData,
+                'X-AUTH-TOKEN': apitoken,
             },
         })
-        .then(response=>response.json())
-        .then(responseJson=>{
-            console.log(responseJson);
-            if (responseJson.error === 'invalid credentials') {
-                signOut()
-            }if (!responseJson.error) {
-                setConfirmCode(responseJson.code)
-            }
-        })
-
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error === 'invalid credentials') {
+                    signOut()
+                } if (!responseJson.error) {
+                    setConfirmCode(responseJson.code);
+                    setModalVisible(true);
+                }
+            })
     }
     const sendCodeConfirm = () => {
-        console.log('start blabla')
-    }
+        fetch(ConstEnv.host + ConstEnv.confirmCode, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-AUTH-TOKEN': apitoken,
+            },
+            body: JSON.stringify({ "code": confirmCode, "prestationId": prestation.id })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                console.log(responseJson)
+                if (responseJson.error === 'invalid credentials') {
+                    signOut()
+                } if (!responseJson.error) {
+                    navigation.push('Prestaions', {
+                        response: responseJson.transfer.Statut
+                    })
+                } else {
+                    setErrorResponse(<Error message={responseJson.transfer.Status || responseJson.message} />);
+                }
+                setModalVisible(!modalVisible);
+            })
+    };
 
+    const refreshMessage = async () => {
+        await fetch(ConstEnv.host + ConstEnv.message + prestation.id, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-AUTH-TOKEN': apitoken,
+            },
+        })
+            .then(response => response.json())
+            .then((responseJson) => {
+                if (responseJson.error === 'invalid credentials') {
+                    signOut()
+                }
+                if (!responseJson.error) {
+                    setMessages(responseJson.message);
+                }
+            })
+    }
+    // let countMessage = Object.keys(messages).length();
+    if (apitoken) {
+        // refreshMessage();
+
+    }
 
     if (isLoading) {
         if (prestation.state === 'active') {
@@ -189,15 +238,16 @@ export const Detail = ({ navigation, route }) => {
                     </View>
                     {/* MESSAGES */}
                     {
-                        ((prestation.accept === true && prestation.pay === true) || prestation.message.length > 0) &&
+                        ((prestation.accept === true && prestation.pay === true) || messages.length > 0) &&
                         <View style={{ flex: 8, marginTop: 5 }}>
                             <View style={flexDirection.justRow}>
                                 <View style={flexTall.flex1}></View>
                                 <View style={flexTall.flex12}>
+                                    <View>{errorResponse}</View>
                                     <FlatList
+                                        refreshing={true}
                                         keyExtractor={item => item.id}
-                                        initialScrollIndex={countMessage - 1}
-                                        data={prestation.message}
+                                        data={messages}
                                         renderItem={({ item, i, separators }) => (
                                             <View style={{ minHeight: 48 }} key={i}>
                                                 {
@@ -247,7 +297,7 @@ export const Detail = ({ navigation, route }) => {
                                                 {
                                                     username === prestation.couturier &&
                                                     <FontAwesome
-                                                        onPress={() => senCodeConfirm()}
+                                                        onPress={() => setModalVisible(true)}
                                                         name="qrcode" size={24} color="black"
                                                     />
                                                 }
@@ -260,6 +310,66 @@ export const Detail = ({ navigation, route }) => {
                             <View style={flexTall.flex1}></View>
                         </View>
                     }
+
+                    <Modal
+                        visible={modalVisible}
+                        animationType="fade"
+                        transparent={true}
+                    >
+                        {
+                            username === prestation.client &&
+                            <View style={modal.centeredView}>
+                                <View style={modal.modalView}>
+                                    <View style={{ margin: 10 }}>
+                                        <Text style={modal.modalText}>Code de confirmation</Text>
+                                        <Text style={{ fontSize: 24, textAlign: 'center' }}>{confirmCode}</Text>
+                                    </View>
+                                    <TouchableHighlight
+                                        style={btn.decline}
+                                        onPress={() => {
+                                            setModalVisible(!modalVisible);
+                                        }}
+                                    >
+                                        <Text style={{ fontSize: 16 }}>Fermer</Text>
+                                    </TouchableHighlight>
+                                </View>
+                            </View>
+                        }
+                        {
+                            username === prestation.couturier &&
+                            <View style={modal.centeredView}>
+                                <View style={modal.modalView}>
+                                    <View style={{ margin: 10 }}>
+                                        <Text style={modal.modalText}>Code de confirmation</Text>
+                                        <TextInput style={{ backgroundColor: 'white', color: 'black', fontSize: 30, margin: 10 }} onChangeText={setConfirmCode} />
+                                    </View>
+                                    <View style={flexDirection.rowBetween}>
+                                        <TouchableHighlight
+                                            style={flexTall.flex3}
+                                            onPress={() => {
+                                                setModalVisible(!modalVisible);
+                                            }}
+                                        >
+                                            <View style={btn.decline}>
+                                                <Text style={{ fontSize: 16, textAlign: 'center' }}>Fermer</Text>
+                                            </View>
+                                        </TouchableHighlight>
+                                        <View style={flexTall.flex1}></View>
+                                        <TouchableHighlight
+                                            style={flexTall.flex3}
+                                            onPress={() => {
+                                                sendCodeConfirm();
+                                            }}
+                                        >
+                                            <View style={btn.accept}>
+                                                <Text style={{ fontSize: 16 }}>Confirmer</Text>
+                                            </View>
+                                        </TouchableHighlight>
+                                    </View>
+                                </View>
+                            </View>
+                        }
+                    </Modal>
                 </View >
             )
         }
