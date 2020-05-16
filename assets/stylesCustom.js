@@ -79,6 +79,22 @@ export const main = StyleSheet.create({
         marginBottom: 25,
         flexDirection: 'row'
     },
+    tileItem: {
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: color.white,
+        borderBottomWidth: 0,
+        shadowColor: color.black,
+        shadowOffset: { width: 10, height: 20 },
+        shadowOpacity: 0.5,
+        shadowRadius: 25,
+        padding: 5,
+        elevation: 2,
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 15,
+        marginBottom: 15,
+    },
     tileCard: {
         width: Dimensions.get('screen').width * 0.8,
         borderWidth: 1,
@@ -92,7 +108,8 @@ export const main = StyleSheet.create({
         padding: 5,
         elevation: 2,
         marginTop: 10,
-        marginBottom: 10
+        marginBottom: 10,
+        flexDirection: 'row'
     },
     tileCardSelect: {
         width: Dimensions.get('screen').width * 0.8,
@@ -108,7 +125,8 @@ export const main = StyleSheet.create({
         padding: 5,
         elevation: 2,
         marginTop: 10,
-        marginBottom: 10
+        marginBottom: 10,
+        flexDirection: 'row'
     },
     tileMap: {
         flexDirection: 'row',
@@ -321,7 +339,7 @@ export const text = StyleSheet.create({
     white: { color: color.white },
     yellow: { color: color.yellow },
     sizeSmall: { fontSize: 12 },
-    sizeMedium: { fontSize: 20, color: color.yellow },
+    sizeMedium: { fontSize: 20, color: color.yellow, textAlign: 'left' },
     sizeLarge: { fontSize: 24, color: color.yellow },
 })
 

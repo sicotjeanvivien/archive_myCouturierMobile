@@ -54,16 +54,12 @@ const Search = ({ navigation }) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    if (responseJson.length > 0) {
-                        setDataRetouche(responseJson);
-                    } else {
-                        setDataRetouche(null)
+                    if (!responseJson.error) {
+                        setDataRetouche(responseJson.retouches);
                     }
                 });
         };
-
         bootData();
-
     }, [])
 
     const [apitoken, setApitoken] = React.useState(null);
@@ -71,12 +67,12 @@ const Search = ({ navigation }) => {
     const [errorMessage, setErrorMessage] = React.useState();
     const [longitudeUser, setLongitudeUser] = React.useState();
     const [latitudeUser, setLatitudeUser] = React.useState();
-    const [dataRetouche, setDataRetouche] = React.useState([]);
+    const [dataRetouche, setDataRetouche] = React.useState();
     const [retoucheSelect, setRetoucheSelect] = React.useState('choisir une prestation...');
     const [mapShow, setMapShow] = React.useState(false);
     const [errorResponse, setErroResponse] = React.useState();
     const [couturierResult, setCouturierResult] = React.useState();
-    const [address, setAddress]= React.useState()
+    const [address, setAddress] = React.useState()
 
     const imageProfilDefault = '../../assets/default-profile.png';
 
@@ -206,9 +202,9 @@ const Search = ({ navigation }) => {
             })
     };
 
-    const geocodeAddress = async ()=>{
+    const geocodeAddress = async () => {
         let location = await Location.geocodeAsync(address);
-        location.forEach((geoloc, i)=>{
+        location.forEach((geoloc, i) => {
             setLongitudeUser(geoloc.longitude);
             setLatitudeUser(geoloc.latitude);
         })
@@ -263,16 +259,19 @@ const Search = ({ navigation }) => {
         mapViewRender = mapView();
     };
 
-    const itemPicker = dataRetouche && dataRetouche.length != 0 ? Object.keys(dataRetouche).map((key, i) => {
-        return (
-            <Picker.Item
-                key={i}
-                style={styles.inputPickerItem}
-                label={dataRetouche[key].type}
-                value={dataRetouche[key].type}
-            />
-        )
-    }) : null;
+    let itemPicker = null;
+    if (dataRetouche) {
+        itemPicker = Object.keys(dataRetouche).map((key, i) => {
+            return (
+                <Picker.Item
+                    key={i}
+                    style={styles.inputPickerItem}
+                    label={dataRetouche[key].type}
+                    value={dataRetouche[key].type}
+                />
+            )
+        })
+    }
 
     return (
         <View style={main.page}>
@@ -295,7 +294,7 @@ const Search = ({ navigation }) => {
                     <TextInput
                         style={styles.inputPicker}
                         placeholder="Adresse"
-                        onChangeText={()=>geocodeAddress()}
+                        onChangeText={() => geocodeAddress()}
                         defaultValue={address}
                     />
                 </View>

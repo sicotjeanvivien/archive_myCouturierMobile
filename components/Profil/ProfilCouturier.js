@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text, TextInput, TouchableOpacity, AsyncStorage, ScrollView, Image, ActivityIndicator, Picker, TouchableHighlight, Modal } from "react-native";
 import { styles, main, widthTall, input, text, flexDirection, flexTall, btn, modal } from '../../assets/stylesCustom';
-import { Ionicons, AntDesign, MaterialCommunityIcons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, AntDesign, Entypo, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { ConstEnv } from '../tools/ConstEnv';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -27,7 +27,7 @@ export const ProfilCouturier = ({ navigation }) => {
                 setBio(bioStorage);
             };
             //LOAD retouche
-            fetch(ConstEnv.host + ConstEnv.retouching, {
+            fetch(ConstEnv.host + ConstEnv.userPriceRetouching, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -37,23 +37,8 @@ export const ProfilCouturier = ({ navigation }) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    if (responseJson.length > 0) {
-                        setDataRetouche(responseJson);
-                        let array = [];
-                        responseJson.forEach(element => {
-                            array.push({
-                                id: element.id,
-                                active: false,
-                                value: element.value,
-                                type: element.type,
-                                description: element.description,
-                                categoryRetouching: element.categoryRetouching,
-                                supplyCost: '',
-                            });
-                        });
-                        setSendData(array)
-                    } else {
-                        setDataRetouche(null)
+                    if (!responseJson.error) {
+                        setUserPriceRetouches(responseJson.userPriceRetouches)
                     }
                 })
             //LOAD wallet
@@ -73,11 +58,29 @@ export const ProfilCouturier = ({ navigation }) => {
                         setMangoWallet(responseJson.wallet)
                     }
                 })
+            // LOAD listCard
+            fetch(ConstEnv.host + ConstEnv.listCard, {
+                method: "GET",
+                headers: {
+                    'X-AUTH-TOKEN': token,
+                    "Accept": 'application/json',
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    if (responseJson.error === 'invalid credentials') {
+                        signOut()
+                    }
+                    if (!responseJson.Error) {
+                        setListCard(responseJson.listCard)
+                    }
+                })
         };
         bootData();
     }, [])
 
-    const [dataRetouche, setDataRetouche] = React.useState();
+    const [userPriceRetouches, setUserPriceRetouches] = React.useState()
     const [imageProfil, setImageProfil] = React.useState();
     const [apitoken, setApitoken] = React.useState(null);
     const [username, setUsername] = React.useState(null);
@@ -89,6 +92,7 @@ export const ProfilCouturier = ({ navigation }) => {
     const [errorResponse3, setErrorResponse3] = React.useState();
     const [modalVisibleT, setModalVisibleT] = React.useState(false);
     const [modalVisibleBA, setModalVisibleBA] = React.useState(false);
+    const [modalVisibleConfirm, setModalVisibleConfirm] = React.useState(false)
     const [activeCouturier, setActiveCouturier] = React.useState();
     const [bankAccounts, setBankAccounts] = React.useState();
     const [iban, setIban] = React.useState();
@@ -96,12 +100,13 @@ export const ProfilCouturier = ({ navigation }) => {
     const [ownerName, setOwnerName] = React.useState();
     const [bankAccountSelect, setBankAccountSelect] = React.useState();
     const [debitAmount, setDebitAmount] = React.useState();
+    const [listCard, setListCard] = React.useState();
 
     const imageProfilDefault = '../../assets/default-profile.png';
 
     const { signOut } = React.useContext(AuthContext);
 
-    //Update Retouche
+    //Update Retouche TODOO
     const updateProfil = () => {
         let errorData = false;
         if (bio.length > 250) {
@@ -172,21 +177,7 @@ export const ProfilCouturier = ({ navigation }) => {
             })
     };
 
-    let imageSource = <Image resizeMethod="resize" source={require(imageProfilDefault)} style={styles.thumbnail} />;
-    if (imageProfil) {
-        imageSource = <Image resizeMethod="resize" source={{ uri: imageProfil }} style={styles.thumbnail} />
-    }
-
-    let walletView = <ActivityIndicator />
-    if (mangoWallet) {
-        walletView = (
-            <View style={{ flex: 5, backgroundColor: 'white', flexDirection: 'row', margin: 10 }}>
-                <View style={flexTall.flex4}></View>
-                <Text style={{ fontSize: 24 }} >{mangoWallet.Balance.Amount}  <FontAwesome style={flexTall.flex1} size={24} name='euro' /></Text>
-            </View>
-        )
-    }
-
+    // FUNCTION
     const loadBanbkAccounts = () => {
         setModalVisibleT(true);
         fetch(ConstEnv.host + ConstEnv.bankAccount, {
@@ -243,29 +234,6 @@ export const ProfilCouturier = ({ navigation }) => {
         setBankAccountSelect(item.Id);
     }
 
-    let listBankAccountsView = <ActivityIndicator />;
-    if (bankAccounts) {
-        if (bankAccounts.length > 0) {
-            listBankAccountsView = (bankAccounts).map((item, i) => {
-                return (
-                    <View key={i} style={bankAccountSelect === item.Id ? main.tileCardSelect : main.tileCard}>
-                        <TouchableOpacity
-                            onPress={() => bankAccountSelected(item)}
-                        >
-                            <View style={flexDirection.rowBetween}>
-                                <Text style={text.sizeSmall}>IBAN: {item.Details.IBAN}</Text>
-                            </View>
-                            {/* <Text style={text.sizeSmall}>Numéro de carte: {item.Alias}</Text> */}
-                        </TouchableOpacity>
-                    </View>
-                )
-            })
-        } else {
-            listBankAccountsView = <View style={{ margin: 15 }}><Text>Aucun</Text></View>
-        }
-
-    }
-
     const sendPayOutBankWire = () => {
         if (bankAccountSelect && debitAmount > 0 && debitAmount <= mangoWallet.Balance.Amount) {
             let data = {
@@ -283,7 +251,6 @@ export const ProfilCouturier = ({ navigation }) => {
             })
                 .then(response => response.json())
                 .then(responseJson => {
-                    console.log(responseJson)
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }
@@ -298,9 +265,160 @@ export const ProfilCouturier = ({ navigation }) => {
         }
     }
 
+    const deleteBankAccount = (deleteBankId)=>{
+        console.log('delete bank', deleteBankId)
+        fetch(ConstEnv.host+ ConstEnv.bankAccount, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-AUTH-TOKEN': apitoken,
+            },
+            body: JSON.stringify({'bankAccountId': deleteBankId})
+        })
+        .then(response=>response.json())
+        .then(responseJson =>{
+            console.log(responseJson)
+            if (responseJson.error === 'invalid credentials') {
+                signOut();
+            }if (!responseJson.error) {
+                console.log('success');
+                loadBanbkAccounts();
+            } else {
+                setErrorResponse3(responseJson.message);
+            }
+        })
+    }
+
+    const deleteCard = (deleteCardId)=>{
+        console.log('delete bank', deleteCardId)
+        fetch(ConstEnv.host+ ConstEnv, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-AUTH-TOKEN': apitoken,
+            },
+            body: JSON.stringify({'cardId': deleteCardId})
+        })
+        .then(response=>response.json())
+        .then(responseJson =>{
+            console.log(responseJson)
+            if (responseJson.error === 'invalid credentials') {
+                signOut();
+            }if (!responseJson.error) {
+                console.log('success');
+                //TODOO
+            } else {
+                setErrorResponse3(responseJson.message);
+            }
+        })
+    }
+
+    // RENDER VIEW
+    let listBankAccountsView = <ActivityIndicator />;
+    if (bankAccounts) {
+        if (bankAccounts.length > 0) {
+            listBankAccountsView = (bankAccounts).map((item, i) => {
+                console.log(item);
+                return (
+                    <View key={i} style={bankAccountSelect === item.Id ? main.tileCardSelect : main.tileCard}>
+                        <TouchableOpacity
+                        style={flexTall.flex7}
+                            onPress={() => bankAccountSelected(item)}
+                        >
+                            <View style={flexDirection.rowBetween}>
+                                <Text style={text.sizeSmall}>IBAN: {item.Details.IBAN}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={()=>deleteBankAccount(item.Id)}
+                            style={{flex:1, backgroundColor: '#FF0000', alignItems: 'center'}}
+                        >
+                            <Entypo name="cross" size={24} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                )
+            })
+        } else {
+            listBankAccountsView = <View style={{ margin: 15 }}><Text>Aucun</Text></View>
+        }
+
+    }
+    let imageSource = <Image resizeMethod="resize" source={require(imageProfilDefault)} style={styles.thumbnail} />;
+    if (imageProfil) {
+        imageSource = <Image resizeMethod="resize" source={{ uri: imageProfil }} style={styles.thumbnail} />
+    }
+    let walletView = <ActivityIndicator />
+    if (mangoWallet) {
+        walletView = (
+            <View style={{ flex: 5, backgroundColor: 'white', flexDirection: 'row', margin: 10 }}>
+                <View style={flexTall.flex4}></View>
+                <Text style={{ fontSize: 24 }} >{mangoWallet.Balance.Amount / 100}  <FontAwesome style={flexTall.flex1} size={24} name='euro' /></Text>
+            </View>
+        )
+    }
+    let listCardView = <ActivityIndicator />
+    if (listCard) {
+        if (listCard.length > 0) {
+            listCardView = listCard.map((item, i) => {
+                return (
+                    <View key={i} style={main.tileItem}>
+                        <TouchableOpacity onPress={() => console.log('lol')}>
+                            <View style={flexDirection.rowBetween}>
+                                <Text style={text.sizeSmall}>{item.CardType}</Text>
+                                <Text style={text.sizeSmall}>date d'expiration: {item.ExpirationDate}</Text>
+                            </View>
+                            <Text style={text.sizeSmall}>Numéro de carte: {item.Alias}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={()=>deleteC(item.Id)}
+                            style={{flex:1, backgroundColor: '#FF0000', alignItems: 'center'}}
+                        >
+                            <Entypo name="cross" size={24} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                )
+            })
+        } else {
+            listCardView = <View style={{ margin: 15 }}><Text>Aucun</Text></View>
+        }
+    }
+    let listUserRetoucheView = <ActivityIndicator />
+    if (userPriceRetouches) {
+        if (userPriceRetouches.length > 0) {
+            listUserRetoucheView = userPriceRetouches.map((item, i) => {
+                if (item.value) {
+
+                    return (
+                        <View key={i} style={main.tileItem}>
+                            <View style={flexDirection.rowBetween}>
+                                <Text style={text.sizeSmall}>Retouche: </Text>
+                                <Text style={text.sizeSmall}>{item.type} </Text>
+                            </View>
+                            <View style={flexDirection.rowBetween}>
+                                <Text style={text.sizeSmall}>Description: </Text>
+                                <Text style={text.sizeSmall}>{item.description || 'null'} </Text>
+                            </View>
+                            <View style={flexDirection.rowBetween}>
+                                <Text style={text.sizeSmall}>Prix: </Text>
+                                <Text style={text.sizeSmall}>{item.value || 'null'} <FontAwesome style={flexTall.flex1} size={12} name='euro' /></Text>
+                            </View>
+                        </View>
+                    )
+                }
+            })
+        } else {
+            listUserRetoucheView = <View style={{ margin: 15 }}><Text>Aucun</Text></View>;
+        }
+
+    }
+
+
     return (
         <ScrollView style={main.scroll}>
             <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 24 }}>
+                {/* Profil */}
                 <View style={main.tile}>
                     <View style={flexDirection.row}>
                         <View style={flexTall.flex1}></View>
@@ -337,11 +455,12 @@ export const ProfilCouturier = ({ navigation }) => {
                                     <Text style={text.sizeSmall}>Valider</Text>
                                 </TouchableOpacity>
                             </View>
-                            {/* {errorResponse} */}
                         </View>
                         <View style={flexTall.flex1}></View>
                     </View>
                 </View>
+                {errorResponse}
+                {/* Wallet */}
                 <View style={main.tile}>
                     <Text style={text.sizeMedium}>Porte-Monnaie</Text>
                     <View style={flexDirection.row}>
@@ -361,8 +480,41 @@ export const ProfilCouturier = ({ navigation }) => {
                         <View style={flexTall.flex1}></View>
                     </View>
                 </View>
+                {/* ListCard */}
+                <View style={main.tile}>
+                    <Text style={text.sizeMedium}>Carte de paiement</Text>
+                    <View style={flexDirection.row}>
+                        <View style={flexTall.flex1}></View>
+                        <View style={flexTall.flex8}>
+                            {listCardView}
+                        </View>
+                        <View style={flexTall.flex1}></View>
+                    </View>
+                </View>
+                {/* List Retouche */}
+                <View style={main.tile}>
+                    <Text style={text.sizeMedium}>VosTarif</Text>
+                    <View style={flexDirection.row}>
+                        <View style={flexTall.flex1}></View>
+                        <View style={flexTall.flex8}>
+                            {listUserRetoucheView}
+                        </View>
+                        <View style={flexTall.flex1}></View>
+                    </View>
+                    <View style={flexDirection.row}>
+                        <View style={flexTall.flex1}></View>
+                        <View style={flexTall.flex5}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
+                                <TouchableOpacity style={btn.primaire} onPress={() => navigation.navigate('BecomeCouturier', {"retouches":userPriceRetouches})}>
+                                    <Text style={text.sizeSmall}>Modifier</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={flexTall.flex1}></View>
+                    </View>
+                </View>
             </View>
-            {errorResponse}
+
 
 
 
@@ -462,7 +614,7 @@ export const ProfilCouturier = ({ navigation }) => {
                                 <TouchableHighlight
                                     style={btn.primaire}
                                     onPress={() => createBankAccount()}>
-                                    <Text style={text.btnPrimaire}>Virement</Text>
+                                    <Text style={text.btnPrimaire}>Ajouter</Text>
                                 </TouchableHighlight>
                             </View>
                             <View style={{ marginBottom: 36 }}>
@@ -472,6 +624,7 @@ export const ProfilCouturier = ({ navigation }) => {
                     </View>
                 </View>
             </Modal>
+            {/* Modal Confirm */}
             <Modal visible={modalVisibleConfirm}
                 animationType="fade"
                 transparent={true}>

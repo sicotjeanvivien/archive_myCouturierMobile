@@ -42,7 +42,6 @@ export const ContactUs = () => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }

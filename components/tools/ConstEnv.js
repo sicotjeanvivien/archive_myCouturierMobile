@@ -15,13 +15,15 @@ export const ConstEnv = {
     imageProfil : '/api/userapp/imageProfil',
     searchPrestation:'/api/userapp/searchPrestation',
     //UserPriceRetouching
-    retouching: '/api/userPriceRetouching/',
+    userPriceRetouching: '/api/userPriceRetouching',
+    // Retouching
+    retouching: '/api/retouching/',
     //Prestations
     prestation: '/api/prestation/',
     confirmCode: '/api/prestation/congirmCode',
     prestationDetail: '/api/prestation/detail/',
     //MangoPay
-    createToken: '/api/mangopay/createToken',
+    createToken: '/api/mangopay/card',
     listCard: '/api/mangopay/listCard',
     payInCardDirect:'/api/mangopay/payInCardDirect',
     mangopayWallet:'/api/mangopay/wallet',

@@ -68,7 +68,7 @@ const RootStackScreen = ({ state }) => {
           name="Tab"
           component={TabsScreen}
           options={{
-            animationEnabled: false
+            // animationEnabled: false
           }}
         />
       ) : (
@@ -112,7 +112,8 @@ const TabsScreen = () => (
       name='Search'
       component={SearchStackScreen}
       options={{
-        title: 'recherche'
+        title: 'recherche',
+        unmountOnBlur: true
       }}
     />
     <Tabs.Screen

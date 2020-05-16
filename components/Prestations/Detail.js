@@ -144,7 +144,6 @@ export const Detail = ({ navigation, route }) => {
         })
             .then(response => response.json())
             .then(responseJson => {
-                console.log(responseJson)
                 if (responseJson.error === 'invalid credentials') {
                     signOut()
                 } if (!responseJson.error) {
