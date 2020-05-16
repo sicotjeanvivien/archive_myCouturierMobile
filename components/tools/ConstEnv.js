@@ -24,11 +24,14 @@ export const ConstEnv = {
     createToken: '/api/mangopay/createToken',
     listCard: '/api/mangopay/listCard',
     payInCardDirect:'/api/mangopay/payInCardDirect',
+    mangopayWallet:'/api/mangopay/wallet',
+    bankAccount:'/api/mangopay/bankAccounts',
+    payOutBankWire: '/api/mangopay/payOutBankWire',
     //Other
     cgv:'/cgv',
     api: '/api',
     commentary: '/api/commentary',
     message: '/api/message/',
-    contactUsCreate: '/api/ContactUs/create',
+    contactUsCreate: '/api/contactUs/create',
     imageProfilDefault: '/assets/default-profile.svg',
 };

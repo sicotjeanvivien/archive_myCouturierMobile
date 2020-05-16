@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, TextInput, TouchableOpacity, AsyncStorage, ScrollView, Image, ActivityIndicator, Picker, KeyboardAvoidingView } from "react-native";
-import { styles, main, widthTall, input } from '../../assets/stylesCustom';
+import { styles, main, widthTall, input, text } from '../../assets/stylesCustom';
 import { ConstEnv } from '../tools/ConstEnv';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -28,36 +28,36 @@ export const ProfilClient = ({ navigation }) => {
                 setBio(bioStorage);
             };
 
-            //LOAD retouche
-            fetch(ConstEnv.host + ConstEnv.retouching, {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-AUTH-TOKEN': token,
-                },
-            })
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    if (responseJson.length > 0) {
-                        setDataRetouche(responseJson);
-                        let array = [];
-                        responseJson.forEach(element => {
-                            array.push({
-                                id: element.id,
-                                active: false,
-                                value: element.value,
-                                type: element.type,
-                                description: element.description,
-                                categoryRetouching: element.categoryRetouching,
-                                supplyCost: '',
-                            });
-                        });
-                        setSendData(array)
-                    } else {
-                        setDataRetouche(null)
-                    }
-                })
+            // //LOAD retouche
+            // fetch(ConstEnv.host + ConstEnv.retouching, {
+            //     method: 'GET',
+            //     headers: {
+            //         Accept: 'application/json',
+            //         'Content-Type': 'application/json',
+            //         'X-AUTH-TOKEN': token,
+            //     },
+            // })
+            //     .then((response) => response.json())
+            //     .then((responseJson) => {
+            //         if (responseJson.length > 0) {
+            //             setDataRetouche(responseJson);
+            //             let array = [];
+            //             responseJson.forEach(element => {
+            //                 array.push({
+            //                     id: element.id,
+            //                     active: false,
+            //                     value: element.value,
+            //                     type: element.type,
+            //                     description: element.description,
+            //                     categoryRetouching: element.categoryRetouching,
+            //                     supplyCost: '',
+            //                 });
+            //             });
+            //             setSendData(array)
+            //         } else {
+            //             setDataRetouche(null)
+            //         }
+            //     })
         };
         bootData();
     }, [])
@@ -149,7 +149,7 @@ export const ProfilClient = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.navigate('BecomeCouturier', {
                     retouches: sendData
                 })}>
-                    <Text style={styles.inputBecomeCouturier}>'Mode Couturier'</Text>
+                    <Text style={styles.inputBecomeCouturier}>'Mode Cou20turier'</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.blocCenter}>

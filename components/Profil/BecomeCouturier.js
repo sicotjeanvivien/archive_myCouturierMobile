@@ -24,18 +24,10 @@ export const BecomeCouturier = ({ navigation, route }) => {
     const [apitoken, setApitoken] = React.useState();
     const [retouches, setRetouches] = React.useState(route.params.retouches);
     const [errorResponse, setErrorResponse] = React.useState();
-    const [iban, setIban] = React.useState();
-    const [bic, setBic] = React.useState();
-    const [ownerName, setOwnerName] = React.useState();
 
     const becomeCouturier = () => {
         let data = {
             activeCouturier: true,
-            bankAccount: {
-                ownerName: ownerName,
-                IBAN: iban,
-                BIC: bic
-            },
             userRetouchingPrice: retouches,
         }
         fetch(ConstEnv.host + ConstEnv.retouching, {
@@ -59,8 +51,6 @@ export const BecomeCouturier = ({ navigation, route }) => {
                 setErrorResponse(<Error message={JSON.stringify(responseJson.message)} />);
             }
         })
-
-
     }
 
     let retouchesRenderView = <ActivityIndicator />;
@@ -76,7 +66,7 @@ export const BecomeCouturier = ({ navigation, route }) => {
                             id={retouches[key].id}
                             onChangeText={(value) => {
                                 if (value > 0) {
-                                    retouches[key].value = Math.round(value);
+                                    retouches[key].value = (Math.round(value))*100;
                                     retouches[key].active = true;
                                 } else {
                                     retouches[key].value = '';
@@ -96,7 +86,7 @@ export const BecomeCouturier = ({ navigation, route }) => {
                             textContentType='oneTimeCode'
                             onChangeText={(value) => {
                                 if (value > 0) {
-                                    retouches[key].supplyCost = Math.round(value);
+                                    retouches[key].supplyCost = (Math.round(value))*100;
                                 } else {
                                     retouches[key].supplyCost = '';
                                 }
@@ -113,27 +103,6 @@ export const BecomeCouturier = ({ navigation, route }) => {
 
     return (
         <ScrollView style={main.scroll}>
-            <View style={main.tile}>
-                <Text style={text.sizeMedium}> Information Bancaire</Text>
-                <TextInput
-                    style={input.signUp}
-                    placeholder={'Nom du titulaire du compte'}
-                    defaultValue={ownerName}
-                    onChangeText={setOwnerName}
-                />
-                <TextInput
-                    style={input.signUp}
-                    placeholder={'IBAN'}
-                    defaultValue={iban}
-                    onChangeText={setIban}
-                />
-                <TextInput
-                    style={input.signUp}
-                    placeholder={'BIC'}
-                    defaultValue={bic}
-                    onChangeText={setBic}
-                />
-            </View>
             <View style={main.tile}>
                 <Text style={text.sizeMedium}>Vos tarifs</Text>
                 {retouchesRenderView}

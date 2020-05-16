@@ -179,7 +179,7 @@ export const Detail = ({ navigation, route }) => {
     }
     // let countMessage = Object.keys(messages).length();
     if (apitoken) {
-        // refreshMessage();
+        refreshMessage();
 
     }
 
@@ -202,10 +202,10 @@ export const Detail = ({ navigation, route }) => {
                                 <Text>Outil: {prestation.tool !== null ? prestation.tool : 'non indiqué'} </Text>
                                 <Text>Description: {prestation.description !== null ? prestation.description : 'aucune'} </Text>
                                 {
-                                    username === prestation.couturier && <Text>Prix: {prestation.priceCouturier}<FontAwesome style={flexTall.flex1} size={16} name='euro' /></Text>
+                                    username === prestation.couturier && <Text>Prix: {prestation.priceCouturier/100}<FontAwesome style={flexTall.flex1} size={16} name='euro' /></Text>
                                 }
                                 {
-                                    username === prestation.client && <Text>Prix: {prestation.priceShow}<FontAwesome style={flexTall.flex1} size={16} name='euro' /></Text>
+                                    username === prestation.client && <Text>Prix: {prestation.priceShow/100}<FontAwesome style={flexTall.flex1} size={16} name='euro' /></Text>
                                 }
 
                             </View>

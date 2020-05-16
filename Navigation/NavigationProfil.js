@@ -7,13 +7,13 @@ import { AuthContext } from "../Context/AuthContext";
 import { styles, main, flexTall, flexDirection, linkNavigation } from '../assets/stylesCustom';
 
 import Test from '../components/Test';
-import { ProfilClient } from "../components/Profil/ProfilClient";
 import { Prestation } from "../components/Prestations/Prestation";
 import { Guide } from '../components/Profil/Guide';
 import { Favoris } from '../components/Profil/Favoris';
 import { ContactUs } from '../components/Profil/ContactUs';
 import { Account } from '../components/Profil/Account';
 import { CGV } from '../components/Homepage/CGV';
+import { ProfilClient } from "../components/Profil/ProfilClient";
 import { ProfilCouturier } from '../components/Profil/ProfilCouturier';
 import { BecomeCouturier } from '../components/Profil/BecomeCouturier';
 const imageProfilDefault = '../assets/default-profile.png';

@@ -18,7 +18,7 @@ export const main = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         backgroundColor: color.colorBackGrouds,
-        // paddingTop: 24,
+        marginTop: 24,
         width: Dimensions.get('window').width,
         fontFamily: "Roboto",
 
@@ -35,13 +35,33 @@ export const main = StyleSheet.create({
     scroll: {
         flex: 1,
         backgroundColor: color.colorBackGrouds,
-        padding: 10,
-        paddingTop: 24,
-        paddingBottom: 48,
+        // alignItems:'center',
+        // padding: 10,
+        // paddingTop: 24,
+        // paddingBottom: 48,
         fontFamily: "Roboto",
     },
     backgroundColor: { backgroundColor: color.colorBackGrouds, zIndex: 100 },
     tile: {
+        width: Dimensions.get('screen').width * 0.9,
+        justifyContent: 'center',
+        alignContent: 'center',
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: color.white,
+        borderBottomWidth: 0,
+        shadowColor: color.black,
+        shadowOffset: { width: 10, height: 20 },
+        shadowOpacity: 0.5,
+        shadowRadius: 25,
+        padding: 5,
+        elevation: 2,
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 0,
+        marginBottom: 25,
+    },
+    tileProfil: {
         width: Dimensions.get('screen').width * 0.9,
         borderWidth: 1,
         borderRadius: 5,
@@ -57,6 +77,7 @@ export const main = StyleSheet.create({
         marginRight: 0,
         marginTop: 0,
         marginBottom: 25,
+        flexDirection: 'row'
     },
     tileCard: {
         width: Dimensions.get('screen').width * 0.8,
@@ -190,6 +211,7 @@ export const flexTall = StyleSheet.create({
     flex8: { flex: 8 },
     flex7: { flex: 7 },
     flex6: { flex: 6 },
+    flex5: { flex: 5 },
     flex4: { flex: 4 },
     flex3: { flex: 3 },
     flex2: { flex: 2 },
@@ -234,7 +256,7 @@ export const btn = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         backgroundColor: color.yellow,
-        borderRadius: 4,
+        borderRadius: 8,
         maxWidth: Dimensions.get('screen').width * 0.8,
         padding: 5,
     },
@@ -247,13 +269,13 @@ export const btn = StyleSheet.create({
     },
     accept: {
         backgroundColor: color.greenSelect,
-        borderRadius: 12,
-        padding: 10,
+        borderRadius: 8,
+        padding: 5,
     },
     decline: {
         backgroundColor: color.red,
-        borderRadius: 12,
-        padding: 10,
+        borderRadius: 8,
+        padding: 5,
 
     }
 
@@ -280,7 +302,7 @@ export const text = StyleSheet.create({
         marginBottom: 25,
     },
     btnPrimaire: {
-        color: color.white,
+        color: color.black,
         fontSize: 24,
     },
     btnSecondaire: {
@@ -305,8 +327,7 @@ export const text = StyleSheet.create({
 
 export const input = StyleSheet.create({
     textarea: {
-        width: 256,
-        height: 128,
+        flex: 1,
         backgroundColor: color.white,
         color: 'black',
         textAlignVertical: 'top',
@@ -375,13 +396,13 @@ export const modal = StyleSheet.create({
     centeredView: {
         flex: 1,
         backgroundColor: color.black,
-        opacity:0.8,
+        opacity: 0.85,
         justifyContent: "center",
         alignItems: "center",
     },
     modalView: {
         margin: 20,
-        width: Dimensions.get('window').width*0.8,
+        width: Dimensions.get('window').width * 0.9,
         backgroundColor: "white",
         borderRadius: 20,
         padding: 35,
@@ -596,7 +617,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
     },
-    
+
 });
 
 

@@ -44,7 +44,7 @@ export const CouturierDetail = ({ navigation, route }) => {
                     <Text> Info retouche </Text>
                     <Text>Type: {couturier.retouche.type} </Text>
                     <Text>Outil: {couturier.retouche.tool} </Text>
-                    <Text>Prix: {couturier.retouche.priceShowClient} </Text>
+                    <Text>Prix: {couturier.retouche.priceShowClient/100} </Text>
                     <Text>Engagement: {couturier.retouche.commitment} </Text>
                     <Text>Délai: {couturier.retouche.deadline} </Text>
                     <TouchableOpacity

@@ -78,7 +78,7 @@ export const CreatePrestation = ({ navigation, route }) => {
                 <Text>Résumé de la prestation</Text>
                 <Text>Type: {couturier.retouche.type} </Text>
                 <Text>Outil: {couturier.retouche.tool} </Text>
-                <Text>Prix: {couturier.retouche.priceShowClient} </Text>
+                <Text>Prix: {couturier.retouche.priceShowClient/100} </Text>
                 <Text>Engagement: {couturier.retouche.commitment} </Text>
                 <Text>Délai: {couturier.retouche.deadline} </Text>
 
