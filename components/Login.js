@@ -32,12 +32,18 @@ export const Login = ({ navigation }) => {
                 body: JSON.stringify(data),
             })
                 .then((response) => response.json())
-                .then((responseJson) => {
+                .then(async (responseJson) => {
                     if (responseJson.apitoken) {
-                        AsyncStorage.setItem('data', responseJson);
+                        // AsyncStorage.multiSet([
+                        //     ['data', responseJson],
+                        //     // ['firstname', responseJson.firstname],
+                        //     ['lastname', responseJson.lastname],
+                        //     ['userToken', responseJson.apitoken]
+                        // ])
+                        AsyncStorage.setItem('data', JSON.stringify(responseJson));
                         AsyncStorage.setItem('userToken', responseJson.apitoken);
                         AsyncStorage.setItem('activeCouturier', responseJson.activeCouturier);
-                        AsyncStorage.setItem('firstname', responseJson.firstname);
+                        AsyncStorage.setItem('firstname', responseJson.fisrtname);
                         AsyncStorage.setItem('lastname', responseJson.lastname);
                         AsyncStorage.setItem('username', responseJson.username);
                         AsyncStorage.setItem('email', responseJson.email);

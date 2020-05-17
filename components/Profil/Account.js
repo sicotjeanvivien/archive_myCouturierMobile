@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ScrollView, View, Text, Switch, TouchableOpacity, TextInput, AsyncStorage, KeyboardAvoidingView, Modal, TouchableHighlight } from "react-native";
-import { styles, main, modal, flexDirection } from '../../assets/stylesCustom';
+import { styles, main, modal, flexDirection, btn } from '../../assets/stylesCustom';
 import { ConstEnv } from '../tools/ConstEnv';
 import { Error } from '../tools/Error';
 import { Success } from '../tools/Success';
@@ -10,6 +10,7 @@ export const Account = ({ navigation }) => {
 
     React.useEffect(() => {
         const bootData = async () => {
+            setData(JSON.parse(await AsyncStorage.getItem('data')));
             setEmail(await AsyncStorage.getItem('email'));
             // setEmailConfirm(await AsyncStorage.getItem('email'));
             setFirstname(await AsyncStorage.getItem('firstname'));
@@ -20,18 +21,20 @@ export const Account = ({ navigation }) => {
         };
         bootData();
     }, [])
-    const [userToken, setUsertoken] = React.useState('');
-    const [emailConfirm, setEmailConfirm] = React.useState('');
-    const [firstname, setFirstname] = React.useState('');
-    const [lastname, setLastname] = React.useState('');
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
-    const [passwordConfirm, setPasswordConfirm] = React.useState('');
+
+    const [data, setData] = React.useState();
+    const [userToken, setUsertoken] = React.useState();
+    const [emailConfirm, setEmailConfirm] = React.useState();
+    const [firstname, setFirstname] = React.useState();
+    const [lastname, setLastname] = React.useState();
+    const [email, setEmail] = React.useState();
+    const [password, setPassword] = React.useState();
+    const [passwordConfirm, setPasswordConfirm] = React.useState();
     const [id, setId] = React.useState();
     const [privateMode, setPrivateMode] = React.useState();
     const [response, setResponse] = React.useState();
     const [modalVisible, setModalVisible] = React.useState(false);
-    const [confirmEmailHidden, setConfirmEmailHidden]= React.useState(styles.hidden)
+    const [confirmEmailHidden, setConfirmEmailHidden] = React.useState(styles.hidden)
 
     const { signOut } = React.useContext(AuthContext);
 
@@ -60,13 +63,13 @@ export const Account = ({ navigation }) => {
                 error: false,
                 text: 'Adresse email non valide. '
             },
-            emailConfirm:{
+            emailConfirm: {
                 error: false,
                 text: 'Confirmation adresse email non valide'
             }
         };
 
-        firstname.repeat(1).length > 0 && toString(firstname)
+        firstname.length > 0 && toString(firstname)
             ? data.firstname = firstname : errorData.firstname.error = true;
 
         lastname.repeat(1).length > 0 && toString(lastname)
@@ -244,7 +247,8 @@ export const Account = ({ navigation }) => {
     return (
 
         <ScrollView>
-            <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 24 }}>
+                {/* <KeyboardAvoidingView style={styles.container} behavior="padding" enabled> */}
                 <View>
                     {response}
                 </View>
@@ -274,15 +278,16 @@ export const Account = ({ navigation }) => {
                         style={styles.input}
                         placeholder="Adresse email"
                         onChangeText={setEmail}
-                        onFocus={()=> setConfirmEmailHidden(styles.input)}
                         defaultValue={email}
                     />
-                    <TextInput
-                        style={confirmEmailHidden}
-                        placeholder="Confirmation adresse email"
-                        onChangeText={setEmailConfirm}
-                        defaultValue={emailConfirm}
-                    />
+                    {
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Confirmation adresse email"
+                            onChangeText={setEmailConfirm}
+                            defaultValue={emailConfirm}
+                        />
+                    }
                     <TouchableOpacity
                         style={styles.btnEnter}
                         onPress={() => updateAccount()}
@@ -345,12 +350,14 @@ export const Account = ({ navigation }) => {
                         </View>
                     </Modal>
                     <TouchableHighlight
+                        style={btn.decline}
                         onPress={() => { setModalVisible(true) }}
                     >
-                        <Text>Supprimer compte</Text>
+                        <Text style={{textAlign:'center'}}>Supprimer le compte</Text>
                     </TouchableHighlight>
                 </View>
-            </KeyboardAvoidingView>
+            </View>
+            {/* </KeyboardAvoidingView> */}
         </ScrollView>
     )
 };

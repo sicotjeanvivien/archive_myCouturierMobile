@@ -1,13 +1,14 @@
 import * as React from 'react';
+import { Ionicons, AntDesign, Entypo, FontAwesome, MaterialIcons } from '@expo/vector-icons';
+
 import { View, Text, TextInput, TouchableOpacity, AsyncStorage, ScrollView, Image, ActivityIndicator, Picker, KeyboardAvoidingView } from "react-native";
-import { styles, main, widthTall, input, text } from '../../assets/stylesCustom';
+import { styles, main, widthTall, input, text, flexDirection, flexTall, btn } from '../../assets/stylesCustom';
 import { ConstEnv } from '../tools/ConstEnv';
 import * as ImagePicker from 'expo-image-picker';
 
 import { Error } from '../tools/Error';
 import { Success } from '../tools/Success';
 import { AuthContext } from '../../Context/AuthContext';
-import { Navigation } from 'react-native-navigation';
 
 
 
@@ -27,37 +28,9 @@ export const ProfilClient = ({ navigation }) => {
             if (bioStorage != null) {
                 setBio(bioStorage);
             };
+            // LOAD listCard
+            loadCard(token)
 
-            // //LOAD retouche
-            // fetch(ConstEnv.host + ConstEnv.retouching, {
-            //     method: 'GET',
-            //     headers: {
-            //         Accept: 'application/json',
-            //         'Content-Type': 'application/json',
-            //         'X-AUTH-TOKEN': token,
-            //     },
-            // })
-            //     .then((response) => response.json())
-            //     .then((responseJson) => {
-            //         if (responseJson.length > 0) {
-            //             setDataRetouche(responseJson);
-            //             let array = [];
-            //             responseJson.forEach(element => {
-            //                 array.push({
-            //                     id: element.id,
-            //                     active: false,
-            //                     value: element.value,
-            //                     type: element.type,
-            //                     description: element.description,
-            //                     categoryRetouching: element.categoryRetouching,
-            //                     supplyCost: '',
-            //                 });
-            //             });
-            //             setSendData(array)
-            //         } else {
-            //             setDataRetouche(null)
-            //         }
-            //     })
         };
         bootData();
     }, [])
@@ -70,11 +43,56 @@ export const ProfilClient = ({ navigation }) => {
     const [sendData, setSendData] = React.useState();
     const [errorResponse, setErrorResponse] = React.useState()
     const [activeCouturier, setActiveCouturier] = React.useState();
+    const [listCard, setListCard] = React.useState();
 
     const imageProfilDefault = '../../assets/default-profile.png';
 
     const { signOut } = React.useContext(AuthContext);
 
+    // FUNCTION
+    const loadCard = (token) => {
+        fetch(ConstEnv.host + ConstEnv.listCard, {
+            method: "GET",
+            headers: {
+                'X-AUTH-TOKEN': token,
+                "Accept": 'application/json',
+                'Content-Type': 'application/json',
+            }
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.error === 'invalid credentials') {
+                    signOut()
+                }
+                if (!responseJson.Error) {
+                    setListCard(responseJson.listCard)
+                }
+            })
+
+    };
+
+    const deleteCard = (deleteCardId) => {
+        fetch(ConstEnv.host + ConstEnv.createToken, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-AUTH-TOKEN': apitoken,
+            },
+            body: JSON.stringify({ 'cardId': deleteCardId })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error === 'invalid credentials') {
+                    signOut();
+                } if (!responseJson.error) {
+                    loadCard(apitoken);
+                    //TODOO
+                } else {
+                    setErrorResponse3(responseJson.message);
+                }
+            })
+    }
 
     //SEND dataRetouche
     const updateProfil = () => {
@@ -138,37 +156,95 @@ export const ProfilClient = ({ navigation }) => {
         })
     };
 
+    // RENDER VIEW
     let imageSource = <Image resizeMethod="resize" source={require(imageProfilDefault)} style={styles.thumbnail} />;
     if (imageProfil) {
         imageSource = <Image resizeMethod="resize" source={{ uri: imageProfil }} style={styles.thumbnail} />
     }
+    let listCardView = <ActivityIndicator />
+    if (listCard) {
+        if (listCard.length > 0) {
+            listCardView = listCard.map((item, i) => {
+                if (item.Active) {
+                    return (
+                        <View key={i} style={main.tileItem}>
+                            <View style={flexDirection.row}>
+                                <View style={flexTall.flex8}>
+                                    <Text style={text.sizeSmall}>{item.CardType}</Text>
+                                    <Text style={text.sizeSmall}>date d'expiration: {item.ExpirationDate}</Text>
+                                    <Text style={text.sizeSmall}>Numéro de carte: {item.Alias}</Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={() => deleteCard(item.Id)}
+                                    style={{ flex: 1, backgroundColor: '#FF0000', alignItems: 'center' }}
+                                >
+                                    <Entypo name="cross" size={24} color="black" />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    )
+                }
+            })
+        } else {
+            listCardView = <View style={{ margin: 15 }}><Text>Aucun</Text></View>
+        }
+    }
 
     return (
         <ScrollView style={main.scroll}>
-            <View style={styles.containerRowEnd}>
-                <TouchableOpacity onPress={() => navigation.navigate('BecomeCouturier', {
-                    retouches: sendData
-                })}>
-                    <Text style={styles.inputBecomeCouturier}>'Mode Cou20turier'</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.blocCenter}>
-                <TouchableOpacity onPress={openImagePickerAsync} >
-                    {imageSource}
-                </TouchableOpacity>
-                <Text>{username}</Text>
-                <TextInput
-                    multiline={true}
-                    numberOfLines={5}
-                    style={input.textarea}
-                    placeholder='Entré votre bio'
-                    onChangeText={setBio}
-                    defaultValue={bio}
-                />
-                <TouchableOpacity onPress={() => updateProfil()}>
-                    <Text style={styles.btnValide}>Valider</Text>
-                </TouchableOpacity>
+            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 24 }}>
+                {/* Profil */}
+                <View style={main.tile}>
+                    <View style={flexDirection.row}>
+                        <View style={flexTall.flex1}></View>
+                        <View style={flexTall.flex2}>
+                            <TouchableOpacity onPress={openImagePickerAsync} >
+                                {imageSource}
+                            </TouchableOpacity>
+                            <Text style={{ textAlign: 'center', fontSize: 24 }}>{username}</Text>
+                        </View>
+                        <View style={flexTall.flex1}>
+                            <TouchableOpacity
+                                style={btn.primaire}
+                                onPress={() => navigation.navigate('BecomeCouturier', {
+                                    retouches: sendData
+                                })}
+                            >
+                                <Text style={text.sizeSmall}>Mode couturier</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={flexDirection.row}>
+                        <View style={flexTall.flex1}></View>
+                        <View style={flexTall.flex5}>
+                            <TextInput
+                                multiline={true}
+                                numberOfLines={5}
+                                style={input.textarea}
+                                placeholder='Entré votre bio'
+                                onChangeText={setBio}
+                                defaultValue={bio}
+                            />
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
+                                <TouchableOpacity style={btn.primaire} onPress={() => updateProfil()}>
+                                    <Text style={text.sizeSmall}>Valider</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={flexTall.flex1}></View>
+                    </View>
+                </View>
                 {errorResponse}
+                <View style={main.tile}>
+                    <Text style={text.sizeMedium}>Carte de paiement</Text>
+                    <View style={flexDirection.row}>
+                        <View style={flexTall.flex1}></View>
+                        <View style={flexTall.flex8}>
+                            {listCardView}
+                        </View>
+                        <View style={flexTall.flex1}></View>
+                    </View>
+                </View>
             </View>
         </ScrollView>
     );

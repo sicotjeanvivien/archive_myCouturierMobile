@@ -59,23 +59,7 @@ export const ProfilCouturier = ({ navigation }) => {
                     }
                 })
             // LOAD listCard
-            fetch(ConstEnv.host + ConstEnv.listCard, {
-                method: "GET",
-                headers: {
-                    'X-AUTH-TOKEN': token,
-                    "Accept": 'application/json',
-                    'Content-Type': 'application/json',
-                }
-            })
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    if (responseJson.error === 'invalid credentials') {
-                        signOut()
-                    }
-                    if (!responseJson.Error) {
-                        setListCard(responseJson.listCard)
-                    }
-                })
+            loadCard(token)
         };
         bootData();
     }, [])
@@ -265,66 +249,80 @@ export const ProfilCouturier = ({ navigation }) => {
         }
     }
 
-    const deleteBankAccount = (deleteBankId)=>{
-        console.log('delete bank', deleteBankId)
-        fetch(ConstEnv.host+ ConstEnv.bankAccount, {
+    const deleteBankAccount = (deleteBankId) => {
+        fetch(ConstEnv.host + ConstEnv.bankAccount, {
             method: 'DELETE',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
                 'X-AUTH-TOKEN': apitoken,
             },
-            body: JSON.stringify({'bankAccountId': deleteBankId})
+            body: JSON.stringify({ 'bankAccountId': deleteBankId })
         })
-        .then(response=>response.json())
-        .then(responseJson =>{
-            console.log(responseJson)
-            if (responseJson.error === 'invalid credentials') {
-                signOut();
-            }if (!responseJson.error) {
-                console.log('success');
-                loadBanbkAccounts();
-            } else {
-                setErrorResponse3(responseJson.message);
-            }
-        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error === 'invalid credentials') {
+                    signOut();
+                } if (!responseJson.error) {
+                    loadBanbkAccounts();
+                } else {
+                    setErrorResponse3(responseJson.message);
+                }
+            })
     }
 
-    const deleteCard = (deleteCardId)=>{
-        console.log('delete bank', deleteCardId)
-        fetch(ConstEnv.host+ ConstEnv, {
+    const deleteCard = (deleteCardId) => {
+        fetch(ConstEnv.host + ConstEnv, {
             method: 'DELETE',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
                 'X-AUTH-TOKEN': apitoken,
             },
-            body: JSON.stringify({'cardId': deleteCardId})
+            body: JSON.stringify({ 'cardId': deleteCardId })
         })
-        .then(response=>response.json())
-        .then(responseJson =>{
-            console.log(responseJson)
-            if (responseJson.error === 'invalid credentials') {
-                signOut();
-            }if (!responseJson.error) {
-                console.log('success');
-                //TODOO
-            } else {
-                setErrorResponse3(responseJson.message);
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error === 'invalid credentials') {
+                    signOut();
+                } if (!responseJson.error) {
+                    loadCard(apitoken);
+                } else {
+                    setErrorResponse3(responseJson.message);
+                }
+            })
+    }
+
+    const loadCard = (token) => {
+        fetch(ConstEnv.host + ConstEnv.listCard, {
+            method: "GET",
+            headers: {
+                'X-AUTH-TOKEN': token,
+                "Accept": 'application/json',
+                'Content-Type': 'application/json',
             }
         })
-    }
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.error === 'invalid credentials') {
+                    signOut()
+                }
+                if (!responseJson.Error) {
+                    setListCard(responseJson.listCard)
+                }
+            })
+
+    };
 
     // RENDER VIEW
     let listBankAccountsView = <ActivityIndicator />;
     if (bankAccounts) {
         if (bankAccounts.length > 0) {
             listBankAccountsView = (bankAccounts).map((item, i) => {
-                console.log(item);
                 return (
                     <View key={i} style={bankAccountSelect === item.Id ? main.tileCardSelect : main.tileCard}>
                         <TouchableOpacity
-                        style={flexTall.flex7}
+                            style={flexTall.flex7}
                             onPress={() => bankAccountSelected(item)}
                         >
                             <View style={flexDirection.rowBetween}>
@@ -332,8 +330,8 @@ export const ProfilCouturier = ({ navigation }) => {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={()=>deleteBankAccount(item.Id)}
-                            style={{flex:1, backgroundColor: '#FF0000', alignItems: 'center'}}
+                            onPress={() => deleteBankAccount(item.Id)}
+                            style={{ flex: 1, backgroundColor: '#FF0000', alignItems: 'center' }}
                         >
                             <Entypo name="cross" size={24} color="black" />
                         </TouchableOpacity>
@@ -362,23 +360,25 @@ export const ProfilCouturier = ({ navigation }) => {
     if (listCard) {
         if (listCard.length > 0) {
             listCardView = listCard.map((item, i) => {
-                return (
-                    <View key={i} style={main.tileItem}>
-                        <TouchableOpacity onPress={() => console.log('lol')}>
-                            <View style={flexDirection.rowBetween}>
-                                <Text style={text.sizeSmall}>{item.CardType}</Text>
-                                <Text style={text.sizeSmall}>date d'expiration: {item.ExpirationDate}</Text>
+                if (item.Active) {
+                    return (
+                        <View key={i} style={main.tileItem}>
+                            <View style={flexDirection.row}>
+                                <View style={flexTall.flex8}>
+                                    <Text style={text.sizeSmall}>{item.CardType}</Text>
+                                    <Text style={text.sizeSmall}>date d'expiration: {item.ExpirationDate}</Text>
+                                    <Text style={text.sizeSmall}>Numéro de carte: {item.Alias}</Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={() => deleteCard(item.Id)}
+                                    style={{ flex: 1, backgroundColor: '#FF0000', alignItems: 'center' }}
+                                >
+                                    <Entypo name="cross" size={24} color="black" />
+                                </TouchableOpacity>
                             </View>
-                            <Text style={text.sizeSmall}>Numéro de carte: {item.Alias}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={()=>deleteC(item.Id)}
-                            style={{flex:1, backgroundColor: '#FF0000', alignItems: 'center'}}
-                        >
-                            <Entypo name="cross" size={24} color="black" />
-                        </TouchableOpacity>
-                    </View>
-                )
+                        </View>
+                    )
+                }
             })
         } else {
             listCardView = <View style={{ margin: 15 }}><Text>Aucun</Text></View>
@@ -505,7 +505,7 @@ export const ProfilCouturier = ({ navigation }) => {
                         <View style={flexTall.flex1}></View>
                         <View style={flexTall.flex5}>
                             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
-                                <TouchableOpacity style={btn.primaire} onPress={() => navigation.navigate('BecomeCouturier', {"retouches":userPriceRetouches})}>
+                                <TouchableOpacity style={btn.primaire} onPress={() => navigation.navigate('BecomeCouturier', { "retouches": userPriceRetouches })}>
                                     <Text style={text.sizeSmall}>Modifier</Text>
                                 </TouchableOpacity>
                             </View>
@@ -514,9 +514,6 @@ export const ProfilCouturier = ({ navigation }) => {
                     </View>
                 </View>
             </View>
-
-
-
 
             {/* MODAL PayOut*/}
             <Modal
@@ -621,15 +618,6 @@ export const ProfilCouturier = ({ navigation }) => {
                                 {errorResponse2}
                             </View>
                         </View>
-                    </View>
-                </View>
-            </Modal>
-            {/* Modal Confirm */}
-            <Modal visible={modalVisibleConfirm}
-                animationType="fade"
-                transparent={true}>
-                <View style={modal.centeredView}>
-                    <View style={modal.modalView}>
                     </View>
                 </View>
             </Modal>
