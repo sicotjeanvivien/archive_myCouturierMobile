@@ -28,12 +28,29 @@ export const ProfilClient = ({ navigation }) => {
             if (bioStorage != null) {
                 setBio(bioStorage);
             };
+            //LOAD retouche
+            fetch(ConstEnv.host + ConstEnv.userPriceRetouching, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-AUTH-TOKEN': token,
+                },
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    if (!responseJson.error) {
+                        setUserPriceRetouches(responseJson.userPriceRetouches)
+                    }
+                })
             // LOAD listCard
             loadCard(token)
 
         };
         bootData();
     }, [])
+
+    const [userPriceRetouches, setUserPriceRetouches] = React.useState();
 
     const [dataRetouche, setDataRetouche] = React.useState();
     const [imageProfil, setImageProfil] = React.useState();
@@ -207,7 +224,7 @@ export const ProfilClient = ({ navigation }) => {
                             <TouchableOpacity
                                 style={btn.primaire}
                                 onPress={() => navigation.navigate('BecomeCouturier', {
-                                    retouches: sendData
+                                    retouches: userPriceRetouches
                                 })}
                             >
                                 <Text style={text.sizeSmall}>Mode couturier</Text>

@@ -23,6 +23,14 @@ export const main = StyleSheet.create({
         fontFamily: "Roboto",
 
     },
+    page2: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        backgroundColor: color.colorBackGrouds,
+        width: Dimensions.get('window').width,
+        fontFamily: "Roboto",
+
+    },
     pageEnd: {
         flex: 1,
         justifyContent: 'flex-end',

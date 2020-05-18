@@ -18,7 +18,7 @@ export const PrestationList = ({ data, navigation, response }) => {
                 <TouchableOpacity
                     key={i}
                     style={presta.listItem}
-                    onPress={() => navigation.navigate('PrestationDetail', {
+                    onPress={() => navigation.navigate('PrestationInProgress', {
                         prestation: prestaInProgressData[key],
                         state: 'active',
                     })}

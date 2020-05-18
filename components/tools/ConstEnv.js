@@ -15,7 +15,7 @@ export const ConstEnv = {
     imageProfil : '/api/userapp/imageProfil',
     searchPrestation:'/api/userapp/searchPrestation',
     //UserPriceRetouching
-    userPriceRetouching: '/api/userPriceRetouching',
+    userPriceRetouching: '/api/userPriceRetouching/',
     // Retouching
     retouching: '/api/retouching/',
     //Prestations
@@ -29,6 +29,8 @@ export const ConstEnv = {
     mangopayWallet:'/api/mangopay/wallet',
     bankAccount:'/api/mangopay/bankAccounts',
     payOutBankWire: '/api/mangopay/payOutBankWire',
+    // Guide
+    guide: '/api/guide/',
     //Other
     cgv:'/cgv',
     api: '/api',

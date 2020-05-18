@@ -248,7 +248,6 @@ export const Account = ({ navigation }) => {
 
         <ScrollView>
             <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 24 }}>
-                {/* <KeyboardAvoidingView style={styles.container} behavior="padding" enabled> */}
                 <View>
                     {response}
                 </View>
@@ -357,7 +356,6 @@ export const Account = ({ navigation }) => {
                     </TouchableHighlight>
                 </View>
             </View>
-            {/* </KeyboardAvoidingView> */}
         </ScrollView>
     )
 };

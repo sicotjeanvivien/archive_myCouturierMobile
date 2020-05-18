@@ -11,7 +11,7 @@ import { MessageContact } from '../tools/MessageContact';
 import { Success } from '../tools/Success';
 
 
-export const Detail = ({ navigation, route }) => {
+export const DetailInProgress = ({ navigation, route }) => {
 
     React.useEffect(() => {
         const bootData = async () => {
@@ -185,34 +185,43 @@ export const Detail = ({ navigation, route }) => {
     if (isLoading) {
         if (prestation.state === 'active') {
             return (
-                <View style={main.page}>
+                <View style={main.page2}>
                     <View style={{ flexDirection: 'row', flex: 2, backgroundColor: "#E5E5E5" }}>
                         <View style={flexTall.flex1}></View>
                         <View style={flexTall.flex8}>
                             <Text style={text.sizeMedium}>Détail prestation:</Text>
-                            <View style={{ flexWrap: 'wrap', flexDirection: "row" }}>
-
+                            <View style={flexDirection.row}>
                                 {
-                                    username !== prestation.couturier && <Text>     Couturier: {prestation.couturier} </Text>
+                                    username !== prestation.couturier && <Text style={flexTall.flex1}>Couturier: {prestation.couturier} </Text>
                                 }{
-                                    username !== prestation.client && <Text>    Couturier: {prestation.couturier} </Text>
+                                    username !== prestation.client && <Text style={flexTall.flex1}>Couturier: {prestation.couturier} </Text>
                                 }
-                                <Text>Délai: {prestation.deadline !== null ? prestation.deadline : 'non indiqué'} </Text>
-                                <Text>Outil: {prestation.tool !== null ? prestation.tool : 'non indiqué'} </Text>
-                                <Text>Description: {prestation.description !== null ? prestation.description : 'aucune'} </Text>
+                            </View>
+                            <View style={flexDirection.row}>
+                                <Text style={flexTall.flex1}>Délai: {prestation.deadline !== null ? prestation.deadline : 'non indiqué'} </Text>
+                                <Text style={flexTall.flex1}>Outil: {prestation.tool !== null ? prestation.tool : 'non indiqué'} </Text>
+                            </View>
+                            <View style={flexDirection.row}>
+                                <Text style={flexTall.flex1}>Description: {prestation.description !== null ? prestation.description : 'aucune'} </Text>
+                            </View>
+                            <View style={flexDirection.justRowEnd}>
                                 {
-                                    username === prestation.couturier && <Text>Prix: {prestation.priceCouturier/100}<FontAwesome style={flexTall.flex1} size={16} name='euro' /></Text>
+                                    username === prestation.couturier && <Text style={flexTall.flex1}>Prix: {prestation.priceCouturier / 100}<FontAwesome style={flexTall.flex1} size={16} name='euro' /></Text>
                                 }
                                 {
-                                    username === prestation.client && <Text>Prix: {prestation.priceShow/100}<FontAwesome style={flexTall.flex1} size={16} name='euro' /></Text>
+                                    username === prestation.client && <Text style={flexTall.flex1}>Prix: {prestation.priceShow / 100}<FontAwesome style={flexTall.flex1} size={16} name='euro' /></Text>
                                 }
 
                             </View>
                         </View>
+                        <View style={flexTall.flex1}></View>
+                    </View>
+                    <View style={{ flexDirection: 'row', flex: 2, backgroundColor: "#E5E5E5" }}>
+                        <View style={flexTall.flex3}></View>
                         {/* ACCEPT */}
                         {
                             username === prestation.couturier && prestation.accept !== true &&
-                            <View style={flexDirection.row}>
+                            <View style={flexTall.flex3}>
                                 <TouchableOpacity
                                     style={btn.decline}
                                     onPress={() => { sendAcceptPrestation(false) }}
@@ -234,6 +243,7 @@ export const Detail = ({ navigation, route }) => {
 
                             </View>
                         }
+                        <View style={flexTall.flex3}></View>
                     </View>
                     {/* MESSAGES */}
                     {

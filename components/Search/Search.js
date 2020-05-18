@@ -23,6 +23,7 @@ const Search = ({ navigation }) => {
 
     React.useEffect(() => {
         const bootData = async () => {
+            let key = await AsyncStorage.getAllKeys();
             //apiToken
             let token = await AsyncStorage.getItem('userToken');
             token != null ? setApitoken(token) : setApitoken(null);
@@ -72,7 +73,7 @@ const Search = ({ navigation }) => {
     const [mapShow, setMapShow] = React.useState(false);
     const [errorResponse, setErroResponse] = React.useState();
     const [couturierResult, setCouturierResult] = React.useState();
-    const [address, setAddress] = React.useState()
+    const [address, setAddress] = React.useState();
 
     const imageProfilDefault = '../../assets/default-profile.png';
 
@@ -203,12 +204,14 @@ const Search = ({ navigation }) => {
     };
 
     const geocodeAddress = async () => {
-        let location = await Location.geocodeAsync(address);
-        location.forEach((geoloc, i) => {
-            setLongitudeUser(geoloc.longitude);
-            setLatitudeUser(geoloc.latitude);
-        })
-        setLongitudeUser(location)
+        if (address.length > 3) {
+            let location = await Location.geocodeAsync(address);
+            location.forEach((geoloc, i) => {
+                setLongitudeUser(geoloc.longitude);
+                setLatitudeUser(geoloc.latitude);
+            })
+            setLongitudeUser(location);
+        }
     }
 
     if (latitudeUser != null && longitudeUser != null && couturierResult === undefined) {
@@ -294,7 +297,8 @@ const Search = ({ navigation }) => {
                     <TextInput
                         style={styles.inputPicker}
                         placeholder="Adresse"
-                        onChangeText={() => geocodeAddress()}
+                        onChangeText={setAddress}
+                        onEndEditing={()=>geocodeAddress()}
                         defaultValue={address}
                     />
                 </View>

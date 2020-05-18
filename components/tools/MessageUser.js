@@ -15,6 +15,7 @@ export const MessageUser = (data) => {
         <View style={{flexDirection:"row", minHeight: 64,}}>
             <View style={flexTall.flex2}></View>
             <View style={{flex:4}}>
+                <Text>user</Text>
                 <Text style={text.message}>{data.message}</Text>
             </View>
             <View style={flexTall.flex2}>{imageSource}</View>

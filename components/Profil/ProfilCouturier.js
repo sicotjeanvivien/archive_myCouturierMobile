@@ -64,7 +64,7 @@ export const ProfilCouturier = ({ navigation }) => {
         bootData();
     }, [])
 
-    const [userPriceRetouches, setUserPriceRetouches] = React.useState()
+    const [userPriceRetouches, setUserPriceRetouches] = React.useState();
     const [imageProfil, setImageProfil] = React.useState();
     const [apitoken, setApitoken] = React.useState(null);
     const [username, setUsername] = React.useState(null);
@@ -76,6 +76,7 @@ export const ProfilCouturier = ({ navigation }) => {
     const [errorResponse3, setErrorResponse3] = React.useState();
     const [modalVisibleT, setModalVisibleT] = React.useState(false);
     const [modalVisibleBA, setModalVisibleBA] = React.useState(false);
+    const [modalVisibleKYC, setModalVisibleKYC] = React.useState(false);
     const [modalVisibleConfirm, setModalVisibleConfirm] = React.useState(false)
     const [activeCouturier, setActiveCouturier] = React.useState();
     const [bankAccounts, setBankAccounts] = React.useState();
@@ -402,7 +403,7 @@ export const ProfilCouturier = ({ navigation }) => {
                             </View>
                             <View style={flexDirection.rowBetween}>
                                 <Text style={text.sizeSmall}>Prix: </Text>
-                                <Text style={text.sizeSmall}>{item.value || 'null'} <FontAwesome style={flexTall.flex1} size={12} name='euro' /></Text>
+                                <Text style={text.sizeSmall}>{item.value / 100 || 'null'} <FontAwesome style={flexTall.flex1} size={12} name='euro' /></Text>
                             </View>
                         </View>
                     )
@@ -413,7 +414,6 @@ export const ProfilCouturier = ({ navigation }) => {
         }
 
     }
-
 
     return (
         <ScrollView style={main.scroll}>
@@ -432,7 +432,7 @@ export const ProfilCouturier = ({ navigation }) => {
                             <TouchableOpacity
                                 style={btn.primaire}
                                 onPress={() => navigation.navigate('BecomeCouturier', {
-                                    retouches: sendData
+                                    retouches: userPriceRetouches
                                 })}
                             >
                                 <Text style={text.sizeSmall}>Mode Client</Text>
@@ -470,6 +470,13 @@ export const ProfilCouturier = ({ navigation }) => {
                     </View>
                     <View style={flexDirection.row}>
                         <View style={flexTall.flex1}></View>
+                        <View style={flexTall.flex5}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10 }}>
+                                <TouchableOpacity style={btn.primaire} onPress={() => setModalVisibleKYC(true)}>
+                                    <Text style={text.sizeSmall}>Valider le compte</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                         <View style={flexTall.flex5}>
                             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
                                 <TouchableOpacity style={btn.primaire} onPress={() => { loadBanbkAccounts() }}>
@@ -614,10 +621,35 @@ export const ProfilCouturier = ({ navigation }) => {
                                     <Text style={text.btnPrimaire}>Ajouter</Text>
                                 </TouchableHighlight>
                             </View>
-                            <View style={{ marginBottom: 36 }}>
-                                {errorResponse2}
+                            <View style={flexDirection.justRow}>
+                                <View style={{ marginBottom: 36 }}>
+                                    {errorResponse2}
+                                </View>
                             </View>
                         </View>
+                    </View>
+                </View>
+            </Modal>
+            {/* MODAL KYC */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisibleKYC}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                }}
+            >
+                <View style={modal.centeredView}>
+                    <View style={modal.modalView}>
+                        <Text style={modal.modalText}>Hello World!</Text>
+                        <TouchableHighlight
+                            style={btn.decline}
+                            onPress={() => {
+                                setModalVisibleKYC(!modalVisibleKYC);
+                            }}
+                        >
+                            <Text style={{ fontSize: 24 }}>Fermer</Text>
+                        </TouchableHighlight>
                     </View>
                 </View>
             </Modal>

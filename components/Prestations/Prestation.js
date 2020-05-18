@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, Text, StyleSheet, Button, ScrollView, AsyncStorage, ActivityIndicator, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { styles, main, flexDirection, tab } from "../../assets/stylesCustom";
-import { Detail } from './Detail';
+import { DetailInProgress } from './DetailInProgress';
 import { ConstEnv } from '../tools/ConstEnv';
 import { PrestationList } from './PrestationList';
 import { AuthContext } from '../../Context/AuthContext';
@@ -105,8 +105,8 @@ export const PrestationStackScreen = () => {
                 }}
             />
             <PrestationStack.Screen
-                name='PrestationDetail'
-                component={Detail}
+                name='PrestationInProgress'
+                component={DetailInProgress}
                 options={{
                     headerShown: true,
                     title: ''

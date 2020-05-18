@@ -16,6 +16,7 @@ import { CGV } from '../components/Homepage/CGV';
 import { ProfilClient } from "../components/Profil/ProfilClient";
 import { ProfilCouturier } from '../components/Profil/ProfilCouturier';
 import { BecomeCouturier } from '../components/Profil/BecomeCouturier';
+import { GuideResponse } from '../components/Profil/GuideResponse';
 const imageProfilDefault = '../assets/default-profile.png';
 
 
@@ -161,6 +162,10 @@ export const ProfilStackScreen = () => {
             <ProfilStack.Screen
                 name='CGV'
                 component={CGV}
+            />
+            <ProfilStack.Screen
+                name='GuideResponse'
+                component={GuideResponse}
             />
             <ProfilStack.Screen
                 name='Test'

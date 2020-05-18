@@ -60,7 +60,7 @@ export const SingUp = ({ navigation }) => {
             Capacity: "NORMAL",
             Tag: "Postman create a user"
         };
-        let errorData = {error:false};
+        let errorData = { error: false };
 
         if (firstname.repeat(1).length > 0 && toString(firstname)) {
             data.firstname = firstname
@@ -104,8 +104,9 @@ export const SingUp = ({ navigation }) => {
         }
         data.address.addressLine2 = addressLine2;
         data.address.postalCode = postalCode;
-        data.birthday = Math.round(new Date(date).getTime()/1000);
-        
+        data.bio = '';
+        data.birthday = Math.round(new Date(date).getTime() / 1000);
+
         // if (Platform.OS === 'android' && !Constants.isDevice) {
         //     setErrorMessage('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
         // } else {
@@ -124,6 +125,9 @@ export const SingUp = ({ navigation }) => {
         let dataRequest = data.data;
         let errorData = data.errorData;
 
+        console.log(data);
+
+
         if (!errorData.error) {
             fetch(ConstEnv.host + ConstEnv.signUp, {
                 method: 'POST',
@@ -135,19 +139,20 @@ export const SingUp = ({ navigation }) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
+                    console.log(responseJson)
                     if (responseJson.error) {
                         setResponse(<Error message={responseJson.message} />);
                     } else {
                         setResponse(<Success message={responseJson.message} />);
                         const userApp = JSON.parse(responseJson.user);
+                        AsyncStorage.setItem('data', JSON.stringify(userApp));
                         AsyncStorage.setItem('userToken', userApp.apitoken);
+                        AsyncStorage.setItem('activeCouturier', JSON.stringify(userApp.activeCouturier));
                         AsyncStorage.setItem('firstname', userApp.firstname);
                         AsyncStorage.setItem('lastname', userApp.lastname);
-                        AsyncStorage.setItem('email', userApp.email);
-                        AsyncStorage.setItem('id', userApp.id);
                         AsyncStorage.setItem('username', userApp.username);
-                        AsyncStorage.setItem('activeCouturier', userApp.activeCouturier);
-                        AsyncStorage.setItem('privateMode', userApp.privateMode);
+                        AsyncStorage.setItem('email', userApp.email);
+                        AsyncStorage.setItem('privateMode', JSON.stringify(userApp.privateMode));
                         signUpContext(userApp.apitoken)
                     }
                 })
