@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-
+import { Notifications } from 'expo';
 import Constants from 'expo-constants';
-import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -12,17 +11,14 @@ import { ConstEnv } from './tools/ConstEnv';
 import { Error } from './tools/Error';
 import { Success } from './tools/Success';
 
-
-
 export const SingUp = ({ navigation }) => {
-    const [userToken, setUsertoken] = React.useState('');
     const [email, setEmail] = React.useState('');
     const [firstname, setFirstname] = React.useState('');
     const [lastname, setLastname] = React.useState('');
     const [emailConfirm, setEmailConfirm] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [passwordConfirm, setPasswordConfirm] = React.useState('');
-    const [birthday, setBirthday] = React.useState();
+    const [birthday, setBirthday] = React.useState(Date.now());
     const [addressLine1, setAddressLine1] = React.useState('');
     const [addressLine2, setAddressLine2] = React.useState('');
     const [city, setCity] = React.useState('');
@@ -31,13 +27,17 @@ export const SingUp = ({ navigation }) => {
     const [date, setDate] = React.useState(Date.now());
     const [mode, setMode] = React.useState('date');
     const [show, setShow] = React.useState(false);
+    const [expoPushToken, setExpoPushToken] = React.useState();
 
     const { signUpContext } = React.useContext(AuthContext);
 
     const onChange = (event, selectedDate) => {
+
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
+        setBirthday(event.nativeEvent.timestamp);
         setDate(currentDate);
+        console.log(event.nativeEvent.timestamp, selectedDate, new Date(event.nativeEvent.timestamp), Math.round(birthday / 1000));
     };
 
     const showMode = currentMode => {
@@ -105,30 +105,54 @@ export const SingUp = ({ navigation }) => {
         data.address.addressLine2 = addressLine2;
         data.address.postalCode = postalCode;
         data.bio = '';
-        data.birthday = Math.round(new Date(date).getTime() / 1000);
+        data.birthday = Math.round(birthday / 1000);
 
-        // if (Platform.OS === 'android' && !Constants.isDevice) {
-        //     setErrorMessage('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
-        // } else {
-        //     let { status } = Permissions.askAsync(Permissions.LOCATION);
-        //     if (status !== 'granted') {
-        //         setErrorMessage('Permission to access location was denied');
-        //     }
-        //     let localisation = Location.geocodeAsync();
-        // };
         return { data, errorData };
 
+    };
+
+    const RegisterPushNotification = async () => {
+        if (Constants.isDevice) {
+            const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+                finalStatus = status;
+            }
+            console.log('lol');
+            
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+            }
+            tokenPush = await Notifications.getExpoPushTokenAsync();
+            setExpoPushToken(tokenPush);
+        } else {
+            alert('Must use physical device for Push Notifications');
+        }
+
+        if (Platform.OS === 'android') {
+            Notifications.createChannelAndroidAsync('default', {
+                name: 'default',
+                sound: true,
+                priority: 'max',
+                vibrate: [0, 250, 250, 250],
+            });
+        }
+        return  tokenPush;
     }
 
-    const _signupSend = () => {
-        let data = validatorData()
+    const _signupSend = async () => {
+        RegisterPushNotification();
+        let data = validatorData();
+        
+        console.log( await RegisterPushNotification())
         let dataRequest = data.data;
+        dataRequest.expoPushToken = expoPushToken;
         let errorData = data.errorData;
 
-        console.log(data);
-
-
         if (!errorData.error) {
+            
             fetch(ConstEnv.host + ConstEnv.signUp, {
                 method: 'POST',
                 headers: {
@@ -137,10 +161,10 @@ export const SingUp = ({ navigation }) => {
                 },
                 body: JSON.stringify(dataRequest),
             })
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    console.log(responseJson)
-                    if (responseJson.error) {
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson);
+                if (responseJson.error) {
                         setResponse(<Error message={responseJson.message} />);
                     } else {
                         setResponse(<Success message={responseJson.message} />);
@@ -153,6 +177,7 @@ export const SingUp = ({ navigation }) => {
                         AsyncStorage.setItem('username', userApp.username);
                         AsyncStorage.setItem('email', userApp.email);
                         AsyncStorage.setItem('privateMode', JSON.stringify(userApp.privateMode));
+                        AsyncStorage.setItem('screenOpen', "profil")
                         signUpContext(userApp.apitoken)
                     }
                 })
@@ -165,27 +190,24 @@ export const SingUp = ({ navigation }) => {
     }
     return (
         <ScrollView style={main.scroll}>
-            <View style={flexTall.flex2}>
+            <View style={{flex:2, marginTop:24}}>
                 <Text style={text.h1}>MyCouturier</Text>
             </View>
             <View style={widthTall.width08, { alignItems: 'center' }}>
-                <TextInput
-                    style={input.signUp}
-                    placeholder="Nom"
-                    onChangeText={setLastname}
-                    defaultValue={lastname}
-                />
                 <TextInput
                     style={input.signUp}
                     placeholder="Prénom"
                     onChangeText={setFirstname}
                     defaultValue={firstname}
                 />
+                <TextInput
+                    style={input.signUp}
+                    placeholder="Nom"
+                    onChangeText={setLastname}
+                    defaultValue={lastname}
+                />
                 <View style={flexDirection.row} >
-                    <TextInput
-                        editable={false}
-                        style={input.date}
-                        value={new Date(date).getUTCDay() + "/" + new Date(date).getUTCMonth() + "/" + new Date(date).getUTCFullYear()} />
+                    <Text style={input.date}>{new Date(birthday).getDate()} / {new Date(birthday).getMonth() +1} / {new Date(birthday).getFullYear()}  </Text>
                     <View style={{ marginLeft: 15 }}>
                         <Button onPress={showDatepicker} title="date de naissance" />
                     </View>
@@ -195,7 +217,7 @@ export const SingUp = ({ navigation }) => {
                             timeZoneOffsetInMinutes={0}
                             value={date}
                             mode="date"
-                            is24Hour={true}
+                            // is24Hour={true}
                             display="spinner"
                             onChange={onChange}
                         />

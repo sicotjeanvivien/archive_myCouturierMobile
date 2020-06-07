@@ -1,17 +1,19 @@
 import * as React from 'react';
-import { AuthContext } from '../../Context/AuthContext';
+import { View, Text, TextInput, TouchableOpacity, AsyncStorage, ScrollView, Image, ActivityIndicator, Picker, TouchableHighlight, Modal } from "react-native";
+import { styles, main, widthTall, input, text, flexDirection, flexTall, btn, modal } from '../../assets/stylesCustom';
 
-import Constants from 'expo-constants';
-import * as Location from 'expo-location';
-import * as Permissions from 'expo-permissions';
+
 import { Error } from '../tools/Error';
 import { Success } from '../tools/Success';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, AsyncStorage, ActivityIndicator } from 'react-native';
-import { main, input, btn, flexDirection, flexTall, text, styles } from '../../assets/stylesCustom';
+import { AuthContext } from '../../Context/AuthContext';
+
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
 import { Ionicons, Entypo, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import { ConstEnv } from '../tools/ConstEnv';
 
-export const BecomeCouturier = ({ navigation, route }) => {
+export const ProfilConfigCouturier = ({ navigation, route }) => {
+
     React.useEffect(() => {
         const bootdata = async () => {
             let token = await AsyncStorage.getItem('userToken');
@@ -35,31 +37,39 @@ export const BecomeCouturier = ({ navigation, route }) => {
     const becomeCouturier = () => {
         let data = {
             activeCouturier: true,
-            longitude: longitudeUser + Math.round(Math.random()*100)*0.0001,
-            latitude: latitudeUser + Math.round(Math.random()*100)*0.0001,
+            longitude: longitudeUser + Math.round(Math.random()*100)*0.00001,
+            latitude: latitudeUser + Math.round(Math.random()*100)*0.00001,
             userRetouchingPrice: retouches,
         }
-        fetch(ConstEnv.host + ConstEnv.userPriceRetouching, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                'X-AUTH-TOKEN': apitoken,
-            },
-            body: JSON.stringify(data)
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                if (responseJson.error === 'invalid credentials') {
-                    signOut()
-                }
-                if (!responseJson.error) {
-                    AsyncStorage.setItem('activeCouturier', 'true')
-                    navigation.navigate('ProfilCouturier');
-                } else {
-                    setErrorResponse(<Error message={JSON.stringify(responseJson.message)} />);
-                }
+        console.log(data);
+        if (data.longitude, data.latitude) {
+            fetch(ConstEnv.host + ConstEnv.userPriceRetouching, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-AUTH-TOKEN': apitoken,
+                },
+                body: JSON.stringify(data)
             })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    if (responseJson.error === 'invalid credentials') {
+                        signOut()
+                    }
+                    if (!responseJson.error) {
+                        AsyncStorage.setItem('activeCouturier', 'true')
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'Search' }],
+                          });
+                    } else {
+                        setErrorResponse(<Error message={JSON.stringify(responseJson.message)} />);
+                    }
+                })
+        }else{
+            setErrorResponse(<Error message={'Indique une zone.'} />)
+        }
     }
 
     const geocodeAddress = async () => {
@@ -93,7 +103,7 @@ export const BecomeCouturier = ({ navigation, route }) => {
                                     item.active = false;
                                 }
                             }}
-                            defaultValue={item.value/100}
+                            defaultValue={item.value / 100}
                             style={input.retouche}
                         />
                         <FontAwesome style={flexTall.flex1} size={16} name='euro' />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, View, Text, TextInput, TouchableOpacity, AsyncStorage, Picker, Modal, TouchableHighlight } from "react-native";
-import { main, styles, input, btn, text, flexDirection, modal } from "../../assets/stylesCustom";
+import { main, styles, input, btn, text, flexDirection, flexTall, modal } from "../../assets/stylesCustom";
 import { Ionicons, Entypo, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 
 import { Error } from '../tools/Error';
@@ -101,7 +101,7 @@ export const PaymentForm = ({ navigation, route }) => {
 
     return (
         <ScrollView style={main.scroll}>
-            <View style={{ marginBottom: 36 }}>
+             <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 24 }}>
                 <View style={main.tile} >
                     <Text style={text.sizeMedium}>Selectionner une carte: </Text>
                     {cardListRenderView}
@@ -117,23 +117,23 @@ export const PaymentForm = ({ navigation, route }) => {
                 <View style={main.tile}>
                     <Text style={text.sizeMedium}>Résumé: </Text>
                     <View style={flexDirection.rowBetween}>
-                        <Text style={text.sizeSmall}>Prix prestation: </Text>
-                        <View>
-                            <Text style={text.sizeSmall}>{prestation.priceCouturier}</Text>
+                        <Text style={{flex:5, fontSize:16}}>Prix prestation: </Text>
+                        <View style={{flexDirection:"row", flex:1, alignItems:"space-between"}}>
+                            <Text style={{flex:2, fontSize:16}}>{prestation.priceCouturier}  </Text>
                             <FontAwesome style={flexTall.flex1} size={16} name='euro' />
                         </View>
                     </View>
                     <View style={flexDirection.rowBetween}>
-                        <Text style={text.sizeSmall}>Frais: </Text>
-                        <View>
-                            <Text style={text.sizeSmall}>{prestation.priceShow - prestation.priceCouturier}</Text>
+                        <Text style={{flex:5, fontSize:16}}>Frais: </Text>
+                        <View style={{flexDirection:"row", flex:1, alignItems:"space-between"}}>
+                            <Text style={{flex:2, fontSize:16}}>{prestation.priceShow - prestation.priceCouturier}  </Text>
                             <FontAwesome style={flexTall.flex1} size={16} name='euro' />
                         </View>
                     </View>
                     <View style={flexDirection.rowBetween}>
-                        <Text style={text.sizeSmall}>Total: </Text>
-                        <View>
-                            <Text style={text.sizeSmall}>{prestation.priceShow}</Text>
+                        <Text style={{flex:5, fontSize:16}}>Total: </Text>
+                        <View style={{flexDirection:"row", flex:1, alignItems:"space-between"}}>
+                            <Text style={{flex:2, fontSize:16}}>{prestation.priceShow}  </Text>
                             <FontAwesome style={flexTall.flex1} size={16} name='euro' />
                         </View>
 

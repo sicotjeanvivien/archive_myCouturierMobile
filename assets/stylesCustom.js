@@ -104,7 +104,7 @@ export const main = StyleSheet.create({
         marginBottom: 15,
     },
     tileCard: {
-        width: Dimensions.get('screen').width * 0.8,
+        // width: Dimensions.get('screen').width * 0.8,
         borderWidth: 1,
         borderRadius: 5,
         borderColor: color.white,
@@ -152,6 +152,20 @@ export const tab = StyleSheet.create({
         borderRightWidth: 2,
         borderBottomWidth: 2,
         width: Dimensions.get('screen').width * 0.5,
+        justifyContent: 'center',
+        alignContent: 'center',
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: color.white,
+        shadowColor: color.black,
+        shadowOffset: { width: 10, height: 20 },
+        shadowOpacity: 0.5,
+        shadowRadius: 25,
+        elevation: 2,
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: 24,
+        marginBottom: 25,
     },
     btnCouturierActif: {
         padding: 10,
@@ -195,6 +209,7 @@ export const presta = StyleSheet.create({
         marginRight: 0,
         marginTop: 0,
         marginBottom: 25,
+        flexDirection: "row"
     }
 });
 
@@ -273,6 +288,24 @@ export const styleImage = StyleSheet.create({
         resizeMode: "cover",
         borderRadius: 256
     },
+    couturier:{
+        width: 110,
+        height: 110,
+        resizeMode: "cover",
+        borderRadius: 256
+    },
+    comment:{
+        width: 55,
+        height: 55,
+        resizeMode: "cover",
+        borderRadius: 128
+    },
+    imgSquare:{
+        width: 90,
+        height: 90,
+        resizeMode: "cover",
+        // borderRadius: 128
+    }
 });
 
 export const btn = StyleSheet.create({
@@ -328,7 +361,7 @@ export const text = StyleSheet.create({
         marginBottom: 25,
     },
     btnPrimaire: {
-        color: color.black,
+        color: color.white,
         fontSize: 24,
     },
     btnSecondaire: {
@@ -344,11 +377,16 @@ export const text = StyleSheet.create({
         fontSize: 52,
         textAlign: "center",
     },
+    text:{
+        color: color.black,
+        fontSize: 16,
+    },
     white: { color: color.white },
     yellow: { color: color.yellow },
     sizeSmall: { fontSize: 12 },
     sizeMedium: { fontSize: 20, color: color.yellow, textAlign: 'left' },
-    sizeLarge: { fontSize: 24, color: color.yellow },
+    sizeMediumCenter: { fontSize: 20, color: color.yellow, textAlign: 'center' },
+    sizeLarge: { fontSize: 24, color: color.yellow, textAlign: "center" },
 })
 
 export const input = StyleSheet.create({
@@ -418,7 +456,6 @@ export const img = StyleSheet.create({
 })
 
 export const modal = StyleSheet.create({
-
     centeredView: {
         flex: 1,
         backgroundColor: color.black,

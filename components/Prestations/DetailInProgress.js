@@ -179,7 +179,6 @@ export const DetailInProgress = ({ navigation, route }) => {
     // let countMessage = Object.keys(messages).length();
     if (apitoken) {
         refreshMessage();
-
     }
 
     if (isLoading) {
@@ -319,7 +318,7 @@ export const DetailInProgress = ({ navigation, route }) => {
                             <View style={flexTall.flex1}></View>
                         </View>
                     }
-
+                    {/* MODAL CodeConfirm */}
                     <Modal
                         visible={modalVisible}
                         animationType="fade"

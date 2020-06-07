@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { ScrollView, View, Text, Switch, TouchableOpacity, TextInput, AsyncStorage, KeyboardAvoidingView, Modal, TouchableHighlight } from "react-native";
-import { styles, main, modal, flexDirection, btn } from '../../assets/stylesCustom';
+import { ScrollView, View, Text, Switch, TouchableOpacity, TextInput, AsyncStorage, ActivityIndicator, Modal, TouchableHighlight } from "react-native";
+import { styles, main, modal, flexDirection, btn, text, flexTall } from '../../assets/stylesCustom';
+import { Ionicons, AntDesign, Entypo, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { ConstEnv } from '../tools/ConstEnv';
 import { Error } from '../tools/Error';
 import { Success } from '../tools/Success';
@@ -10,14 +11,17 @@ export const Account = ({ navigation }) => {
 
     React.useEffect(() => {
         const bootData = async () => {
+            let token = await AsyncStorage.getItem('userToken');
             setData(JSON.parse(await AsyncStorage.getItem('data')));
             setEmail(await AsyncStorage.getItem('email'));
             // setEmailConfirm(await AsyncStorage.getItem('email'));
             setFirstname(await AsyncStorage.getItem('firstname'));
-            setUsertoken(await AsyncStorage.getItem('userToken'));
+            setUsertoken(token);
             setLastname(await AsyncStorage.getItem('lastname'));
             setId(await AsyncStorage.getItem('id'));
             setPrivateMode(await AsyncStorage.getItem('privateMode'));
+            // LOAD listCard
+            loadCard(token);
         };
         bootData();
     }, [])
@@ -34,10 +38,13 @@ export const Account = ({ navigation }) => {
     const [privateMode, setPrivateMode] = React.useState();
     const [response, setResponse] = React.useState();
     const [modalVisible, setModalVisible] = React.useState(false);
+    const [listCard, setListCard] = React.useState();
+
     const [confirmEmailHidden, setConfirmEmailHidden] = React.useState(styles.hidden)
 
     const { signOut } = React.useContext(AuthContext);
 
+    // FUNCTION
     const updateAccount = () => {
         let data = {
             id: Number(id),
@@ -45,6 +52,7 @@ export const Account = ({ navigation }) => {
             lastname: '',
             emailConfirm: '',
             email: '',
+            bio: ''
         }
         let errorData = {
             firstname: {
@@ -81,6 +89,8 @@ export const Account = ({ navigation }) => {
         email.repeat(1).length > 0 && toString(email) && email.includes('@')
             ? data.email = email : errorData.email.error = true;
         let errors = JSON.stringify(errorData);
+        console.log(data);
+
         if (!errors.includes("true")) {
             fetch(ConstEnv.host + ConstEnv.updateUser, {
                 method: 'PATCH',
@@ -93,15 +103,16 @@ export const Account = ({ navigation }) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
+                    console.log(responseJson)
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }
                     if (!responseJson.error) {
                         setResponse(<Success message={responseJson.message} />);
-                        // AsyncStorage.setItem('username', username);
-                        AsyncStorage.setItem('firstname', firstname);
-                        AsyncStorage.setItem('lastname', lastname);
-                        AsyncStorage.setItem('email', email);
+                        AsyncStorage.setItem('username', data.firstname + data.lastname[0]);
+                        AsyncStorage.setItem('firstname', data.firstname);
+                        AsyncStorage.setItem('lastname', data.lastname);
+                        AsyncStorage.setItem('email', data.email);
 
                     } else {
                         setResponse(<Error message={responseJson.message} />);
@@ -244,8 +255,80 @@ export const Account = ({ navigation }) => {
             })
     }
 
-    return (
+    const loadCard = (token) => {
+        fetch(ConstEnv.host + ConstEnv.listCard, {
+            method: "GET",
+            headers: {
+                'X-AUTH-TOKEN': token,
+                "Accept": 'application/json',
+                'Content-Type': 'application/json',
+            }
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (responseJson.error === 'invalid credentials') {
+                    signOut()
+                }
+                if (!responseJson.Error) {
+                    setListCard(responseJson.listCard)
+                }
+            })
 
+    };
+
+    const deleteCard = (deleteCardId) => {
+        fetch(ConstEnv.host + ConstEnv.createToken, {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-AUTH-TOKEN': userToken,
+            },
+            body: JSON.stringify({ 'cardId': deleteCardId })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson.error === 'invalid credentials') {
+                    signOut();
+                } if (!responseJson.error) {
+                    loadCard(userToken);
+                    //TODOO
+                } else {
+                    setErrorResponse3(responseJson.message);
+                }
+            })
+    }
+
+    let listCardView = <ActivityIndicator />
+    if (listCard) {
+        if (listCard.length > 0) {
+            listCardView = listCard.map((item, i) => {
+                if (item.Active) {
+                    return (
+                        <View key={i} style={main.tileItem}>
+                            <View style={flexDirection.row}>
+                                <View style={flexTall.flex8}>
+                                    <Text style={text.sizeSmall}>{item.CardType}</Text>
+                                    <Text style={text.sizeSmall}>date d'expiration: {item.ExpirationDate}</Text>
+                                    <Text style={text.sizeSmall}>Numéro de carte: {item.Alias}</Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={() => deleteCard(item.Id)}
+                                    style={{ flex: 1, backgroundColor: '#FF0000', alignItems: 'center' }}
+                                >
+                                    <Entypo name="cross" size={24} color="black" />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    )
+                }
+            })
+        } else {
+            listCardView = <View style={{ margin: 15 }}><Text>Aucun</Text></View>
+        }
+    }
+
+    return (
         <ScrollView>
             <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 24 }}>
                 <View>
@@ -294,6 +377,7 @@ export const Account = ({ navigation }) => {
                         <Text style={styles.btnEnterText}>Valider</Text>
                     </TouchableOpacity>
                 </View>
+                {/* MDP */}
                 <View style={main.tile}>
                     <TextInput
                         style={styles.input}
@@ -315,6 +399,17 @@ export const Account = ({ navigation }) => {
                     >
                         <Text style={styles.btnEnterText}>Valider</Text>
                     </TouchableOpacity>
+                </View>
+                {/* ListCard */}
+                <View style={main.tile}>
+                    <Text style={text.sizeMedium}>Carte de paiement</Text>
+                    <View style={flexDirection.row}>
+                        <View style={flexTall.flex1}></View>
+                        <View style={flexTall.flex8}>
+                            {listCardView}
+                        </View>
+                        <View style={flexTall.flex1}></View>
+                    </View>
                 </View>
                 <View style={main.tile}>
                     <Modal
@@ -352,7 +447,7 @@ export const Account = ({ navigation }) => {
                         style={btn.decline}
                         onPress={() => { setModalVisible(true) }}
                     >
-                        <Text style={{textAlign:'center'}}>Supprimer le compte</Text>
+                        <Text style={{ textAlign: 'center' }}>Supprimer le compte</Text>
                     </TouchableHighlight>
                 </View>
             </View>

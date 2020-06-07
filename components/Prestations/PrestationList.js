@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, TouchableOpacity, Modal, TouchableHighlight } from 'react-native';
-import { styles, main, widthTall, presta, modal, btn } from '../../assets/stylesCustom';
+import { styles, main, widthTall, presta, modal, btn, flexDirection, flexTall } from '../../assets/stylesCustom';
 
 
 export const PrestationList = ({ data, navigation, response }) => {
@@ -13,17 +13,18 @@ export const PrestationList = ({ data, navigation, response }) => {
 
     let prestaInProgressView = <Text>Aucune prestation en cours.</Text>;
     if (prestaInProgressData && prestaInProgressData.length > 0) {
-        prestaInProgressView = Object.keys(prestaInProgressData).map((key, i) => {
+        prestaInProgressView = prestaInProgressData.map((key, i) => {
+
             return (
                 <TouchableOpacity
                     key={i}
                     style={presta.listItem}
                     onPress={() => navigation.navigate('PrestationInProgress', {
-                        prestation: prestaInProgressData[key],
+                        prestation: key,
                         state: 'active',
                     })}
                 >
-                    <Text> prestation: {prestaInProgressData[key].type}</Text>
+                    <Text> prestation: {key.type}</Text>
                 </TouchableOpacity>
             )
         });
@@ -33,16 +34,24 @@ export const PrestationList = ({ data, navigation, response }) => {
     if (prestaEndData && prestaEndData.length > 0) {
         prestaEndView = Object.keys(prestaEndData).map((key, i) => {
             return (
-                <TouchableOpacity
-                    key={i}
-                    style={presta.listItem}
-                    onPress={() => navigation.navigate('DetailFinished', {
-                        prestation: prestaEndData[key],
-                        state: 'inactive',
-                    })}
-                >
-                    <Text> prestation: {prestaEndData[key].type}</Text>
-                </TouchableOpacity>
+                <View  key={i} style={presta.listItem} >
+                    <TouchableOpacity
+                       style={flexTall.flex7}
+                        // style={presta.listItem}
+                        onPress={() => navigation.navigate('DetailFinished', {
+                            prestation: prestaEndData[key],
+                            state: 'inactive',
+                        })}
+                    >
+                        <Text> prestation: {prestaEndData[key].type}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                    onPress={()=> navigation.navigate('Rating')}
+                    style={flexTall.flex2}
+                    >
+                        <Text>Boo</Text>
+                    </TouchableOpacity>
+                </View>
             )
         });
     }

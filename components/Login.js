@@ -34,12 +34,6 @@ export const Login = ({ navigation }) => {
                 .then((response) => response.json())
                 .then(async (responseJson) => {
                     if (responseJson.apitoken) {
-                        // AsyncStorage.multiSet([
-                        //     ['data', responseJson],
-                        //     // ['firstname', responseJson.firstname],
-                        //     ['lastname', responseJson.lastname],
-                        //     ['userToken', responseJson.apitoken]
-                        // ])
                         AsyncStorage.setItem('data', JSON.stringify(responseJson));
                         AsyncStorage.setItem('userToken', responseJson.apitoken);
                         AsyncStorage.setItem('activeCouturier', responseJson.activeCouturier);
@@ -49,6 +43,7 @@ export const Login = ({ navigation }) => {
                         AsyncStorage.setItem('email', responseJson.email);
                         AsyncStorage.setItem('id', responseJson.id);
                         AsyncStorage.setItem('privateMode', responseJson.privateMode);
+                        AsyncStorage.setItem('screenOpen', "search");
                         responseJson.imageProfil !== null && AsyncStorage.setItem('imageProfil', responseJson.imageProfil); //todoo
                         AsyncStorage.setItem('bio', responseJson.bio);
                         signInContext(responseJson.apitoken);

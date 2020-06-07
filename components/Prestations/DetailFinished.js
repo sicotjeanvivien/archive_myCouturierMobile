@@ -10,7 +10,6 @@ import { MessageContact } from '../tools/MessageContact';
 
 export const DetailFinished = ({ navigation, route }) => {
 
-
     useEffect(() => {
         const bootdata = async () => {
             let apitokenData = await AsyncStorage.getItem('userToken');
@@ -27,8 +26,6 @@ export const DetailFinished = ({ navigation, route }) => {
             })
                 .then(response => response.json())
                 .then(responseJson => {
-                    console.log(responseJson.prestation.history);
-
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }
@@ -53,9 +50,6 @@ export const DetailFinished = ({ navigation, route }) => {
     const [prestation, setPrestation] = React.useState();
     const [messages, setMessages] = React.useState();
     const [history, setHistory] = React.useState()
-
-    // console.log(messages);
-
 
     let messagesView = <ActivityIndicator />
     if (messages) {

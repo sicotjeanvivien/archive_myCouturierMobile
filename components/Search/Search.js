@@ -18,13 +18,19 @@ import { Error } from "../tools/Error";
 import { CouturierDetail } from "./CouturierDetail";
 import { CreatePrestation } from "./CreatePrestation";
 import { AuthContext } from "../../Context/AuthContext";
+import { needSupply } from "./needSupply";
 
-const Search = ({ navigation }) => {
+const Search = ({ navigation}, props) => {
 
     React.useEffect(() => {
         const bootData = async () => {
-            let key = await AsyncStorage.getAllKeys();
+            // let key = await AsyncStorage.getAllKeys();
             //apiToken
+            let screen = await AsyncStorage.getItem('screenOpen');
+            if (screen === 'profil') {
+                navigation.navigate('ProfilStack', {screen: 'ProfilConfig'})
+                
+            }
             let token = await AsyncStorage.getItem('userToken');
             token != null ? setApitoken(token) : setApitoken(null);
             //Access Geoloc
@@ -87,6 +93,7 @@ const Search = ({ navigation }) => {
             radius: 0.10
         };
         setErroResponse(undefined);
+        
         if (itemValue === 'noSelect') {
             findAllRetouche()
         } else {
@@ -129,7 +136,8 @@ const Search = ({ navigation }) => {
                                                     resizeMethod="resize"
                                                     source={{ uri: key.imageProfil }}
                                                     style={styleImage.imageCouturierMap}
-                                                /> :
+                                                /> 
+                                                :
                                                 <Image
                                                     resizeMethod="resize"
                                                     source={require(imageProfilDefault)}
@@ -142,7 +150,7 @@ const Search = ({ navigation }) => {
                                                 <Entypo name='star' size={16} color='#ffd700' />
                                                 <Text>{key.raiting}</Text>
                                             </View>
-                                            <Text> {key.retouche ? key.retouche.priceShowClient : ''} <FontAwesome name='euro' /> </Text>
+                                            <Text> {key.retouche ? key.retouche.priceShowClient/100 : ''} <FontAwesome name='euro' /> </Text>
 
                                         </View>
                                     </View>
@@ -171,7 +179,6 @@ const Search = ({ navigation }) => {
             body: JSON.stringify({
                 longitude: longitudeUser,
                 latitude: latitudeUser,
-                // search: itemValue,
                 radius: 0.10
             })
         })
@@ -207,10 +214,21 @@ const Search = ({ navigation }) => {
         if (address.length > 3) {
             let location = await Location.geocodeAsync(address);
             location.forEach((geoloc, i) => {
+                console.log(MapView.prototype.animateCamera);
+                let animateCamera = MapView.prototype.animateCamera
                 setLongitudeUser(geoloc.longitude);
                 setLatitudeUser(geoloc.latitude);
+                animateCamera({
+                    center: {
+                       latitude: geoloc.latitude,
+                       longitude: geoloc.longitude,
+                   },
+                   pitch: 50,
+                   heading: 120,
+                   zoom: 50
+                }), 120
             })
-            setLongitudeUser(location);
+            // setLongitudeUser(location);
         }
     }
 
@@ -229,7 +247,8 @@ const Search = ({ navigation }) => {
                     longitude: longitudeUser,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
-                }} >
+                }}
+                followsUserLocation={true}>
                 {couturierResult}
                 <Marker
                     draggable
@@ -322,6 +341,13 @@ export const SearchStackScreen = () => {
             <SearchStack.Screen
                 name='CouturierDetail'
                 component={CouturierDetail}
+                options={{
+                    title: '',
+                }}
+            />
+            <SearchStack.Screen
+                name='NeedSupply'
+                component={needSupply}
                 options={{
                     title: '',
                 }}

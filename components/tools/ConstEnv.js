@@ -29,12 +29,13 @@ export const ConstEnv = {
     mangopayWallet:'/api/mangopay/wallet',
     bankAccount:'/api/mangopay/bankAccounts',
     payOutBankWire: '/api/mangopay/payOutBankWire',
+    KYC: '/api/mangopay/KYC',
     // Guide
     guide: '/api/guide/',
     //Other
     cgv:'/cgv',
     api: '/api',
-    commentary: '/api/commentary',
+    commentary: '/api/commentary/',
     message: '/api/message/',
     contactUsCreate: '/api/contactUs/create',
     imageProfilDefault: '/assets/default-profile.svg',

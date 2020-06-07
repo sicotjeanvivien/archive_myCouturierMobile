@@ -17,6 +17,8 @@ import { ProfilClient } from "../components/Profil/ProfilClient";
 import { ProfilCouturier } from '../components/Profil/ProfilCouturier';
 import { BecomeCouturier } from '../components/Profil/BecomeCouturier';
 import { GuideResponse } from '../components/Profil/GuideResponse';
+import { ProfilConfig } from '../components/Profil/ProfilConfig';
+import { ProfilConfigCouturier } from '../components/Profil/ProfilConfigCouturier';
 const imageProfilDefault = '../assets/default-profile.png';
 
 
@@ -84,6 +86,12 @@ const NavigationProfil = ({ navigation }) => {
                 >
                     <Text style={styles.title}>CGV</Text>
                 </TouchableOpacity>
+                {/* <TouchableOpacity
+                    style={linkNavigation.link}
+                    onPress={() => navigation.navigate('Test')}
+                >
+                    <Text style={styles.title}>Test</Text>
+                </TouchableOpacity> */}
                 <TouchableOpacity
                     style={linkNavigation.link}
                     onPress={signOut}
@@ -117,6 +125,22 @@ export const ProfilStackScreen = () => {
                 }}
             />
             <ProfilStack.Screen
+                name='ProfilConfig'
+                component={ProfilConfig}
+                options={{
+                    title: 'Profil',
+                    headerShown: false,
+                }}
+            />
+            <ProfilStack.Screen
+                name='ProfilConfigCouturier'
+                component={ProfilConfigCouturier}
+                options={{
+                    title: 'Profil',
+                    headerShown: false,
+                }}
+            />
+            <ProfilStack.Screen
                 name='ProfilCouturier'
                 component={ProfilCouturier}
                 options={{
@@ -128,7 +152,7 @@ export const ProfilStackScreen = () => {
                 name='BecomeCouturier'
                 component={BecomeCouturier}
                 options={{
-                    title:'Formulaire pour devenir coutrurier'
+                    title: 'Formulaire pour devenir coutrurier'
                 }}
             />
             <ProfilStack.Screen

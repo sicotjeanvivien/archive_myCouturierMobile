@@ -26,6 +26,7 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "package": "com.sicotdevelopment.mycouturier",
       "config": {
         "googleMaps": {

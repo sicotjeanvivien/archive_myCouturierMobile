@@ -9,6 +9,7 @@ import { AuthContext } from '../../Context/AuthContext';
 import { CardRegistrationForm } from './CardRegistrationForm';
 import { PaymentForm } from './PaymentForm';
 import { DetailFinished } from './DetailFinished';
+import { Rating } from '../tools/Rating';
 
 
 export const Prestations = ({ navigation, route }) => {
@@ -33,10 +34,13 @@ export const Prestations = ({ navigation, route }) => {
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }
+                    console.log(responseJson);
+
                     if (!responseJson.error) {
                         setPrestaCouturierData(responseJson.couturier);
                         setPrestaClientData(responseJson.client);
                         setIsLoading(true);
+                        setPrestationShow(true)
                     }
                 })
                 .catch((error) => { console.error(error) })
@@ -45,17 +49,18 @@ export const Prestations = ({ navigation, route }) => {
     }, [])
 
     const [apitoken, setApitoken] = React.useState();
-    const [activeCouturier, setActiveCouturier] = React.useState();
+    const [activeCouturier, setActiveCouturier] = React.useState(true);
+    const [prestationShow, setPrestationShow] = React.useState();
     const [isLoading, setIsLoading] = React.useState();
     const [prestaCouturierData, setPrestaCouturierData] = React.useState();
     const [prestaClientData, setPrestaClientData] = React.useState();
-    const [prestationShow, setPrestationShow] = React.useState('client');
     const [response, setResponse] = React.useState()
 
     const { signOut } = React.useContext(AuthContext);
 
-    const prestationView = (userType) => {
-        setPrestationShow(userType);
+    const prestationView = () => {
+        setPrestationShow(!prestationShow);
+        setActiveCouturier(!activeCouturier)
     }
 
     if (route.params && route.params.response && response === undefined) {
@@ -63,33 +68,33 @@ export const Prestations = ({ navigation, route }) => {
     }
 
     let prestationRenderView = <ActivityIndicator />;
-    if (isLoading && prestationShow === 'client') {
+    if (isLoading && prestationShow === true) {
         prestationRenderView = <PrestationList data={prestaClientData} navigation={navigation} response={response} />;
     }
-    if (isLoading && prestationShow === 'couturier') {
+    if (isLoading && prestationShow === false) {
         prestationRenderView = <PrestationList data={prestaCouturierData} navigation={navigation} response={response} />;
     }
 
-    let prestaHeaderView = <View style={flexDirection.justRow}><Text style={tab.btnClient}>Prestations</Text></View>;
-    if (activeCouturier === 'true') {
-        prestaHeaderView = <View style={flexDirection.justRow}>
-            <TouchableOpacity onPress={() => prestationView('client')} style={tab.btnCouturier}>
-                <Text style={tab.btnText}>Client</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => prestationView('couturier')} style={tab.btnCouturier}>
-                <Text style={tab.btnText}>Couturier</Text>
-            </TouchableOpacity>
-        </View>
-    }
+    let prestaHeaderView = <Text style={tab.btnClient}>Prestations</Text>;
+    activeCouturier === 'true' ?
+        prestaHeaderView = <TouchableOpacity onPress={() => prestationView()} style={tab.btnCouturier}><Text style={tab.btnText}>Client</Text></TouchableOpacity>
+        :
+        prestaHeaderView = <TouchableOpacity onPress={() => prestationView()} style={tab.btnCouturier}><Text style={tab.btnText}>Couturier</Text></TouchableOpacity>;
 
     // VIEW
     return (
-        <View style={main.page}>
-            {prestaHeaderView}
-            <ScrollView style={main.scroll}>
+        <ScrollView style={main.scroll}>
+            <View style={flexDirection.justRowEnd}>
+                {prestaHeaderView}
+            </View>
+
+            <View style={flexDirection.justRowEnd}>
+                
+            </View>
+            <View style={flexDirection.justRowEnd}>
                 {prestationRenderView}
-            </ScrollView>
-        </View>
+            </View>
+        </ScrollView>
     )
 
 }
@@ -132,8 +137,16 @@ export const PrestationStackScreen = () => {
                 name='CardRegistrationForm'
                 component={CardRegistrationForm}
                 options={{
-                    herdershow: true,
+                    heardershow: true,
                     title: 'Formulaire carte bancaire'
+                }}
+            />
+            <PrestationStack.Screen
+                name="Rating"
+                component={Rating}
+                options={{
+                    headerShown: true,
+                    title: 'Laissez un commentaire'
                 }}
             />
         </PrestationStack.Navigator>

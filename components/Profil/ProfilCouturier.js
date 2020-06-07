@@ -5,10 +5,10 @@ import { Ionicons, AntDesign, Entypo, FontAwesome, MaterialIcons } from '@expo/v
 import { ConstEnv } from '../tools/ConstEnv';
 import * as ImagePicker from 'expo-image-picker';
 
+
 import { Error } from '../tools/Error';
 import { Success } from '../tools/Success';
 import { AuthContext } from '../../Context/AuthContext';
-import { Navigation } from 'react-native-navigation';
 
 export const ProfilCouturier = ({ navigation }) => {
 
@@ -58,26 +58,24 @@ export const ProfilCouturier = ({ navigation }) => {
                         setMangoWallet(responseJson.wallet)
                     }
                 })
-            // LOAD listCard
-            loadCard(token)
         };
         bootData();
     }, [])
 
     const [userPriceRetouches, setUserPriceRetouches] = React.useState();
     const [imageProfil, setImageProfil] = React.useState();
+    const [file, setFile] = React.useState();
     const [apitoken, setApitoken] = React.useState(null);
     const [username, setUsername] = React.useState(null);
     const [bio, setBio] = React.useState('');
     const [mangoWallet, setMangoWallet] = React.useState();
-    const [sendData, setSendData] = React.useState();
     const [errorResponse, setErrorResponse] = React.useState();
     const [errorResponse2, setErrorResponse2] = React.useState();
     const [errorResponse3, setErrorResponse3] = React.useState();
+    const [errorResponseFile, setErrorResponseFile] = React.useState();
     const [modalVisibleT, setModalVisibleT] = React.useState(false);
     const [modalVisibleBA, setModalVisibleBA] = React.useState(false);
     const [modalVisibleKYC, setModalVisibleKYC] = React.useState(false);
-    const [modalVisibleConfirm, setModalVisibleConfirm] = React.useState(false)
     const [activeCouturier, setActiveCouturier] = React.useState();
     const [bankAccounts, setBankAccounts] = React.useState();
     const [iban, setIban] = React.useState();
@@ -127,8 +125,8 @@ export const ProfilCouturier = ({ navigation }) => {
         }
     }
 
-    //IMAGE PICKER
-    let openImagePickerAsync = async () => {
+    //IMAGE/DOCUMENT PICKER
+    let openImagePickerAsync = async (type) => {
         let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
         if (permissionResult.granted === false) {
             alert('Permission to access camera roll is required!');
@@ -138,28 +136,53 @@ export const ProfilCouturier = ({ navigation }) => {
         if (pickerResult.cancelled === true) {
             return;
         }
-        setImageProfil('data:image/jpeg;base64,' + pickerResult.base64);
-        AsyncStorage.setItem('imageProfil', 'data:image/jpeg;base64,' + pickerResult.base64)
-        const blob = new Blob([JSON.stringify('data:image/jpeg;base64,' + pickerResult.base64, null, 2)]);
-        fetch(ConstEnv.host + ConstEnv.imageProfil, {
-            method: 'POST',
-            headers: {
-                'X-AUTH-TOKEN': apitoken
-            },
-            body: blob,
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                if (responseJson.error === 'invalid credentials') {
-                    signOut()
-                }
-                // TODO 
-                if (!responseJson.error) {
-                    setErrorResponse(<Success message={responseJson.message} />);
-                } else {
-                    setErrorResponse(<Error message={responseJson.message} />);
-                }
+        if (type === 'img') {
+            AsyncStorage.setItem('imageProfil', 'data:image/jpeg;base64,' + pickerResult.base64)
+            setImageProfil('data:image/jpeg;base64,' + pickerResult.base64);
+            const blob = new Blob([JSON.stringify('data:image/jpeg;base64,' + pickerResult.base64, null, 2)]);
+            fetch(ConstEnv.host + ConstEnv.imageProfil, {
+                method: 'POST',
+                headers: {
+                    'X-AUTH-TOKEN': apitoken
+                },
+                body: blob,
             })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    if (responseJson.error === 'invalid credentials') {
+                        signOut()
+                    }
+                    if (!responseJson.error) {
+                        setErrorResponse(<Success message={responseJson.message} />);
+                    } else {
+                        setErrorResponse(<Error message={responseJson.message} />);
+                    }
+                })
+        }
+        if (type === 'file') {
+            fetch(ConstEnv.host + ConstEnv.KYC, {
+                method: 'POST',
+                headers: {
+                    "Accept": 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-AUTH-TOKEN': apitoken,
+                },
+                body: JSON.stringify({ "file": pickerResult.base64 }),
+            })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    if (responseJson.error === 'invalid credentials') {
+                        signOut()
+                    }
+                    if (!responseJson.error) {
+                        setFile(<Image resizeMethod="resize" source={'data:image/jpeg;base64,' + pickerResult.base64} />);
+                        setErrorResponseFile(<Success message={responseJson.message} />);
+                    } else {
+                        setErrorResponse(<Error message={responseJson.message} />);
+                    }
+                })
+        }
+
     };
 
     // FUNCTION
@@ -272,48 +295,27 @@ export const ProfilCouturier = ({ navigation }) => {
             })
     }
 
-    const deleteCard = (deleteCardId) => {
-        fetch(ConstEnv.host + ConstEnv, {
-            method: 'DELETE',
+    const validationAsked = () => {
+        fetch(ConstEnv.host + ConstEnv.KYC, {
+            method: 'PUT',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
                 'X-AUTH-TOKEN': apitoken,
             },
-            body: JSON.stringify({ 'cardId': deleteCardId })
+            body: JSON.stringify({ 'ok': "deleteBankId" })
         })
             .then(response => response.json())
             .then(responseJson => {
                 if (responseJson.error === 'invalid credentials') {
                     signOut();
                 } if (!responseJson.error) {
-                    loadCard(apitoken);
+
                 } else {
                     setErrorResponse3(responseJson.message);
                 }
             })
     }
-
-    const loadCard = (token) => {
-        fetch(ConstEnv.host + ConstEnv.listCard, {
-            method: "GET",
-            headers: {
-                'X-AUTH-TOKEN': token,
-                "Accept": 'application/json',
-                'Content-Type': 'application/json',
-            }
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                if (responseJson.error === 'invalid credentials') {
-                    signOut()
-                }
-                if (!responseJson.Error) {
-                    setListCard(responseJson.listCard)
-                }
-            })
-
-    };
 
     // RENDER VIEW
     let listBankAccountsView = <ActivityIndicator />;
@@ -348,7 +350,7 @@ export const ProfilCouturier = ({ navigation }) => {
     if (imageProfil) {
         imageSource = <Image resizeMethod="resize" source={{ uri: imageProfil }} style={styles.thumbnail} />
     }
-    let walletView = <ActivityIndicator />
+    let walletView = <ActivityIndicator />;
     if (mangoWallet) {
         walletView = (
             <View style={{ flex: 5, backgroundColor: 'white', flexDirection: 'row', margin: 10 }}>
@@ -357,35 +359,7 @@ export const ProfilCouturier = ({ navigation }) => {
             </View>
         )
     }
-    let listCardView = <ActivityIndicator />
-    if (listCard) {
-        if (listCard.length > 0) {
-            listCardView = listCard.map((item, i) => {
-                if (item.Active) {
-                    return (
-                        <View key={i} style={main.tileItem}>
-                            <View style={flexDirection.row}>
-                                <View style={flexTall.flex8}>
-                                    <Text style={text.sizeSmall}>{item.CardType}</Text>
-                                    <Text style={text.sizeSmall}>date d'expiration: {item.ExpirationDate}</Text>
-                                    <Text style={text.sizeSmall}>Numéro de carte: {item.Alias}</Text>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => deleteCard(item.Id)}
-                                    style={{ flex: 1, backgroundColor: '#FF0000', alignItems: 'center' }}
-                                >
-                                    <Entypo name="cross" size={24} color="black" />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    )
-                }
-            })
-        } else {
-            listCardView = <View style={{ margin: 15 }}><Text>Aucun</Text></View>
-        }
-    }
-    let listUserRetoucheView = <ActivityIndicator />
+    let listUserRetoucheView = <ActivityIndicator />;
     if (userPriceRetouches) {
         if (userPriceRetouches.length > 0) {
             listUserRetoucheView = userPriceRetouches.map((item, i) => {
@@ -423,7 +397,7 @@ export const ProfilCouturier = ({ navigation }) => {
                     <View style={flexDirection.row}>
                         <View style={flexTall.flex1}></View>
                         <View style={flexTall.flex2}>
-                            <TouchableOpacity onPress={openImagePickerAsync} >
+                            <TouchableOpacity onPress={() => openImagePickerAsync('img')} >
                                 {imageSource}
                             </TouchableOpacity>
                             <Text style={{ textAlign: 'center', fontSize: 24 }}>{username}</Text>
@@ -483,17 +457,6 @@ export const ProfilCouturier = ({ navigation }) => {
                                     <Text style={text.sizeSmall}>Virement</Text>
                                 </TouchableOpacity>
                             </View>
-                        </View>
-                        <View style={flexTall.flex1}></View>
-                    </View>
-                </View>
-                {/* ListCard */}
-                <View style={main.tile}>
-                    <Text style={text.sizeMedium}>Carte de paiement</Text>
-                    <View style={flexDirection.row}>
-                        <View style={flexTall.flex1}></View>
-                        <View style={flexTall.flex8}>
-                            {listCardView}
                         </View>
                         <View style={flexTall.flex1}></View>
                     </View>
@@ -621,10 +584,10 @@ export const ProfilCouturier = ({ navigation }) => {
                                     <Text style={text.btnPrimaire}>Ajouter</Text>
                                 </TouchableHighlight>
                             </View>
-                            <View style={flexDirection.justRow}>
-                                <View style={{ marginBottom: 36 }}>
-                                    {errorResponse2}
-                                </View>
+                        </View>
+                        <View style={flexDirection.justRow}>
+                            <View style={{ marginBottom: 36 }}>
+                                {errorResponse2}
                             </View>
                         </View>
                     </View>
@@ -642,14 +605,34 @@ export const ProfilCouturier = ({ navigation }) => {
                 <View style={modal.centeredView}>
                     <View style={modal.modalView}>
                         <Text style={modal.modalText}>Hello World!</Text>
-                        <TouchableHighlight
-                            style={btn.decline}
-                            onPress={() => {
-                                setModalVisibleKYC(!modalVisibleKYC);
-                            }}
-                        >
-                            <Text style={{ fontSize: 24 }}>Fermer</Text>
-                        </TouchableHighlight>
+                        <View style={flexDirection.justRowEnd}>
+                            <View style={flexTall.flex1}>
+                                {file}
+                            </View>
+                            <TouchableHighlight
+                                style={btn.primaire}
+                                onPress={() => openImagePickerAsync('file')}
+                            >
+                                <Text style={{ fontSize: 16 }}>Envoyer les fichier</Text>
+                            </TouchableHighlight>
+                            {/* <View style={flexTall.flex1}></View> */}
+
+                        </View>
+                        <View style={flexDirection.row}>
+                            <TouchableHighlight
+                                style={btn.decline}
+                                onPress={() => {
+                                    setModalVisibleKYC(!modalVisibleKYC);
+                                }}
+                            >
+                                <Text style={{ fontSize: 24 }}>Fermer</Text>
+                            </TouchableHighlight>
+                            <TouchableHighlight
+                                style={btn.accept}
+                                onPress={() => validationAsked()}>
+                                <Text style={text.sizeSmall}>Envoyer la demande.</Text>
+                            </TouchableHighlight>
+                        </View>
                     </View>
                 </View>
             </Modal>

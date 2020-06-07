@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "843059362894",
+    "firebase_url": "https://mycouturier.firebaseio.com",
+    "project_id": "mycouturier",
+    "storage_bucket": "mycouturier.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843059362894:android:357eb9cbb6eae2761cd71f",
+        "android_client_info": {
+          "package_name": "com.sicotdevelopment.mycouturier"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "843059362894-qd0jjfo4givjaqnmnhoq4cc4rjt2r8j5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWImQKw0w7il8yCfdSx91vqjQaW5lZjLo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "843059362894-qd0jjfo4givjaqnmnhoq4cc4rjt2r8j5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
