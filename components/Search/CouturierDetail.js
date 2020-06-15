@@ -149,14 +149,25 @@ export const CouturierDetail = ({ navigation, route }) => {
                 </View>
                 {/* BTN Solicite */}
                 <View style={{ flexDirection: "row", marginBottom: 10 }}>
-                    <TouchableOpacity
-                        style={btn.primaire}
-                        onPress={() => navigation.navigate('NeedSupply', {
-                            couturier: couturier,
-                            apitoken: route.params.apitoken
-                        })}>
-                        <Text style={text.btnPrimaire}>Soliciter</Text>
-                    </TouchableOpacity>
+                    { couturier.retouche.supplyQuestion ?
+                        <TouchableOpacity
+                            style={btn.primaire}
+                            onPress={() => navigation.navigate('NeedSupply', {
+                                couturier: couturier,
+                                apitoken: route.params.apitoken
+                            })}>
+                            <Text style={text.btnPrimaire}>Soliciter</Text>
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity
+                            style={btn.primaire}
+                            onPress={() => navigation.navigate('CreatePresation', {
+                                couturier: couturier,
+                                apitoken: route.params.apitoken
+                            })}>
+                            <Text style={text.btnPrimaire}>Soliciter</Text>
+                        </TouchableOpacity>
+                    }
                 </View>
                 {/* INFO retouche */}
 

@@ -5,8 +5,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { Error } from '../tools/Error';
 import { Success } from '../tools/Success';
 import { AuthContext } from '../../Context/AuthContext';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Dimensions } from "react-native";
-import { main, styles, input, btn, text, styleImage } from "../../assets/stylesCustom";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, Dimensions, ActivityIndicator } from "react-native";
+import { main, styles, input, btn, text, styleImage, flexDirection } from "../../assets/stylesCustom";
+import { Feather } from '@expo/vector-icons';
 
 export const CreatePrestation = ({ navigation, route }) => {
 
@@ -15,12 +16,17 @@ export const CreatePrestation = ({ navigation, route }) => {
     const [supplyCost, setSupplyCost] = React.useState(route.params.supplyCost)
     const [description, setDescription] = React.useState();
     const [photoPresta, setPhotoPresta] = React.useState([]);
-    const [photoPrestaView, setPhotoPrestaView] = React.useState();
+    const [phototrue1, setPhototrue1] = React.useState(false)
+    const [phototrue2, setPhototrue2] = React.useState(false)
+    const [phototrue3, setPhototrue3] = React.useState(false)
+
+    console.log(couturier);
+    
 
     //IMAGE PICKER
-    let openImagePickerAsync = async () => {
+    let openImagePickerAsync = async (index) => {
+        // setPhototrue1(false)
         let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
-
         if (permissionResult.granted === false) {
             alert('Permission to access camera roll is required!');
             return;
@@ -31,14 +37,26 @@ export const CreatePrestation = ({ navigation, route }) => {
             return;
         }
         let photoPrestaData = photoPresta;
-        photoPrestaData.push('data:image/jpeg;base64,' + pickerResult.base64);
+        photoPrestaData[index] = 'data:image/jpeg;base64,' + pickerResult.base64;
         setPhotoPresta(photoPrestaData);
-        setPhotoPrestaView(photoPresta.map((key, i) => {
-            return (
-                <Image key={i} resizeMethod="resize" source={{ uri: key }} style={styleImage.imgSquare} />
-                // <Text>{key}</Text>
-            )
-        }));
+        switch (index) {
+            case 1:
+                setPhototrue1(false)
+                setPhototrue1(true)
+                break;
+            case 2:
+                setPhototrue2(false)
+                setPhototrue2(true)
+                break;
+            case 3:
+                setPhototrue3(false)
+                setPhototrue3(true)
+                break;
+
+            default:
+                break;
+        }
+
     };
 
     //SEND CREATE PRESTATION 
@@ -72,6 +90,19 @@ export const CreatePrestation = ({ navigation, route }) => {
 
     }
 
+    let photo1View = <Text><Feather name="camera" style={styleImage.imgSquare} size={90} color="black" /></Text>
+    if (phototrue1) {
+        photo1View = <Image resizeMethod="resize" source={{ uri: photoPresta[1] }} style={styleImage.imgSquare} />
+    }
+    let photo2View = <Text><Feather name="camera" style={styleImage.imgSquare} size={90} color="black" /></Text>
+    if (phototrue2) {
+        photo2View = <Image resizeMethod="resize" source={{ uri: photoPresta[2] }} style={styleImage.imgSquare} />
+    }
+    let photo3View = <Text><Feather name="camera" style={styleImage.imgSquare} size={90} color="black" /></Text>
+    if (phototrue3) {
+        photo3View = <Image resizeMethod="resize" source={{ uri: photoPresta[3] }} style={styleImage.imgSquare} />
+    }
+
     return (
         <ScrollView style={main.scroll}>
             <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 24 }}>
@@ -84,8 +115,8 @@ export const CreatePrestation = ({ navigation, route }) => {
                     <View style={main.tile} >
                         <Text style={text.text} >Type: {couturier.retouche.type} </Text>
                         <Text style={text.text}>Outil: {couturier.retouche.tool} </Text>
-                        <Text style={text.text}>Prix: {couturier.retouche.priceShowClient / 100} </Text>
-                        {supplyCost && <Text style={text.text}>Coût d'achat: {couturier.retouche.sypplyCost / 100} </Text>}
+                        <Text style={text.text}>Prix: {couturier.retouche.priceShowClient / 100} €</Text>
+                        {supplyCost && <Text style={text.text}>Coût des fournitures: {couturier.retouche.supplyCost / 100} €</Text>}
                         <Text style={text.text}>Engagement: {couturier.retouche.commitment} </Text>
                         <Text style={text.text}>Délai: {couturier.retouche.deadline} </Text>
 
@@ -114,20 +145,17 @@ export const CreatePrestation = ({ navigation, route }) => {
                     fontFamily: "Roboto",
                 }}>
                     <Text style={text.sizeMediumCenter}>Ajoutez des photos</Text>
-                    <View style={main.tile}>
-                        <TouchableOpacity onPress={openImagePickerAsync} >
-                            <Text>Envoie d'image</Text>
+                    <View style={flexDirection.row}>
+                        <TouchableOpacity style={main.tileItem} onPress={() => openImagePickerAsync(1)} >
+                            {photo1View}
                         </TouchableOpacity>
-                        <View >
-                            {photoPrestaView}
-                        </View>
+                        <TouchableOpacity style={main.tileItem} onPress={() => openImagePickerAsync(2)} >
+                            {photo2View}
+                        </TouchableOpacity>
+                        <TouchableOpacity style={main.tileItem} onPress={() => openImagePickerAsync(3)} >
+                            {photo3View}
+                        </TouchableOpacity>
                     </View>
-                </View>
-                <View>
-                    <Text></Text>
-                </View>
-                <View style={main.tile}>
-                    <Text>Avez-vous le matériel pour la prestation?</Text>
                 </View>
                 <View style={{ marginBottom: 64 }}>
 

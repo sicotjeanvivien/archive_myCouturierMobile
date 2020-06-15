@@ -214,7 +214,6 @@ const Search = ({ navigation}, props) => {
         if (address.length > 3) {
             let location = await Location.geocodeAsync(address);
             location.forEach((geoloc, i) => {
-                console.log(MapView.prototype.animateCamera);
                 let animateCamera = MapView.prototype.animateCamera
                 setLongitudeUser(geoloc.longitude);
                 setLatitudeUser(geoloc.latitude);
@@ -288,7 +287,7 @@ const Search = ({ navigation}, props) => {
                 <Picker.Item
                     key={i}
                     style={styles.inputPickerItem}
-                    label={dataRetouche[key].type}
+                    label={dataRetouche[key].code +' - '+ dataRetouche[key].type}
                     value={dataRetouche[key].type}
                 />
             )

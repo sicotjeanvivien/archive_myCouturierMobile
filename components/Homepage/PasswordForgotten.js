@@ -15,8 +15,6 @@ export const PasswordForgotten = ({ navigation }) => {
     const sendPasswordForgotten = () => {
         if (email) {
             setShowBtn(true)
-            console.log(ConstEnv.host + ConstEnv.passwordForgotten + '/' + email);
-
             if (email.repeat(1).length > 0 && toString(email) && email.includes('@')) {
                 fetch(ConstEnv.host + ConstEnv.passwordForgotten + '/' + email, {
                     method: 'GET',
@@ -27,8 +25,6 @@ export const PasswordForgotten = ({ navigation }) => {
                 })
                     .then(response => response.json())
                     .then(responseJson => {
-                        console.log(responseJson);
-
                         if (!responseJson.error) {
                             setResponse(<Success message={responseJson.message} />);
                             setShowBtn(false);

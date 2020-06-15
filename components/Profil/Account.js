@@ -89,8 +89,6 @@ export const Account = ({ navigation }) => {
         email.repeat(1).length > 0 && toString(email) && email.includes('@')
             ? data.email = email : errorData.email.error = true;
         let errors = JSON.stringify(errorData);
-        console.log(data);
-
         if (!errors.includes("true")) {
             fetch(ConstEnv.host + ConstEnv.updateUser, {
                 method: 'PATCH',
@@ -103,7 +101,6 @@ export const Account = ({ navigation }) => {
             })
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log(responseJson)
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }

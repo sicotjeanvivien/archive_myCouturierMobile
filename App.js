@@ -126,10 +126,10 @@ const TabsScreen = () => (
                 unmountOnBlur: true
             }}
         />
-        <Tabs.Screen
+        {/* <Tabs.Screen
             name='Shop'
             component={Shop}
-        />
+        /> */}
         <Tabs.Screen
             name='ProfilStack'
             component={ProfilStackScreen}
@@ -174,9 +174,6 @@ export default () => {
             userToken: null,
         }
     );
-
-    // console.log(navigation);
-    
 
     React.useEffect(() => {
         const _notificationSubscription = () => Notifications.addListener(notification => {
@@ -231,7 +228,6 @@ export default () => {
             },
             signUpContext: async (data) => {
                 //todoo
-                console.log(data)
                 // ()=> navigation.navigate('ProfilClient')
                 dispatch({ type: 'SIGN_IN', token: data });
             },

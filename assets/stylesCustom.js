@@ -422,6 +422,18 @@ export const input = StyleSheet.create({
         padding: 5,
         zIndex: 100,
     },
+    supply: {
+        width: Dimensions.get('screen').width * 0.6,
+        height: 36,
+        backgroundColor: color.white,
+        color: color.black,
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        margin: 40,
+        padding: 5,
+        zIndex: 100,
+    },
     retouche: {
         backgroundColor: color.white,
         color: color.black,

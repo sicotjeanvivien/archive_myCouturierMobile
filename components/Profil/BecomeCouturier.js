@@ -31,7 +31,6 @@ export const BecomeCouturier = ({ navigation, route }) => {
     const [errorResponse, setErrorResponse] = React.useState();
     const [address, setAddress] = React.useState();
 
-
     const becomeCouturier = () => {
         let data = {
             activeCouturier: true,

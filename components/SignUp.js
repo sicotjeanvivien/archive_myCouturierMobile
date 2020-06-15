@@ -37,7 +37,6 @@ export const SingUp = ({ navigation }) => {
         setShow(Platform.OS === 'ios');
         setBirthday(event.nativeEvent.timestamp);
         setDate(currentDate);
-        console.log(event.nativeEvent.timestamp, selectedDate, new Date(event.nativeEvent.timestamp), Math.round(birthday / 1000));
     };
 
     const showMode = currentMode => {
@@ -119,7 +118,6 @@ export const SingUp = ({ navigation }) => {
                 const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
                 finalStatus = status;
             }
-            console.log('lol');
             
             if (finalStatus !== 'granted') {
                 alert('Failed to get push token for push notification!');
@@ -146,7 +144,6 @@ export const SingUp = ({ navigation }) => {
         RegisterPushNotification();
         let data = validatorData();
         
-        console.log( await RegisterPushNotification())
         let dataRequest = data.data;
         dataRequest.expoPushToken = expoPushToken;
         let errorData = data.errorData;
@@ -163,7 +160,6 @@ export const SingUp = ({ navigation }) => {
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (responseJson.error) {
                         setResponse(<Error message={responseJson.message} />);
                     } else {

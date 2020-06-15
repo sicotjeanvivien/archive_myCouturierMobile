@@ -34,8 +34,6 @@ export const Prestations = ({ navigation, route }) => {
                     if (responseJson.error === 'invalid credentials') {
                         signOut()
                     }
-                    console.log(responseJson);
-
                     if (!responseJson.error) {
                         setPrestaCouturierData(responseJson.couturier);
                         setPrestaClientData(responseJson.client);

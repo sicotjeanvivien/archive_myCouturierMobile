@@ -41,7 +41,7 @@ export const ProfilConfigCouturier = ({ navigation, route }) => {
             latitude: latitudeUser + Math.round(Math.random()*100)*0.00001,
             userRetouchingPrice: retouches,
         }
-        console.log(data);
+        (data);
         if (data.longitude, data.latitude) {
             fetch(ConstEnv.host + ConstEnv.userPriceRetouching, {
                 method: 'POST',
@@ -111,7 +111,6 @@ export const ProfilConfigCouturier = ({ navigation, route }) => {
                     <View key={i} style={flexDirection.row}>
                         <Text style={{ flex: 6, fontSize: 16 }}>cout fourniture</Text>
                         <TextInput
-
                             keyboardType='number-pad'
                             textContentType='oneTimeCode'
                             onChangeText={(value) => {
