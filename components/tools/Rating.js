@@ -19,7 +19,15 @@ export const Rating = () => {
     return (
         <ScrollView style={main.scroll}>
             <View style={main.page2}>
-                <Text>Hello</Text>
+
+                <View style={{}} >
+                    <Text style={{ color: '#F5B30F' }} >Notez </Text>
+
+                </View>
+                <View></View>
+            </View>
+            <View style={main.page2}>
+                <Text>Commentaire</Text>
                 <View style={flexDirection.row}>
                     <View style={flexTall.flex1}></View>
                     <View style={flexTall.flex5}>
@@ -27,7 +35,7 @@ export const Rating = () => {
                             multiline={true}
                             numberOfLines={5}
                             style={input.textarea}
-                            placeholder='Entré votre bio'
+                            placeholder='Commentaire'
                             onChangeText={setComment}
                             defaultValue={comment}
                         />

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View, Text, TouchableOpacity, Modal, TouchableHighlight } from 'react-native';
 import { styles, main, widthTall, presta, modal, btn, flexDirection, flexTall } from '../../assets/stylesCustom';
+import { FontAwesome } from '@expo/vector-icons';
 
 
 export const PrestationList = ({ data, navigation, response }) => {
@@ -24,7 +25,7 @@ export const PrestationList = ({ data, navigation, response }) => {
                         state: 'active',
                     })}
                 >
-                    <Text> prestation: {key.type}</Text>
+                    <Text> prestation: {key.type}{key.id}</Text>
                 </TouchableOpacity>
             )
         });
@@ -32,24 +33,24 @@ export const PrestationList = ({ data, navigation, response }) => {
 
     let prestaEndView = <Text>Aucune prestation.</Text>;
     if (prestaEndData && prestaEndData.length > 0) {
-        prestaEndView = Object.keys(prestaEndData).map((key, i) => {
+        prestaEndView = prestaEndData.map((key, i) => {
             return (
                 <View  key={i} style={presta.listItem} >
                     <TouchableOpacity
                        style={flexTall.flex7}
                         // style={presta.listItem}
                         onPress={() => navigation.navigate('DetailFinished', {
-                            prestation: prestaEndData[key],
+                            prestation: key,
                             state: 'inactive',
                         })}
                     >
-                        <Text> prestation: {prestaEndData[key].type}</Text>
+                        <Text> prestation: {key.type}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                     onPress={()=> navigation.navigate('Rating')}
                     style={flexTall.flex2}
                     >
-                        <Text>Boo</Text>
+                        <Text><FontAwesome name="comment-o" size={24} color="black" /></Text>
                     </TouchableOpacity>
                 </View>
             )
@@ -72,7 +73,7 @@ export const PrestationList = ({ data, navigation, response }) => {
                 <Text style={presta.listText}>Prestations Terminées:</Text>
                 {prestaEndView}
             </View>
-            <Modal
+            {/* <Modal
                 visible={modalVisible}
                 animationType="fade"
                 transparent={true}
@@ -93,7 +94,7 @@ export const PrestationList = ({ data, navigation, response }) => {
                     </View>
                 </View>
 
-            </Modal>
+            </Modal> */}
         </View>
     );
 }
