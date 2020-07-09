@@ -35,9 +35,9 @@ export const PrestationList = ({ data, navigation, response }) => {
     if (prestaEndData && prestaEndData.length > 0) {
         prestaEndView = prestaEndData.map((key, i) => {
             return (
-                <View  key={i} style={presta.listItem} >
+                <View key={i} style={presta.listItem} >
                     <TouchableOpacity
-                       style={flexTall.flex7}
+                        style={flexTall.flex7}
                         // style={presta.listItem}
                         onPress={() => navigation.navigate('DetailFinished', {
                             prestation: key,
@@ -47,8 +47,8 @@ export const PrestationList = ({ data, navigation, response }) => {
                         <Text> prestation: {key.type}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                    onPress={()=> navigation.navigate('Rating')}
-                    style={flexTall.flex2}
+                        onPress={() => navigation.navigate('Rating', { prestation: key })}
+                        style={flexTall.flex2}
                     >
                         <Text><FontAwesome name="comment-o" size={24} color="black" /></Text>
                     </TouchableOpacity>

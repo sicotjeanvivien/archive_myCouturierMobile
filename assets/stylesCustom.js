@@ -31,6 +31,14 @@ export const main = StyleSheet.create({
         fontFamily: "Roboto",
 
     },
+    page3: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: color.colorBackGrouds,
+        width: Dimensions.get('window').width,
+        fontFamily: "Roboto",
+
+    },
     pageEnd: {
         flex: 1,
         justifyContent: 'flex-end',
@@ -117,7 +125,8 @@ export const main = StyleSheet.create({
         elevation: 2,
         marginTop: 10,
         marginBottom: 10,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'space-around'
     },
     tileCardSelect: {
         width: Dimensions.get('screen').width * 0.8,

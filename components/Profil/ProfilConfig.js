@@ -50,7 +50,7 @@ export const ProfilConfig = ({ navigation }) => {
     const [apitoken, setApitoken] = React.useState(null);
     const [username, setUsername] = React.useState(null);
     const [bio, setBio] = React.useState('');
-    const [errorResponse, setErrorResponse] = React.useState()
+    const [errorResponse, setErrorResponse] = React.useState();
     const [activeCouturier, setActiveCouturier] = React.useState();
 
     const imageProfilDefault = '../../assets/default-profile.png';

@@ -74,7 +74,7 @@ export const Prestations = ({ navigation, route }) => {
     }
 
     let prestaHeaderView = <Text style={tab.btnClient}>Prestations</Text>;
-    activeCouturier === true ?
+    activeCouturier ?
         prestaHeaderView = <TouchableOpacity onPress={() => prestationView()} style={tab.btnCouturier}><Text style={tab.btnText}>Client</Text></TouchableOpacity>
         :
         prestaHeaderView = <TouchableOpacity onPress={() => prestationView()} style={tab.btnCouturier}><Text style={tab.btnText}>Couturier</Text></TouchableOpacity>;
